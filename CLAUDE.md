@@ -6,15 +6,27 @@ SWE-bench A/B benchmarking rig. Current experiment: Claude Opus 4.8 vs Claude Fa
 
 Requirements: Docker, uv. The SWE-bench instance images are x86_64; they run fine under Apple Silicon emulation.
 
+The patched scaffold is vendored as a git submodule, so clone with submodules (or init after cloning):
+
 ```bash
-uv venv
-uv pip install mini-swe-agent sb-cli swebench
+git clone --recurse-submodules <repo-url>
+# already cloned:  git submodule update --init
 ```
 
-mini-swe-agent is installed **editable** from `~/repos/SWE-agent/mini-swe-agent` (a `.pth` link, not a copy — source edits are live immediately, no rebuild). Local patches there:
+Then the environment:
+
+```bash
+uv venv
+uv pip install -e vendor/mini-swe-agent   # patched scaffold (submodule)
+uv pip install sb-cli swebench
+```
+
+`vendor/mini-swe-agent` is a submodule pinned to the patched fork (`shellicar/mini-swe-agent`, branch `feature/claude-swe-patches`). The patches vs upstream:
 
 - `agents/default.py`: `system_identity` config field; when set, the system message is built as two content blocks (identity + scaffold prompt), each with a `cache_control` marker.
 - `models/utils/cache_control.py`: the `default_end` processor skips system messages, so explicit markers on them survive.
+
+Note: an editable install (`-e`) means the submodule's source is used live. To change the scaffold, edit in the submodule, commit/push to the fork, then bump the submodule pointer here.
 
 `.env`:
 
