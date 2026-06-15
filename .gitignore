@@ -1,0 +1,35 @@
+.env
+.venv/
+.claude/
+
+# TLS material — derived per host (re-create via Keychain export + certifi cat)
+zscaler.pem
+ca-bundle.pem
+
+# Python / macOS noise
+__pycache__/
+.DS_Store
+*.bak
+
+# Run outputs are tracked (irreplaceable: cost money, non-deterministic).
+# Marking logs are regenerable from preds.json and stay ignored.
+# batch-test-*/
+# runs/
+# *.traj.json
+logs/
+sb-cli-reports/
+
+# Local evaluation reports — promote into a committed results file deliberately
+*.local-*.json
+
+# Zombie legs from the cancelled phase-1 run (survived Ctrl-C, ran concurrently
+# with the real experiment). Excluded from evaluation and results; kept on disk only.
+discarded/
+
+# Live proxy output — the main experiment's wire log was preserved as
+# runs/main/api-timing.jsonl; future proxy sessions write here and stay untracked.
+mitm/api-timing.jsonl
+
+# Raw request bodies from the 4.6/4.7 wire capture: 472MB, too large for git.
+# Kept on disk only. The responses (with usage/thinking) and api-timing ARE tracked.
+runs/main/opus46-47-requests.jsonl

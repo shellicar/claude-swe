@@ -1,0 +1,8 @@
+instances_by_exit_status:
+    LimitsExceeded:
+    - sphinx-doc__sphinx-9229
+    - django__django-10554
+    Submitted:
+    - django__django-15128
+    - django__django-16263
+    - sympy__sympy-13878

@@ -1,0 +1,4 @@
+# Heavy run data via LFS — keeps the core repo (code, configs, reports) light.
+# The 472MB requests capture is gitignored entirely; everything else heavy is LFS.
+*.jsonl filter=lfs diff=lfs merge=lfs -text
+*.traj.json filter=lfs diff=lfs merge=lfs -text

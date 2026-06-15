@@ -1,0 +1,557 @@
+2026-06-10 18:24:08,337 - minisweagent - INFO - Loading dataset princeton-nlp/SWE-Bench_Verified, split test...
+2026-06-10 18:24:12,936 - minisweagent - INFO - Instance filter: 500 -> 60 instances
+2026-06-10 18:24:12,937 - minisweagent - INFO - Running on 60 instances...
+2026-06-10 18:24:12,937 - minisweagent - INFO - Building agent config from specs: ['swebench-local.yaml', 'thinking-adaptive.yaml']
+2026-06-10 18:24:13,885 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-8ffbb16d -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.astropy_1776_astropy-13033:latest sleep 2h
+2026-06-10 18:24:13,885 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-dc278d2e -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.astropy_1776_astropy-7166:latest sleep 2h
+2026-06-10 18:24:13,886 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-3d2189b3 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.astropy_1776_astropy-14598:latest sleep 2h
+2026-06-10 18:24:14,207 - minisweagent.environment - INFO - Started container minisweagent-8ffbb16d with ID f9cb4348cecd558db9ef132f8bd1bee06d813ee99d4e5c6cb1b0e979dfa5eb3d
+2026-06-10 18:24:14,302 - minisweagent.environment - INFO - Started container minisweagent-dc278d2e with ID c55155872aeb1dc071373c145391b9f95e307f6e13c4ac55547cf226bcf15fdb
+2026-06-10 18:24:14,316 - minisweagent.environment - INFO - Started container minisweagent-3d2189b3 with ID da9d8c24cdbe6bb56a357228929b56a68177ddb5456e2902dc7b60a5e203c4fb
+2026-06-10 18:25:05,006 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/astropy__astropy-7166/astropy__astropy-7166.traj.json'
+2026-06-10 18:25:05,029 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-070fdde3 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11099:latest sleep 2h
+2026-06-10 18:25:05,170 - minisweagent.environment - INFO - Started container minisweagent-070fdde3 with ID 56b1de4b0f6fe80fcf60c4a384247831fdd32132702e12b6a79a73ced61068d0
+2026-06-10 18:25:51,652 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/astropy__astropy-13033/astropy__astropy-13033.traj.json'
+2026-06-10 18:25:51,671 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-c9d46051 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11141:latest sleep 2h
+2026-06-10 18:25:51,931 - minisweagent.environment - INFO - Started container minisweagent-c9d46051 with ID 607effa903e09af20408f6ce4746de896d7e9b4aadd5c9e69e0147d2a8480ef3
+2026-06-10 18:25:57,343 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11099/django__django-11099.traj.json'
+2026-06-10 18:25:57,351 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-6fdc3f7c -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11149:latest sleep 2h
+2026-06-10 18:25:57,484 - minisweagent.environment - INFO - Started container minisweagent-6fdc3f7c with ID b8e94dc601d48961e109c953f2559f8c14e1452e9fc609325721c564faa98985
+2026-06-10 18:27:33,088 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11149/django__django-11149.traj.json'
+2026-06-10 18:27:33,096 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-e3877773 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11299:latest sleep 2h
+2026-06-10 18:27:33,480 - minisweagent.environment - INFO - Started container minisweagent-e3877773 with ID 2ca882c90a9bf3cc2909d32c79ea3f642af028e6e7bdde264eba078b0c9d6c6e
+2026-06-10 18:27:43,802 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11141/django__django-11141.traj.json'
+2026-06-10 18:27:43,815 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-619dbc96 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11433:latest sleep 2h
+2026-06-10 18:27:43,960 - minisweagent.environment - INFO - Started container minisweagent-619dbc96 with ID 7c4aa47772b4efa48db7b2baf24d4bf1c72b737cb8578baa3b861bd670ae2e31
+2026-06-10 18:28:36,790 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11299/django__django-11299.traj.json'
+2026-06-10 18:28:36,799 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-f25da165 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11451:latest sleep 2h
+2026-06-10 18:28:36,970 - minisweagent.environment - INFO - Started container minisweagent-f25da165 with ID 8b0219fce94b39e003c9fa8150c3a32007a1449f169838c9eac0af2d3e5fff4f
+2026-06-10 18:29:04,831 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11433/django__django-11433.traj.json'
+2026-06-10 18:29:04,843 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-016a88bb -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11477:latest sleep 2h
+2026-06-10 18:29:05,014 - minisweagent.environment - INFO - Started container minisweagent-016a88bb with ID 00474e66487fcaf990f55d4affb203f11f78ebcc74d843185cacf46c12d09f80
+2026-06-10 18:29:15,379 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11451/django__django-11451.traj.json'
+2026-06-10 18:29:15,389 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-2fdf293b -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11551:latest sleep 2h
+2026-06-10 18:29:15,567 - minisweagent.environment - INFO - Started container minisweagent-2fdf293b with ID ab1f7a3fb7822cfcc87ddd83ba544a3914bdeb2284220c23199d8bb1631fbed3
+2026-06-10 18:29:59,283 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11551/django__django-11551.traj.json'
+2026-06-10 18:29:59,293 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-b4f3e643 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11555:latest sleep 2h
+2026-06-10 18:29:59,437 - minisweagent.environment - INFO - Started container minisweagent-b4f3e643 with ID 9c5e2fe9af8aa5891f4500413da64acdacc85cccca6a3b9a8c39d5efef212309
+2026-06-10 18:30:33,271 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11477/django__django-11477.traj.json'
+2026-06-10 18:30:33,281 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-b523aceb -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-11749:latest sleep 2h
+2026-06-10 18:30:33,414 - minisweagent.environment - INFO - Started container minisweagent-b523aceb with ID 190a9ee5d7716e3d6617b98a0e974a5d8123ce037f38e26fe204d81a76032ee4
+2026-06-10 18:31:08,737 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11555/django__django-11555.traj.json'
+2026-06-10 18:31:08,752 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-5d39f826 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-12273:latest sleep 2h
+2026-06-10 18:31:09,178 - minisweagent.environment - INFO - Started container minisweagent-5d39f826 with ID e3a62c7268d2ac81544f0ee70fcaea8104ff198afc9bf39c4d77bfb4485adbd7
+2026-06-10 18:32:22,248 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-11749/django__django-11749.traj.json'
+2026-06-10 18:32:22,256 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-966180f3 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-12406:latest sleep 2h
+2026-06-10 18:32:22,465 - minisweagent.environment - INFO - Started container minisweagent-966180f3 with ID d379b45e4ad31ccab88440c3bd3ace4054fca5fc658a1f291de1cc08a033f286
+2026-06-10 18:32:24,035 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/astropy__astropy-14598/astropy__astropy-14598.traj.json'
+2026-06-10 18:32:24,051 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-1936ff0e -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-12754:latest sleep 2h
+2026-06-10 18:32:24,623 - minisweagent.environment - INFO - Started container minisweagent-1936ff0e with ID 6b3488a4d25358f060a2f599dd386e178936d48f33c52898c29aa7855a73628a
+2026-06-10 18:34:17,018 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-12754/django__django-12754.traj.json'
+2026-06-10 18:34:17,027 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-4468370c -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-13012:latest sleep 2h
+2026-06-10 18:34:17,415 - minisweagent.environment - INFO - Started container minisweagent-4468370c with ID 94eca45dd5417d9f8ed44713bec257781558491dae6ae317e91fde9500e0c69e
+2026-06-10 18:35:12,970 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-13012/django__django-13012.traj.json'
+2026-06-10 18:35:12,981 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-ab67d57f -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-13297:latest sleep 2h
+2026-06-10 18:35:13,312 - minisweagent.environment - INFO - Started container minisweagent-ab67d57f with ID be75bda391fbdb666e0934ee89c50464538b3bf74e2cbf373f1cf5fb64a521d8
+2026-06-10 18:35:46,870 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-12406/django__django-12406.traj.json'
+2026-06-10 18:35:46,880 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-19791f40 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-13809:latest sleep 2h
+2026-06-10 18:35:47,173 - minisweagent.environment - INFO - Started container minisweagent-19791f40 with ID 3541ecbb34bc55d756687ff08771e99d13dd245e8592c3371309cfad88ee9b81
+2026-06-10 18:36:52,705 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-13297/django__django-13297.traj.json'
+2026-06-10 18:36:52,720 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-ad4a1bce -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-13933:latest sleep 2h
+2026-06-10 18:36:53,857 - minisweagent.environment - INFO - Started container minisweagent-ad4a1bce with ID 729edb1795536d69ebd125ddb8b89c0d087a6520688547504ea56951cec51a1f
+2026-06-10 18:37:04,609 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-12273/django__django-12273.traj.json'
+2026-06-10 18:37:04,620 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-7bd63b47 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-14089:latest sleep 2h
+2026-06-10 18:37:04,794 - minisweagent.environment - INFO - Started container minisweagent-7bd63b47 with ID 50f7bfc5d0a738a085da0f5bb92f0eff6571fcc75898b83eff6339a0bbdc4f2e
+2026-06-10 18:37:38,780 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-14089/django__django-14089.traj.json'
+2026-06-10 18:37:38,794 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-12d4af53 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-14351:latest sleep 2h
+2026-06-10 18:37:39,277 - minisweagent.environment - INFO - Started container minisweagent-12d4af53 with ID 532192773e0696121bc8534cc9c81ef99d833d2640ebfa6b9a3b96be63aeb2a4
+2026-06-10 18:38:27,853 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-13933/django__django-13933.traj.json'
+2026-06-10 18:38:27,863 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-5cd530f1 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-14376:latest sleep 2h
+2026-06-10 18:38:28,061 - minisweagent.environment - INFO - Started container minisweagent-5cd530f1 with ID cf3832995cd8cc7a5726811aa741543e1f878bbff5066cd0730db2cd1d3ed02a
+2026-06-10 18:38:28,804 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-13809/django__django-13809.traj.json'
+2026-06-10 18:38:28,814 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-f06f5e0b -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-14771:latest sleep 2h
+2026-06-10 18:38:29,017 - minisweagent.environment - INFO - Started container minisweagent-f06f5e0b with ID f98e7f3dac03d0975a52173ac4d05c172dc7de6f05a1ea714a983351994e7fb6
+2026-06-10 18:39:10,802 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-14771/django__django-14771.traj.json'
+2026-06-10 18:39:10,822 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-7df56305 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-14792:latest sleep 2h
+2026-06-10 18:39:11,542 - minisweagent.environment - INFO - Started container minisweagent-7df56305 with ID fd533e1e9000d28cd307d10987a2f8039a01aae2da32e29f381ff1ec00bb484d
+2026-06-10 18:39:11,568 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-14376/django__django-14376.traj.json'
+2026-06-10 18:39:11,583 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-932c134f -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-15467:latest sleep 2h
+2026-06-10 18:39:11,931 - minisweagent.environment - INFO - Started container minisweagent-932c134f with ID 8a3c9e2b106ff9121dc69f9b5e6269471aed33a07aa2baaaf6160d3014c05295
+2026-06-10 18:48:20,491 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-15467/django__django-15467.traj.json'
+2026-06-10 18:48:20,511 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-7837f956 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-15525:latest sleep 2h
+2026-06-10 18:48:20,803 - minisweagent.environment - INFO - Started container minisweagent-7837f956 with ID 9faf7daeedbab620131966bcc34522674285bd53900814b6e5a8ece4df3ef662
+2026-06-10 18:48:38,373 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-14351/django__django-14351.traj.json'
+2026-06-10 18:48:38,388 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-396ba8f8 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-15916:latest sleep 2h
+2026-06-10 18:48:39,118 - minisweagent.environment - INFO - Started container minisweagent-396ba8f8 with ID a448c2de6c14fbd833e71eeae75f6d2a26a97be17bc5f3466051c87fd0a88b3b
+2026-06-10 18:49:45,667 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-15525/django__django-15525.traj.json'
+2026-06-10 18:49:45,683 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-c128286b -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-16100:latest sleep 2h
+2026-06-10 18:49:46,764 - minisweagent.environment - INFO - Started container minisweagent-c128286b with ID fe6a98271b88010b5348f54e08edebb912d9d8ca6a3c84e324999d3aaf99e42a
+2026-06-10 18:50:34,358 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-15916/django__django-15916.traj.json'
+2026-06-10 18:50:34,367 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-cdfa66e0 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.django_1776_django-16950:latest sleep 2h
+2026-06-10 18:50:34,817 - minisweagent.environment - INFO - Started container minisweagent-cdfa66e0 with ID a6aed9cee21f8dcd17dbd9a5c2f09161535f659f9abcef271bc784a27cc4e539
+2026-06-10 18:50:40,204 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-14792/django__django-14792.traj.json'
+2026-06-10 18:50:40,214 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-4c78d7f1 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-14623:latest sleep 2h
+2026-06-10 18:50:40,513 - minisweagent.environment - INFO - Started container minisweagent-4c78d7f1 with ID 95d8cd6820c7dcaea6b26abb2934b49840d927c253c039ddbce575f59973d3df
+2026-06-10 18:51:25,091 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-16100/django__django-16100.traj.json'
+2026-06-10 18:51:25,101 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-0c24638e -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23314:latest sleep 2h
+2026-06-10 18:52:46,068 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/matplotlib__matplotlib-14623/matplotlib__matplotlib-14623.traj.json'
+2026-06-10 18:52:46,086 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-b37d74da -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24177:latest sleep 2h
+2026-06-10 18:53:25,107 - minisweagent - ERROR - Error processing instance matplotlib__matplotlib-23314: Command '['docker', 'run', '-d', '--name', 'minisweagent-0c24638e', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23314:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-0c24638e', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23314:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 18:53:25,136 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-a1cd27be -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26208:latest sleep 2h
+2026-06-10 18:54:46,096 - minisweagent - ERROR - Error processing instance matplotlib__matplotlib-24177: Command '['docker', 'run', '-d', '--name', 'minisweagent-b37d74da', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24177:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-b37d74da', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24177:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 18:54:46,108 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-e9d8bfba -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26291:latest sleep 2h
+2026-06-10 18:55:25,144 - minisweagent - ERROR - Error processing instance matplotlib__matplotlib-26208: Command '['docker', 'run', '-d', '--name', 'minisweagent-a1cd27be', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26208:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-a1cd27be', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26208:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 18:55:25,156 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-ac7a94c8 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.psf_1776_requests-1142:latest sleep 2h
+2026-06-10 18:56:46,117 - minisweagent - ERROR - Error processing instance matplotlib__matplotlib-26291: Command '['docker', 'run', '-d', '--name', 'minisweagent-e9d8bfba', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26291:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-e9d8bfba', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26291:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 18:56:46,132 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-4c0cd2c2 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-3305:latest sleep 2h
+2026-06-10 18:57:25,166 - minisweagent - ERROR - Error processing instance psf__requests-1142: Command '['docker', 'run', '-d', '--name', 'minisweagent-ac7a94c8', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.psf_1776_requests-1142:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-ac7a94c8', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.psf_1776_requests-1142:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 18:57:25,174 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-cd072286 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6461:latest sleep 2h
+2026-06-10 18:58:46,141 - minisweagent - ERROR - Error processing instance pydata__xarray-3305: Command '['docker', 'run', '-d', '--name', 'minisweagent-4c0cd2c2', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-3305:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-4c0cd2c2', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-3305:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 18:58:46,236 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-6411edb4 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6599:latest sleep 2h
+2026-06-10 18:59:12,819 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/django__django-16950/django__django-16950.traj.json'
+2026-06-10 18:59:12,836 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-a980c69f -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080:latest sleep 2h
+2026-06-10 18:59:25,183 - minisweagent - ERROR - Error processing instance pydata__xarray-6461: Command '['docker', 'run', '-d', '--name', 'minisweagent-cd072286', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6461:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-cd072286', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6461:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 18:59:25,195 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-76e7fd12 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205:latest sleep 2h
+2026-06-10 19:00:46,253 - minisweagent - ERROR - Error processing instance pydata__xarray-6599: Command '['docker', 'run', '-d', '--name', 'minisweagent-6411edb4', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6599:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-6411edb4', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6599:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 19:00:46,262 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-2ec7ad45 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571:latest sleep 2h
+2026-06-10 19:00:56,255 - minisweagent.environment - INFO - Started container minisweagent-76e7fd12 with ID a2d20f0705e0878fd210dcb333fdf5f050da23396509911470ee64f575df90f8
+2026-06-10 19:01:03,444 - minisweagent.environment - INFO - Started container minisweagent-a980c69f with ID a6f7a94381cc9dc22e774c3cabc7cb1aa276a950b9715536613eeecf643707b0
+2026-06-10 19:01:29,236 - minisweagent.environment - INFO - Started container minisweagent-2ec7ad45 with ID c72bff1424ed993b25da35cb4be26b452ffe2a0e55ec34bccc527075de37721e
+2026-06-10 19:02:05,135 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/pytest-dev__pytest-7205/pytest-dev__pytest-7205.traj.json'
+2026-06-10 19:02:05,145 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-a831bb8b -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14053:latest sleep 2h
+2026-06-10 19:02:33,077 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/pytest-dev__pytest-7571/pytest-dev__pytest-7571.traj.json'
+2026-06-10 19:02:33,085 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-6486ef03 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14496:latest sleep 2h
+2026-06-10 19:04:05,151 - minisweagent - ERROR - Error processing instance scikit-learn__scikit-learn-14053: Command '['docker', 'run', '-d', '--name', 'minisweagent-a831bb8b', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14053:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-a831bb8b', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14053:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 19:04:05,171 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-f3341605 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14983:latest sleep 2h
+2026-06-10 19:04:33,092 - minisweagent - ERROR - Error processing instance scikit-learn__scikit-learn-14496: Command '['docker', 'run', '-d', '--name', 'minisweagent-6486ef03', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14496:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-6486ef03', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14496:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 19:04:33,110 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-2697acda -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25931:latest sleep 2h
+2026-06-10 19:05:14,373 - minisweagent.environment - INFO - Started container minisweagent-f3341605 with ID 8c2f75f762fcf74ce7ac59b057e775019caf9ed232e8bd4e81cd09d24bd61170
+2026-06-10 19:05:49,223 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/pylint-dev__pylint-7080/pylint-dev__pylint-7080.traj.json'
+2026-06-10 19:05:49,233 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-790a9383 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10466:latest sleep 2h
+2026-06-10 19:05:59,797 - minisweagent.environment - INFO - Started container minisweagent-790a9383 with ID 03f6007e5180ea6399d248ddd3362596b76d045647b3834625e33955805c6f75
+2026-06-10 19:06:07,788 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/scikit-learn__scikit-learn-14983/scikit-learn__scikit-learn-14983.traj.json'
+2026-06-10 19:06:07,801 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-48ff1b0e -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7889:latest sleep 2h
+2026-06-10 19:06:33,118 - minisweagent - ERROR - Error processing instance scikit-learn__scikit-learn-25931: Command '['docker', 'run', '-d', '--name', 'minisweagent-2697acda', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25931:latest', 'sleep', '2h']' timed out after 120 seconds
+Traceback (most recent call last):
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 146, in process_instance
+    env = get_sb_environment(config, instance)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/run/benchmarks/swebench.py", line 88, in get_sb_environment
+    env = get_environment(env_config)
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/__init__.py", line 33, in get_environment
+    return get_environment_class(environment_class)(**config)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 59, in __init__
+    self._start_container()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/shellicar/repos/SWE-agent/mini-swe-agent/src/minisweagent/environments/docker.py", line 91, in _start_container
+    result = subprocess.run(
+        cmd,
+    ...<3 lines>...
+        check=True,
+    )
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2155, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['docker', 'run', '-d', '--name', 'minisweagent-2697acda', '-w', '/testbed', '--rm', 'docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25931:latest', 'sleep', '2h']' timed out after 120 seconds
+2026-06-10 19:06:33,491 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-56937ec9 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8056:latest sleep 2h
+2026-06-10 19:06:43,799 - minisweagent.environment - INFO - Started container minisweagent-48ff1b0e with ID 5193dbeebe8d56e9f260d72cddb13591c0aac1b0882ffb05935840f49d82d878
+2026-06-10 19:06:46,972 - minisweagent.environment - INFO - Started container minisweagent-56937ec9 with ID 41e577da3f0ff794f8c1efcd68a3810e1490db17bc168ab1a34295b0047128e9
+2026-06-10 19:07:18,242 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sphinx-doc__sphinx-10466/sphinx-doc__sphinx-10466.traj.json'
+2026-06-10 19:07:18,250 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-42a6edea -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8595:latest sleep 2h
+2026-06-10 19:07:50,964 - minisweagent.environment - INFO - Started container minisweagent-42a6edea with ID e42af8b9e5b2b18314d50ce994e37f4debbf9fe7c3fc14f89147e20ced221c85
+2026-06-10 19:07:59,379 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sphinx-doc__sphinx-7889/sphinx-doc__sphinx-7889.traj.json'
+2026-06-10 19:07:59,387 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-05ed38bb -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9367:latest sleep 2h
+2026-06-10 19:07:59,538 - minisweagent.environment - INFO - Started container minisweagent-05ed38bb with ID 7f8b829abf671fe039f50e3ed85baac8e03e04a480c21b9a873ea5c6c5e28298
+2026-06-10 19:08:03,894 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sphinx-doc__sphinx-8056/sphinx-doc__sphinx-8056.traj.json'
+2026-06-10 19:08:03,904 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-663fb334 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-12481:latest sleep 2h
+2026-06-10 19:08:29,377 - minisweagent.environment - INFO - Started container minisweagent-663fb334 with ID 7d023d840d5eedbd373db47e17dcd8e53c2a02d8b0c696b54b122a6be3839079
+2026-06-10 19:08:33,439 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sphinx-doc__sphinx-9367/sphinx-doc__sphinx-9367.traj.json'
+2026-06-10 19:08:33,451 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-4455df17 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-13372:latest sleep 2h
+2026-06-10 19:08:51,223 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sphinx-doc__sphinx-8595/sphinx-doc__sphinx-8595.traj.json'
+2026-06-10 19:08:51,234 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-06643913 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-13877:latest sleep 2h
+2026-06-10 19:08:59,505 - minisweagent.environment - INFO - Started container minisweagent-4455df17 with ID b1d858d656f0fdeccbb9ac47e75ca57a022cb239654012da8cf32e491258f400
+2026-06-10 19:09:06,061 - minisweagent.environment - INFO - Started container minisweagent-06643913 with ID 544daba320b8d3c867df62414c60f2462900a23c53f8494c6ff123e7a6b7de92
+2026-06-10 19:09:45,441 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-13372/sympy__sympy-13372.traj.json'
+2026-06-10 19:09:45,449 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-b44bdbba -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-13974:latest sleep 2h
+2026-06-10 19:09:45,592 - minisweagent.environment - INFO - Started container minisweagent-b44bdbba with ID 536e4aa6eae18efc1b537022c263c5506ed76e3bf5a0a838764db673f24b9977
+2026-06-10 19:09:52,197 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-12481/sympy__sympy-12481.traj.json'
+2026-06-10 19:09:52,207 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-3e6da998 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-15349:latest sleep 2h
+2026-06-10 19:09:52,437 - minisweagent.environment - INFO - Started container minisweagent-3e6da998 with ID ae97e8a5b54e8cc29473ca4ad6790ac1ab59924efc5cc5fbe0d295b5a3f12bd8
+2026-06-10 19:10:55,793 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-15349/sympy__sympy-15349.traj.json'
+2026-06-10 19:10:55,803 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-4851f8f0 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-17318:latest sleep 2h
+2026-06-10 19:10:55,930 - minisweagent.environment - INFO - Started container minisweagent-4851f8f0 with ID f77797c254d3fa29919caba01032795d3421d61a9f25cd55e0faacdaab8ab0aa
+2026-06-10 19:11:53,872 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-13877/sympy__sympy-13877.traj.json'
+2026-06-10 19:11:53,882 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-1897bb9c -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-19346:latest sleep 2h
+2026-06-10 19:11:54,015 - minisweagent.environment - INFO - Started container minisweagent-1897bb9c with ID 73a7b1184bf0f1edec270f0edc3bbb3bd2832b090c69458e946901c236054102
+2026-06-10 19:12:40,451 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-17318/sympy__sympy-17318.traj.json'
+2026-06-10 19:12:40,459 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-357a46d5 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-20801:latest sleep 2h
+2026-06-10 19:12:40,599 - minisweagent.environment - INFO - Started container minisweagent-357a46d5 with ID 6959279c179c4d79631de6a31460a528edf01aaeaf6473c16770055f39df0f7a
+2026-06-10 19:12:59,912 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-13974/sympy__sympy-13974.traj.json'
+2026-06-10 19:12:59,922 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-b3eaba30 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.sympy_1776_sympy-23534:latest sleep 2h
+2026-06-10 19:13:00,047 - minisweagent.environment - INFO - Started container minisweagent-b3eaba30 with ID 289ad6bb1a2349f940a6faeaee9d1395785bf4f1ca1618bb7c86142d2c19726b
+2026-06-10 19:13:05,621 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-19346/sympy__sympy-19346.traj.json'
+2026-06-10 19:13:34,232 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-23534/sympy__sympy-23534.traj.json'
+2026-06-10 19:13:47,922 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/sympy__sympy-20801/sympy__sympy-20801.traj.json'
+2026-06-11 01:27:28,438 - minisweagent - INFO - Loading dataset princeton-nlp/SWE-Bench_Verified, split test...
+2026-06-11 01:27:33,363 - minisweagent - INFO - Instance filter: 500 -> 60 instances
+2026-06-11 01:27:33,364 - minisweagent - INFO - Skipping 49 existing instances
+2026-06-11 01:27:33,365 - minisweagent - INFO - Running on 11 instances...
+2026-06-11 01:27:33,365 - minisweagent - INFO - Building agent config from specs: ['swebench-local.yaml', 'thinking-adaptive.yaml']
+2026-06-11 01:27:34,673 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-7b233457 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23314:latest sleep 2h
+2026-06-11 01:27:34,674 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-2cd921b1 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26208:latest sleep 2h
+2026-06-11 01:27:34,674 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-7b36a081 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24177:latest sleep 2h
+2026-06-11 01:27:35,142 - minisweagent.environment - INFO - Started container minisweagent-2cd921b1 with ID 9e577cfb87a1f96171275eff7c417bc36c68f5390be617480b44a4ec87f00150
+2026-06-11 01:27:35,161 - minisweagent.environment - INFO - Started container minisweagent-7b233457 with ID 83f1ec0673b8017f12548116d4336c48ca6ce00bec12d40e2af55b70d31ec5e4
+2026-06-11 01:27:35,337 - minisweagent.environment - INFO - Started container minisweagent-7b36a081 with ID 9094803c5644469bdc4cfa58e4a33037e5b521bd8b395ff83e01a3c1542537c1
+2026-06-11 01:29:41,756 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/matplotlib__matplotlib-23314/matplotlib__matplotlib-23314.traj.json'
+2026-06-11 01:29:41,764 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-8aff861b -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26291:latest sleep 2h
+2026-06-11 01:29:41,974 - minisweagent.environment - INFO - Started container minisweagent-8aff861b with ID fa0c041820d05d46bbddbe1b0cc0912b75953421bf5fd8f884adc88ca89218a4
+2026-06-11 01:30:41,521 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/matplotlib__matplotlib-26291/matplotlib__matplotlib-26291.traj.json'
+2026-06-11 01:30:41,530 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-b1c31d68 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.psf_1776_requests-1142:latest sleep 2h
+2026-06-11 01:30:41,688 - minisweagent.environment - INFO - Started container minisweagent-b1c31d68 with ID 0dd443724a74ddae5d805a7cfd5c8ae9b42ccd17d82adfb2c57413248cbc4c49
+2026-06-11 01:30:47,574 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/matplotlib__matplotlib-24177/matplotlib__matplotlib-24177.traj.json'
+2026-06-11 01:30:47,582 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-2cacba12 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-3305:latest sleep 2h
+2026-06-11 01:30:47,697 - minisweagent.environment - INFO - Started container minisweagent-2cacba12 with ID 37b2072be87741bd026d5cc571c5ff7d0ffa8d914f1513beb057757bdf1147a2
+2026-06-11 01:31:59,769 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/psf__requests-1142/psf__requests-1142.traj.json'
+2026-06-11 01:31:59,778 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-6f262447 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6461:latest sleep 2h
+2026-06-11 01:31:59,930 - minisweagent.environment - INFO - Started container minisweagent-6f262447 with ID 39edcd6c6df1beb2cb0e1a4bf1cd9056396a96831332f2f74633b008b93251a0
+2026-06-11 01:32:18,538 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/pydata__xarray-3305/pydata__xarray-3305.traj.json'
+2026-06-11 01:32:18,547 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-f628d5c0 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.pydata_1776_xarray-6599:latest sleep 2h
+2026-06-11 01:32:18,716 - minisweagent.environment - INFO - Started container minisweagent-f628d5c0 with ID 95ac50fd3368a30b0a8213d59ff94b6e998e73f990a33038dd1b5a35133f5faa
+2026-06-11 01:33:33,946 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/pydata__xarray-6461/pydata__xarray-6461.traj.json'
+2026-06-11 01:33:33,956 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-ec0e215b -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14053:latest sleep 2h
+2026-06-11 01:33:34,081 - minisweagent.environment - INFO - Started container minisweagent-ec0e215b with ID 6c80e2b9bebce34bd9d5af9a1c057dba898c8d82313b54a205e7ab276b3ce32d
+2026-06-11 01:33:49,536 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/pydata__xarray-6599/pydata__xarray-6599.traj.json'
+2026-06-11 01:33:49,548 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-a65773f1 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14496:latest sleep 2h
+2026-06-11 01:33:49,733 - minisweagent.environment - INFO - Started container minisweagent-a65773f1 with ID 23be79b257deab240b6f2c3098926892d60f7dbbbe7236a99687b41d9ce199fc
+2026-06-11 01:34:41,558 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/scikit-learn__scikit-learn-14053/scikit-learn__scikit-learn-14053.traj.json'
+2026-06-11 01:34:41,568 - minisweagent.environment - DEBUG - Starting container with command: docker run -d --name minisweagent-8a0bfa53 -w /testbed --rm docker.io/swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25931:latest sleep 2h
+2026-06-11 01:34:41,750 - minisweagent.environment - INFO - Started container minisweagent-8a0bfa53 with ID babee1a6e7fe1bf30067d654b910660a7fe19ac66cc833290a2328da1e02d8be
+2026-06-11 01:35:08,450 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/scikit-learn__scikit-learn-14496/scikit-learn__scikit-learn-14496.traj.json'
+2026-06-11 01:35:54,610 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/scikit-learn__scikit-learn-25931/scikit-learn__scikit-learn-25931.traj.json'
+2026-06-11 01:38:10,539 - minisweagent - INFO - Saved trajectory to 'runs/main/fable-5/standard/matplotlib__matplotlib-26208/matplotlib__matplotlib-26208.traj.json'
+2026-06-15 13:56:57,815 - minisweagent - INFO - Loading dataset princeton-nlp/SWE-Bench_Verified, split test...
+2026-06-15 13:57:02,541 - minisweagent - INFO - Instance filter: 500 -> 60 instances
+2026-06-15 13:57:02,544 - minisweagent - INFO - Skipping 60 existing instances
+2026-06-15 13:57:02,544 - minisweagent - INFO - Running on 0 instances...
+2026-06-15 13:57:02,545 - minisweagent - INFO - Building agent config from specs: ['swebench-local.yaml', 'thinking-adaptive.yaml']

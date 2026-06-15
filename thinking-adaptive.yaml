@@ -1,0 +1,6 @@
+# Overlay: adaptive thinking. Merged via second -c for every model EXCEPT
+# Haiku 4.5 (pre-4.6 generation; does not support thinking: adaptive).
+model:
+  model_kwargs:
+    thinking:
+      type: adaptive
