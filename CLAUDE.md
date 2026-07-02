@@ -37,7 +37,14 @@ SSL_CERT_FILE=./ca-bundle.pem
 REQUESTS_CA_BUNDLE=./ca-bundle.pem
 ```
 
-Corporate TLS (Zscaler): `ca-bundle.pem` = certifi's bundle + the Zscaler root (exported from the macOS Keychain). The two env vars above cover Python's HTTP stacks. For uv itself: `UV_SYSTEM_CERTS=true`.
+**uv notes:** a uv-made venv has no `pip` — install with `uv pip …`, and the CLIs land in `.venv/bin/` (the scripts call them directly, no activation needed).
+
+**Corporate TLS (Zscaler) — only behind the proxy:** it re-signs TLS with a root the bundled cert stores don't trust, so `uv` fails with `CERTIFICATE_VERIFY_FAILED` / `invalid peer certificate: UnknownIssuer`, and Python HTTP (litellm, sb-cli) fails the same way.
+
+- **uv:** add `--system-certs`, or set `UV_SYSTEM_CERTS=1` (e.g. `UV_SYSTEM_CERTS=1 uv pip install …`). `uv --allow-insecure-host <host>` is the blunt fallback.
+- **Python:** `ca-bundle.pem` = certifi's bundle + the Zscaler root (exported from the macOS Keychain); the `SSL_CERT_FILE` / `REQUESTS_CA_BUNDLE` vars above point Python's HTTP stacks at it.
+
+Off the corporate network, none of this is needed.
 
 All scripts assume cwd = this directory and call `.venv/bin/` binaries directly — no venv activation needed.
 
@@ -68,3 +75,13 @@ Note: sb-cli (cloud marking) requires per-subset authorization; this key has no 
 ## Cost intuition (micro-batch, 3 instances, cached)
 
 Opus 4.8 ~ $0.22/instance; Fable 5 ~ $0.56/instance. Fable is 2× per-token but spends differently (often fewer steps on hard instances, more on careful ones). The comparison metric is cost per *resolved* task, not cost per run.
+
+## Learnings
+
+Methodology lessons from the runs so far — read before designing the next experiment.
+
+- **Cost caps censor the cost variable.** The scaffold's default `cost_limit: 3.0` produced empty patches concentrated on the thinking-heavy models, biasing the exact thing being measured. Set the cap as a pathological-loop guard (e.g. $25 / 250 steps), never near real spend — then audit for empty patches before trusting the numbers.
+- **Single pass = n=1 per cell.** An individual instance verdict is one observation — a "solved" can be a coin flip. Only aggregate rates are meaningful; use repeats to separate stable capability from luck.
+- **Effort is flat above `high`** (Opus 4.8, this benchmark): `high` / `xhigh` / `max` resolved the same set at ~1× / 2.5× / 6× the cost and time. Effort converts near-misses, not out-of-reach problems, so this is bounded to this distribution (easy-medium, in-reach-or-not); a near-miss-thick distribution might differ. Don't pay for `xhigh`/`max` on work shaped like this.
+- **Unattended parallel runs need a kill-trap and a single capture owner.** Ctrl-C on the runner once orphaned background legs that kept spending (~$100 of zombie runs) — the runner now traps signals. And running legs concurrently through one shared proxy contaminates wire-log attribution (per-model thinking on the standard set became unrecoverable). One proxy per run, started/stopped by the run script, writing into the run dir.
+- **Frozen paper, identical both legs.** The instance set (seed, difficulty×repo strata) is fixed before any paid run and identical across every model/effort, or the comparison is void.
