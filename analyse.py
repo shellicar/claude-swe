@@ -17,6 +17,7 @@ import json
 
 MODELS = [  # display name -> dir
     ("Claude Fable 5", "fable-5"),
+    ("Claude Fable 5 (2 Jul)", "fable-5-high-2026-07-02"),
     ("Claude Opus 4.8", "opus-4-8"),
     ("Claude Opus 4.7", "opus-4-7"),
     ("Claude Opus 4.6", "opus-4-6"),
@@ -34,7 +35,10 @@ THINKING = {
 
 
 def leg(dirn, s):
-    rep = f"{ROOT}/anthropic__claude-{dirn}.runs_main_{dirn}_{s}.json"
+    # Report is named <model>.<run_id>.json; the run_id (runs_main_<dir>_<set>) is
+    # unique per leg, so glob on it rather than assume model name == dir name (a
+    # repeat run keeps the model slug 'fable-5' but a distinct dir).
+    rep = glob.glob(f"{ROOT}/*.runs_main_{dirn}_{s}.json")[0]
     resolved = len(json.load(open(rep))["resolved_ids"])
     cost = steps = out = cr = cw = ncc = 0
     wall = 0.0

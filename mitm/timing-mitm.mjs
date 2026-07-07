@@ -1,26 +1,29 @@
 /**
- * Timing MITM: forwards to api.anthropic.com, records one JSONL line per request:
- * timestamps (start / first byte / last byte), model, conversation fingerprint,
- * message count, status, stop_reason, usage (tokens incl. cache + thinking).
+ * Timing proxy: forwards to api.anthropic.com and records one JSONL line per
+ * request: timestamps (start / first byte / last byte), model, conversation
+ * fingerprint, message count, status, stop_reason, usage (tokens incl. cache +
+ * thinking).
  *
  * Attribution: conv = hash of the first user message, so parallel workers'
  * interleaved requests group back into per-instance conversations.
  *
- * Usage: node mitm/timing-mitm.mjs
- *   ANTHROPIC_BASE_URL=http://localhost:18899  (client side)
- *   PORT=...        override listen port        (default 18899)
- *   TIMING_LOG=...  override output path        (default mitm/api-timing.jsonl)
+ * It is an http.Server — nothing more — so run it IN-PROCESS from a Node
+ * orchestrator rather than spawning a second node process:
+ *
+ *   import { startTimingProxy } from './mitm/timing-mitm.mjs';
+ *   const proxy = await startTimingProxy({ port, timingLog });
+ *   // point the run at proxy.baseUrl ...
+ *   await proxy.stop();
+ *
+ * Or standalone (PORT / TIMING_LOG env):  node mitm/timing-mitm.mjs
  */
 import http from 'node:http';
 import https from 'node:https';
 import { createHash } from 'node:crypto';
 import { appendFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 
-const PORT = Number(process.env.PORT ?? 18899);
 const TARGET = 'api.anthropic.com';
-const LOG = process.env.TIMING_LOG ?? new URL('./api-timing.jsonl', import.meta.url).pathname;
-
-let counter = 0;
 
 const fingerprint = (body) => {
   try {
@@ -54,55 +57,87 @@ const extractResult = (raw, streamed) => {
   }
 };
 
-const server = http.createServer((req, res) => {
-  let body = '';
-  req.on('data', (c) => (body += c));
-  req.on('end', () => {
-    const n = ++counter;
-    const meta = fingerprint(body);
-    const tStart = Date.now();
-    let tFirst = null;
+/**
+ * Create the proxy server and resolve once it is listening. Rejects if the port
+ * is already taken (EADDRINUSE) — a second run sharing one proxy scrambles
+ * per-instance attribution (learned 2026-06-10). One proxy per run, or none.
+ *
+ * @returns {Promise<{ baseUrl: string, port: number, server: import('node:http').Server, stop: () => Promise<void> }>}
+ */
+export function startTimingProxy({
+  port = Number(process.env.PORT ?? 18899),
+  timingLog = process.env.TIMING_LOG ?? new URL('./api-timing.jsonl', import.meta.url).pathname,
+} = {}) {
+  let counter = 0;
 
-    const headers = { ...req.headers, host: TARGET };
-    delete headers['accept-encoding']; // identity response so we can parse it
+  const server = http.createServer((req, res) => {
+    let body = '';
+    req.on('data', (c) => (body += c));
+    req.on('end', () => {
+      const n = ++counter;
+      const meta = fingerprint(body);
+      const tStart = Date.now();
+      let tFirst = null;
 
-    const fwd = https.request({ hostname: TARGET, path: req.url, method: req.method, headers }, (up) => {
-      res.writeHead(up.statusCode, up.headers);
-      let raw = '';
-      up.on('data', (c) => {
-        if (tFirst === null) tFirst = Date.now();
-        raw += c;
-        res.write(c);
+      const headers = { ...req.headers, host: TARGET };
+      delete headers['accept-encoding']; // identity response so we can parse it
+
+      const fwd = https.request({ hostname: TARGET, path: req.url, method: req.method, headers }, (up) => {
+        res.writeHead(up.statusCode, up.headers);
+        let raw = '';
+        up.on('data', (c) => {
+          if (tFirst === null) tFirst = Date.now();
+          raw += c;
+          res.write(c);
+        });
+        up.on('end', () => {
+          res.end();
+          const tEnd = Date.now();
+          const line = {
+            n,
+            ts: new Date(tStart).toISOString(),
+            ...meta,
+            status: up.statusCode,
+            ttfb_ms: tFirst === null ? null : tFirst - tStart,
+            total_ms: tEnd - tStart,
+            ...extractResult(raw, meta.stream),
+          };
+          appendFileSync(timingLog, JSON.stringify(line) + '\n');
+          console.log(`# ${n} ${meta.model ?? '?'} conv=${meta.conv ?? '?'} msgs=${meta.n_messages ?? '?'} ${up.statusCode} ttfb=${line.ttfb_ms}ms total=${line.total_ms}ms`);
+        });
       });
-      up.on('end', () => {
-        res.end();
-        const tEnd = Date.now();
-        const line = {
-          n,
-          ts: new Date(tStart).toISOString(),
-          ...meta,
-          status: up.statusCode,
-          ttfb_ms: tFirst === null ? null : tFirst - tStart,
-          total_ms: tEnd - tStart,
-          ...extractResult(raw, meta.stream),
-        };
-        appendFileSync(LOG, JSON.stringify(line) + '\n');
-        console.log(`# ${n} ${meta.model ?? '?'} conv=${meta.conv ?? '?'} msgs=${meta.n_messages ?? '?'} ${up.statusCode} ttfb=${line.ttfb_ms}ms total=${line.total_ms}ms`);
+
+      fwd.on('error', (e) => {
+        appendFileSync(timingLog, JSON.stringify({ n, ts: new Date(tStart).toISOString(), ...meta, status: null, error: e.message, total_ms: Date.now() - tStart }) + '\n');
+        console.error(`# ${n} forward error:`, e.message);
+        res.writeHead(502);
+        res.end('Bad Gateway');
       });
-    });
 
-    fwd.on('error', (e) => {
-      appendFileSync(LOG, JSON.stringify({ n, ts: new Date(tStart).toISOString(), ...meta, status: null, error: e.message, total_ms: Date.now() - tStart }) + '\n');
-      console.error(`# ${n} forward error:`, e.message);
-      res.writeHead(502);
-      res.end('Bad Gateway');
+      fwd.write(body);
+      fwd.end();
     });
-
-    fwd.write(body);
-    fwd.end();
   });
-});
 
-server.listen(PORT, () => {
-  console.log(`# timing-mitm on :${PORT} -> ${TARGET}, logging to ${LOG}`);
-});
+  return new Promise((resolve, reject) => {
+    server.once('error', reject); // e.g. EADDRINUSE
+    server.listen(port, () => {
+      server.off('error', reject);
+      console.log(`# timing-proxy on :${port} -> ${TARGET}, logging to ${timingLog}`);
+      resolve({
+        baseUrl: `http://localhost:${port}`,
+        port,
+        server,
+        stop: () => new Promise((done) => server.close(() => done())),
+      });
+    });
+  });
+}
+
+// Standalone: `node mitm/timing-mitm.mjs`
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  startTimingProxy().catch((e) => {
+    console.error('timing-proxy failed to start:', e.message);
+    process.exit(1);
+  });
+}

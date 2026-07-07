@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" font-family="-apple-system,Helvetica,Arial,sans-serif">
+<rect width="760" height="300" fill="white"/>
+<text x="210" y="32" font-size="17" font-weight="700">Claude Fable 5 — resolve rate with 95% CI (n=105)</text>
+<line x1="210.0" y1="254" x2="720.0" y2="254" stroke="#999"/>
+<line x1="256.4" y1="254" x2="256.4" y2="259" stroke="#999"/>
+<text x="256.4" y="274" font-size="12" fill="#555" text-anchor="middle">80%</text>
+<line x1="372.3" y1="254" x2="372.3" y2="259" stroke="#999"/>
+<text x="372.3" y="274" font-size="12" fill="#555" text-anchor="middle">85%</text>
+<line x1="488.2" y1="254" x2="488.2" y2="259" stroke="#999"/>
+<text x="488.2" y="274" font-size="12" fill="#555" text-anchor="middle">90%</text>
+<line x1="604.1" y1="254" x2="604.1" y2="259" stroke="#999"/>
+<text x="604.1" y="274" font-size="12" fill="#555" text-anchor="middle">95%</text>
+<line x1="720.0" y1="254" x2="720.0" y2="259" stroke="#999"/>
+<text x="720.0" y="274" font-size="12" fill="#555" text-anchor="middle">100%</text>
+<text x="196" y="126.1" font-size="13" text-anchor="end">Fable 5 (original)</text>
+<line x1="307.6" y1="122.1" x2="582.0" y2="122.1" stroke="#3b6ea5" stroke-width="2.5"/>
+<line x1="307.6" y1="115.1" x2="307.6" y2="129.1" stroke="#3b6ea5" stroke-width="2.5"/>
+<line x1="582.0" y1="115.1" x2="582.0" y2="129.1" stroke="#3b6ea5" stroke-width="2.5"/>
+<circle cx="477.1" cy="122.1" r="5.5" fill="#3b6ea5"/>
+<text x="477.1" y="108.1" font-size="12" fill="#333" text-anchor="middle">94/105 = 89.5%  [82.2, 94.0]</text>
+<text x="196" y="187.5" font-size="13" text-anchor="end">Fable 5 (2 Jul repeat)</text>
+<line x1="388.1" y1="183.5" x2="629.3" y2="183.5" stroke="#c65d21" stroke-width="2.5"/>
+<line x1="388.1" y1="176.5" x2="388.1" y2="190.5" stroke="#c65d21" stroke-width="2.5"/>
+<line x1="629.3" y1="176.5" x2="629.3" y2="190.5" stroke="#c65d21" stroke-width="2.5"/>
+<circle cx="543.4" cy="183.5" r="5.5" fill="#c65d21"/>
+<text x="543.4" y="169.5" font-size="12" fill="#333" text-anchor="middle">97/105 = 92.4%  [85.7, 96.1]</text>
+<text x="210" y="284" font-size="13" fill="#333">McNemar exact p = 0.51 — not significant. Of 105 instances, 9 flipped (6 gained, 3 lost); the rest agree.</text>
+</svg>
