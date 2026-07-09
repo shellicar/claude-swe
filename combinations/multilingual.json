@@ -1,0 +1,13 @@
+{
+  "name": "multilingual",
+  "dataset": "multilingual",
+  "selections": ["rust", "cpp"],
+  "parallel": true,
+  "basePort": 19130,
+  "workers": 2,
+  "legs": [
+    { "model": "anthropic/claude-opus-4-8", "out": "runs/multilingual/opus-4-8" },
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/multilingual/sonnet-5" },
+    { "model": "anthropic/claude-fable-5", "out": "runs/multilingual/fable-5" }
+  ]
+}

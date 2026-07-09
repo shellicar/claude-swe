@@ -1,0 +1,21 @@
+{
+  "name": "multilingual",
+  "snapshot": "datasets/swe-bench-multilingual.jsonl",
+  "image": {
+    "source": "convention",
+    "repo": "docker.io/swebench/sweb.eval.x86_64.{instance_id:__=_1776_}",
+    "tag": "latest"
+  },
+  "marker": {
+    "type": "swebench"
+  },
+  "analyser": "analyse-multilingual.py",
+  "run": {
+    "configs": ["swebench-local.yaml", "thinking-adaptive.yaml"],
+    "subset": "datasets/swe-bench-multilingual.jsonl"
+  },
+  "selections": {
+    "rust": { "file": "instances-rust.txt", "expected": 9, "rule": { "field": "repo", "equals": "tokio-rs/tokio" } },
+    "cpp": { "file": "instances-cpp.txt", "expected": 11, "rule": { "field": "repo", "equals": "fmtlib/fmt" } }
+  }
+}
