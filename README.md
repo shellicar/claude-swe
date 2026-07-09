@@ -15,13 +15,13 @@ ww
 
 ## Installation & Quick Start
 
-Requires Docker and [uv](https://docs.astral.sh/uv/). The agent scaffold is a git submodule.
+Requires Docker and [uv](https://docs.astral.sh/uv/) (`brew bundle` installs uv; or `curl -LsSf https://astral.sh/uv/install.sh | sh`). The agent scaffold is a git submodule.
 
 ```sh
 git clone --recurse-submodules <repo-url>
 cd claude-swe
-uv venv
-uv pip install -e vendor/mini-swe-agent sb-cli swebench
+brew bundle   # installs uv
+uv sync       # creates .venv and installs the scaffold (editable), sb-cli, swebench
 ```
 
 Create a `.env` with `ANTHROPIC_AUTH_TOKEN` (and `SWEBENCH_API_KEY` for cloud marking), then:
