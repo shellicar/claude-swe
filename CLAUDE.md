@@ -42,9 +42,14 @@ REQUESTS_CA_BUNDLE=./ca-bundle.pem
 **Corporate TLS (Zscaler) — only behind the proxy:** it re-signs TLS with a root the bundled cert stores don't trust, so `uv` fails with `CERTIFICATE_VERIFY_FAILED` / `invalid peer certificate: UnknownIssuer`, and Python HTTP (litellm, sb-cli) fails the same way.
 
 - **uv:** add `--system-certs`, or set `UV_SYSTEM_CERTS=1` (e.g. `UV_SYSTEM_CERTS=1 uv pip install …`). `uv --allow-insecure-host <host>` is the blunt fallback.
-- **Python:** `ca-bundle.pem` = certifi's bundle + the Zscaler root (exported from the macOS Keychain); the `SSL_CERT_FILE` / `REQUESTS_CA_BUNDLE` vars above point Python's HTTP stacks at it.
+- **Python:** `ca-bundle.pem` = certifi's bundle + the Zscaler root (exported from the macOS Keychain); the `SSL_CERT_FILE` / `REQUESTS_CA_BUNDLE` vars above point Python's HTTP stacks at it. To build it:
 
-Off the corporate network, none of this is needed.
+  ```sh
+  security find-certificate -a -c Zscaler -p /Library/Keychains/System.keychain > zscaler.pem
+  cat "$(.venv/bin/python -m certifi)" zscaler.pem > ca-bundle.pem
+  ```
+
+Off the corporate network, none of this is needed — and the `.env` lines must then be REMOVED, not just ignored: a path pointing at a missing bundle breaks every Python HTTPS call in tools that load `.env` (litellm, the swebench harness), with misleading errors ("could not find requirements.txt") rather than a TLS complaint. Learned 2026-07-09 on a machine where `.env` still pointed at the old machine's absolute path.
 
 All scripts assume cwd = this directory and call `.venv/bin/` binaries directly — no venv activation needed.
 
@@ -75,6 +80,22 @@ Note: sb-cli (cloud marking) requires per-subset authorization; this key has no 
 ## Cost intuition (micro-batch, 3 instances, cached)
 
 Opus 4.8 ~ $0.22/instance; Fable 5 ~ $0.56/instance. Fable is 2× per-token but spends differently (often fewer steps on hard instances, more on careful ones). The comparison metric is cost per *resolved* task, not cost per run.
+
+## SWE-bench — underlying design issues
+
+These are upstream properties of swebench itself, not artefacts of this rig's scripts. Found 2026-07-07–09. End-to-end data flow: `docs/diagrams/eval-pipeline.d2` (render with `docs/diagrams/render.sh`).
+
+**It is an image-builder with evaluation grafted on.** The original design: every user builds every environment locally — clone the project repo, fetch its dependency recipes at a historical commit, install, then test. Prebuilt registry images (`--namespace`) were bolted on later as a different way to *obtain* images, but spec construction was never split into "what building needs" vs "what evaluating needs": one eager `TestSpec` constructor serves both, so evaluation still executes build-era work — including live network fetches whose output (env-setup and repo-setup scripts) the evaluator never runs. Marking genuinely needs only image + patch + eval script; the code cannot currently be told that.
+
+**Environment definitions live outside the benchmark.** The dataset row carries `repo` + `environment_setup_commit`, but the *content* of the dependency recipe is never shipped — it is fetched from the third-party project's GitHub at use time — and the *path* to it lives in lookup tables inside the installed package. The recipe's full identity is therefore late-bound (dataset × package version × GitHub availability), assembled per invocation, stored nowhere. Its only materialisation is inside the prebuilt images.
+
+**No reproducibility surface is published.** Images are pushed as mutable `:latest` tags with no digest manifest; the HF dataset revision floats; and the verdict semantics themselves (per-repo log parsers + grading rules) live in the package code, unversioned relative to the dataset — so the harness version is silently part of any experiment. Consumers must construct their own pins from observation (see `image-digests.txt`, `uv.lock`, `datasets/*.jsonl` — all rig-side patches over this gap; a declared instance→digest manifest does not exist yet on either side).
+
+**Errors discard their causes.** A failed recipe fetch — any status, any transport error — surfaces as `ValueError: Could not find requirements.txt at <paths>…`. The HTTP status and body are thrown away, so wildly different faults (broken local TLS config, genuine 404 from a path-table mismatch) produce the same message. Diagnose at the wire, never from the exception text.
+
+**Images are per-instance monoliths.** All instances share exactly 6 base layers (Ubuntu + Miniconda); beyond that, nothing — even two django instances share no layers. Each image carries its own ~1 GB conda env and its own checkout. Inside, the project's git history is squashed to a single synthetic `SWE-bench` commit: the dataset's `base_commit` sha does not exist in the image. The build scripts as-executed are baked at `/root/setup_env.sh` / `setup_repo.sh` — the image documents its own build; nothing else does.
+
+**Operational roughness.** All outputs are cwd-relative: report JSONs dumped into cwd (`<model>.<run_id>.json`), instance logs under `cwd/logs/run_evaluation/`; resume-skip reads those log dirs, so cwd must stay constant. A scoped `--instance_ids` run REWRITES the leg's aggregate report to just those instances. The process can hang indefinitely after a completed leg. A run killed mid-instance leaves a named eval container behind; the next run 409s until it is removed. And the benchmark's own PASS_TO_PASS selections include timing-flaky tests (django's `test_touch` file-cache expiry), giving marking a noise floor of ~1 flip per ≈1,300 verdicts under emulation load.
 
 ## Learnings
 

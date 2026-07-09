@@ -1,0 +1,113 @@
+vars: {
+  d2-config: {
+    theme-id: 200
+  }
+}
+
+direction: down
+
+title: "SWE-bench rig — end to end: every operation, its inputs, its outputs" {
+  near: top-center
+  shape: text
+  style.font-size: 22
+  style.bold: true
+}
+
+dataset: "DATASET ROW (one instance) — frozen at dataset creation 2024; HF revision unpinned" {
+  style.fill: "#14352A"
+  style.stroke: "#2ECC71"
+  style.font-color: "#E8F8F0"
+  repo: "repo: django/django"
+  base: "base_commit: <sha> — code state the agent patches"
+  env: "environment_setup_commit: 65dfb06a… — dependency-era commit"
+  task: "problem_statement: the issue text"
+  ver: "version: '3.2' — KEY into swebench package tables"
+  tests: "FAIL_TO_PASS / PASS_TO_PASS test-name lists + test_patch"
+}
+
+pkg: "SWEBENCH PACKAGE — lives against whatever version is installed (now locked: 4.1.0)" {
+  style.fill: "#2B2810"
+  style.stroke: "#F1C40F"
+  style.font-color: "#FBF6E3"
+  paths: "path table: repo → 'tests/requirements/py3.txt'"
+  specs: "version table: repo+'3.2' → python ver, install cmd, test cmd"
+}
+
+github: "GITHUB — live, external, mutable availability" {
+  style.fill: "#3A1714"
+  style.stroke: "#E74C3C"
+  style.font-color: "#FBEAEA"
+  clone: "git clone github.com/django/django"
+  reqs: "raw.githubusercontent.com/{repo}/{environment_setup_commit}/{path}\n← URN assembled at USE TIME: repo+commit from dataset, path from package"
+}
+
+imagebuild: "IMAGE BUILD — upstream, once, historical" {
+  style.fill: "#2A1B3A"
+  style.stroke: "#A569BD"
+  style.font-color: "#F3EAFB"
+  io: "IN: clone @ base_commit; requirements @ environment_setup_commit;\nthe tables of THE SWEBENCH VERSION USED THAT DAY\nOUT: instance image = snapshot + environment, materialised"
+}
+
+image: "INSTANCE IMAGE — frozen bytes (Docker Hub :latest tag; pinned locally by digest in image-digests.txt)" {
+  style.fill: "#2A1B3A"
+  style.stroke: "#A569BD"
+  style.font-color: "#F3EAFB"
+}
+
+run: "RUN — spends money" {
+  style.fill: "#2E1E0E"
+  style.stroke: "#E67E22"
+  style.font-color: "#FBEFE3"
+  io: "IN: instance image + problem_statement — nothing else\nOUT: patch (diff) + trajectory (cost, steps, tokens)"
+}
+
+specbuild: "SPEC BUILD — inside EVERY eval invocation" {
+  style.fill: "#3A1714"
+  style.stroke: "#E74C3C"
+  style.font-color: "#FBEAEA"
+  io: "IN: dataset row + package tables + LIVE FETCH of requirements\nOUT: env-build script (NEVER RUN with prebuilt images)\n     repo-setup script (NEVER RUN with prebuilt images)\n     eval script (RUN: checkout tests @ base_commit, apply test_patch, run test cmd)"
+}
+
+eval: "EVAL — free, local" {
+  style.fill: "#14352A"
+  style.stroke: "#2ECC71"
+  style.font-color: "#E8F8F0"
+  io: "IN: pristine container from instance image + patch + eval script\nOUT: test output → verdict (resolved / unresolved)"
+}
+
+tally: "TALLY" {
+  style.fill: "#2B2810"
+  style.stroke: "#F1C40F"
+  style.font-color: "#FBF6E3"
+  io: "IN: verdicts + trajectories\nOUT: report table (resolve rate, cost per resolved)"
+}
+
+github.clone -> imagebuild: "@ base_commit" { style.stroke: "#E74C3C" }
+github.reqs -> imagebuild: "@ environment_setup_commit" { style.stroke: "#E74C3C" }
+dataset -> imagebuild
+imagebuild -> image
+
+image -> run: "container per instance" { style.stroke: "#A569BD"; style.stroke-width: 2 }
+dataset.task -> run: "problem_statement only" { style.stroke: "#2ECC71" }
+
+dataset -> specbuild
+pkg.paths -> specbuild: "decides WHICH file — at invocation time" { style.stroke: "#F1C40F"; style.stroke-width: 2 }
+pkg.specs -> specbuild
+github.reqs -> specbuild: "LIVE FETCH, every invocation;\ncontent used only by the never-run env script" {
+  style.stroke: "#E74C3C"
+  style.stroke-width: 3
+  style.stroke-dash: 3
+}
+
+image -> eval: "same frozen bytes, pristine container" { style.stroke: "#A569BD"; style.stroke-width: 2 }
+run -> eval: "patch" { style.stroke: "#E67E22"; style.stroke-width: 2 }
+specbuild -> eval: "eval script — the only output used" { style.stroke: "#2ECC71" }
+
+eval -> tally: "verdicts"
+run -> tally: "trajectories"
+
+note: "The late-bound part: the requirements URN = repo + environment_setup_commit (frozen, dataset) + path (floating, package version). Assembled per invocation; content never stored on our side.\nWith prebuilt digest-pinned images, EVAL genuinely needs only: image + patch + eval script. The red dashed fetch feeds a script that never runs — it is the only network touch and the only unfrozen input in the marking path." {
+  near: bottom-center
+  shape: text
+  style.font-color: "#7F8C8D"
+}
