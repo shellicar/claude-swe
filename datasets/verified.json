@@ -1,0 +1,25 @@
+{
+  "name": "verified",
+  "snapshot": "datasets/swe-bench-verified.jsonl",
+  "image": {
+    "source": "convention",
+    "repo": "docker.io/swebench/sweb.eval.x86_64.{instance_id:__=_1776_}",
+    "tag": "latest"
+  },
+  "marker": {
+    "type": "swebench",
+    "runsRoot": "runs"
+  },
+  "analyser": "analyse.py",
+  "run": {
+    "configs": ["swebench-local.yaml", "thinking-adaptive.yaml"],
+    "configExceptions": {
+      "haiku": ["swebench-local.yaml"]
+    },
+    "subset": "datasets/swe-bench-verified.jsonl"
+  },
+  "selections": {
+    "standard": { "file": "instances-standard.txt", "expected": 60 },
+    "hard": { "file": "instances-hard.txt", "expected": 45 }
+  }
+}

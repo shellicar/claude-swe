@@ -1,0 +1,22 @@
+{
+  "name": "pro",
+  "snapshot": "datasets/swe-bench-pro.jsonl",
+  "image": {
+    "source": "row",
+    "repo": "docker.io/jefzda/sweap-images",
+    "tagField": "dockerhub_tag"
+  },
+  "marker": {
+    "type": "scale",
+    "harness": "vendor/swe-bench-pro",
+    "dockerhubUsername": "jefzda"
+  },
+  "analyser": "analyse-pro.py",
+  "run": {
+    "configs": ["swebench-local.yaml", "swebench-pro.yaml", "thinking-adaptive.yaml"],
+    "subset": "datasets/swe-bench-pro.jsonl"
+  },
+  "selections": {
+    "pro": { "file": "instances-pro.txt", "expected": 20, "rule": { "field": "repo_language", "equals": "ts" } }
+  }
+}

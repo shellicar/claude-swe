@@ -1,0 +1,126 @@
+vars: {
+  d2-config: {
+    theme-id: 200
+  }
+}
+
+direction: down
+
+title: "Operations and their operands — datasets, selections, combinations" {
+  near: top-center
+  shape: text
+  style.font-size: 22
+  style.bold: true
+}
+
+declared: "DECLARED IN THE REPO (authority flows outward from here)" {
+  style.fill: "#14352A"
+  style.stroke: "#2ECC71"
+  style.font-color: "#E8F8F0"
+
+  dataset: "DATASET — facts about a world, independent of any run" {
+    snapshot: "rows snapshot (datasets/<name>.jsonl)"
+    imagerule: "image rule: row/convention → registry image"
+    marker: "marker: what produces a verdict, how invoked"
+    envshape: "agent environment shape: workdir, entrypoint, startup"
+  }
+
+  selection: "SELECTION — named frozen subset of one dataset" {
+    ids: "instance ids (e.g. verified/standard, pro/ts)"
+  }
+
+  combination: "COMBINATION — one visit: selection × model × knobs" {
+    coords: "model, effort, workers; its id keys all outputs"
+  }
+
+  manifest: "MANIFEST — instance → image@digest, per selection"
+}
+
+machine: "MACHINE STATE — conforms, never decides" {
+  style.fill: "#2B2810"
+  style.stroke: "#F1C40F"
+  style.font-color: "#FBF6E3"
+  docker: "local images"
+}
+
+produced: "PRODUCED RECORDS — append-only, keyed by combination" {
+  style.fill: "#2A1B3A"
+  style.stroke: "#A569BD"
+  style.font-color: "#F3EAFB"
+  runrec: "run record: patches + trajectories + wire capture"
+  verdicts: "verdicts: resolved / unresolved per instance"
+  analysisout: "analysis: derived figures (analysis/<dataset>.*)"
+  reportout: "report.md — the human document"
+}
+
+draw: "DRAW\nPick the instances for a selection (filter + seed)\nand save the list. Every model runs this same list,\nso results are comparable across models." {
+  style.fill: "#2E1E0E"
+  style.stroke: "#E67E22"
+  style.font-color: "#FBEFE3"
+}
+resolve: "RESOLVE\nLook up the current digest of each instance's Docker\nimage and record it. Future runs use these exact\nimages even if the publisher re-tags them." {
+  style.fill: "#2E1E0E"
+  style.stroke: "#E67E22"
+  style.font-color: "#FBEFE3"
+}
+ensure: "ENSURE\nCheck local Docker has the recorded digests.\nPull missing ones. Stop on a mismatch —\nthat needs a decision, not an auto-fix." {
+  style.fill: "#2E1E0E"
+  style.stroke: "#E67E22"
+  style.font-color: "#FBEFE3"
+}
+run: "RUN\nRun the agent against each instance in its container;\nsave the patch, trajectory, and API traffic.\nThe only step that calls the API (costs money)." {
+  style.fill: "#3A1714"
+  style.stroke: "#E74C3C"
+  style.font-color: "#FBEAEA"
+}
+mark: "MARK\nApply each saved patch in a fresh container and run\nthat instance's tests. Resolved = the failing tests\nnow pass and the passing ones still do." {
+  style.fill: "#2E1E0E"
+  style.stroke: "#E67E22"
+  style.font-color: "#FBEFE3"
+}
+audit: "AUDIT\nCompare outputs against the selection: every instance\nhas a trajectory and a verdict, no error exits.\nFails loudly if anything is missing." {
+  style.fill: "#2E1E0E"
+  style.stroke: "#E67E22"
+  style.font-color: "#FBEFE3"
+}
+analyse: "ANALYSE\nCompute per model: resolve rate from verdicts, cost and\nsteps from trajectories, thinking from the API traffic.\nWrites analysis/<dataset>.json and .md." {
+  style.fill: "#2E1E0E"
+  style.stroke: "#E67E22"
+  style.font-color: "#FBEFE3"
+}
+
+declared.dataset.snapshot -> draw
+draw -> declared.selection: "writes the frozen ids"
+
+declared.selection -> resolve
+declared.dataset.imagerule -> resolve
+resolve -> declared.manifest: "digests from the publisher"
+
+declared.manifest -> ensure
+ensure -> machine.docker: "pull by digest, verify, refuse on mismatch" {style.stroke-width: 2}
+
+declared.combination -> run
+declared.dataset.envshape -> run
+machine.docker -> run: "containers per instance"
+run -> produced.runrec: "banked forever" {style.stroke: "#E74C3C"; style.stroke-width: 2}
+
+produced.runrec -> mark: "patches"
+declared.dataset.marker -> mark
+machine.docker -> mark: "pristine containers"
+mark -> produced.verdicts
+
+declared.selection -> audit: "what must exist"
+produced.verdicts -> audit
+produced.runrec -> audit
+audit -> produced.analysisout: "gates: no analysis from incomplete records" {style.stroke-dash: 3}
+
+produced.runrec -> analyse
+produced.verdicts -> analyse
+analyse -> produced.analysisout
+produced.analysisout -> produced.reportout: "reconciled, eventually generated"
+
+note: "Every operation is a function of declared inputs. draw/resolve are the only ones allowed to consult the outside world, and each writes a committed declaration. ensure is the only one that changes machine state. run is the only one that spends. Nothing downstream of a record can alter it." {
+  near: bottom-center
+  shape: text
+  style.font-color: "#7F8C8D"
+}
