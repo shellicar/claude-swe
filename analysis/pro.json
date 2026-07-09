@@ -1,0 +1,46 @@
+{
+  "models": {
+    "fable-5": {
+      "instances": 6,
+      "empty": 0,
+      "cost": 11.951540000000003,
+      "steps": 188,
+      "out": 67067,
+      "ncc": 376,
+      "cr": 5579080,
+      "cw": 241228,
+      "intot": 5820684,
+      "wall": 1669.4720046520233,
+      "thinking": 44225,
+      "resolved": null
+    },
+    "opus-4-8": {
+      "instances": 10,
+      "empty": 0,
+      "cost": 11.912009999999999,
+      "steps": 303,
+      "out": 171873,
+      "ncc": 606,
+      "cr": 9966535,
+      "cw": 420622,
+      "intot": 10387763,
+      "wall": 2586.388874769211,
+      "thinking": 100286,
+      "resolved": null
+    },
+    "sonnet-5": {
+      "instances": 10,
+      "empty": 1,
+      "cost": 10.875353099999998,
+      "steps": 547,
+      "out": 185866,
+      "ncc": 1094,
+      "cr": 19640387,
+      "cw": 584524,
+      "intot": 20226005,
+      "wall": 2642.5996432304382,
+      "thinking": 95930,
+      "resolved": null
+    }
+  }
+}

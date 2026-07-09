@@ -70,7 +70,8 @@ def leg(dirn, s):
     # Report is named <model>.<run_id>.json; the run_id (runs_main_<dir>_<set>) is
     # unique per leg, so glob on it rather than assume model name == dir name (a
     # repeat run keeps the model slug 'fable-5' but a distinct dir).
-    rep = glob.glob(f"{ROOT}/*.runs_main_{dirn}_{s}.json")[0]
+    # Verdicts live under evals/ since the eval operations rework.
+    rep = glob.glob(f"{ROOT}/evals/*.runs_main_{dirn}_{s}.json")[0]
     resolved = len(json.load(open(rep))["resolved_ids"])
     cost = steps = out = cr = cw = ncc = 0
     wall = 0.0
@@ -165,13 +166,13 @@ emit("Hard \u2014 45 problems (1+ h human effort)", lambda d: data[d]["hard"], 4
 emit("Combined \u2014 105 problems", lambda d: combined(d), 105, None)
 
 # Outputs land on disk, not stdout: the numbers are data, not chat.
-# - analysis.json: every raw figure (per model, per set, plus thinking) for
-#   any downstream consumer, human or scripted.
-# - analysis.md:   the rendered table, to be reconciled into report.md.
-os.makedirs(f"{ROOT}/evals", exist_ok=True)
-with open(f"{ROOT}/evals/analysis.json", "w") as f:
+# analysis/ is derived figures; evals/ is raw verdicts — kept apart on purpose.
+# - analysis/verified.json: every raw figure (per model, per set, plus thinking).
+# - analysis/verified.md:   the rendered table, to be reconciled into report.md.
+os.makedirs(f"{ROOT}/analysis", exist_ok=True)
+with open(f"{ROOT}/analysis/verified.json", "w") as f:
     json.dump({"models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
                           for name, d in MODELS}}, f, indent=2)
-with open(f"{ROOT}/evals/analysis.md", "w") as f:
+with open(f"{ROOT}/analysis/verified.md", "w") as f:
     f.write("\n".join(OUT_LINES) + "\n")
-print(f"wrote {ROOT}/evals/analysis.json and {ROOT}/evals/analysis.md")
+print(f"wrote {ROOT}/analysis/verified.json and {ROOT}/analysis/verified.md")

@@ -24,9 +24,11 @@ sb-cli-reports/
 runs/**/minisweagent.log
 exit_statuses_*.yaml
 
-# Marking outputs: report JSONs and analysis are committed from evals/;
-# per-instance test logs are bulky and regenerable from preds + images.
+# Marking outputs: report JSONs (Verified) and eval_results.json (Pro) are
+# committed from evals/; per-instance test logs and workspaces are bulky and
+# regenerable from preds + images.
 evals/logs/
+evals/pro/*/instance_*/
 
 # Local evaluation reports — promote into a committed results file deliberately
 *.local-*.json
