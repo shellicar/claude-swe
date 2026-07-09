@@ -101,6 +101,13 @@ const legs = ({ combo, ds }, flags) => {
   return [{ model: flags.model, effort: flags.effort, out: `runs/adhoc/${ds.name}-${short}` }];
 };
 
+// Scale-marker output dir for one leg × selection. The 'pro' selection keeps
+// the original evals/pro/<model> layout (committed history, possibly being
+// written by a live marking); later selections get a -<sel> suffix so two
+// selections of the same model can never overwrite each other's verdicts.
+const scaleOutDir = (ds, leg, sel) =>
+  join(EVALS_DIR, ds.name, `${basename(leg.out)}${sel === 'pro' ? '' : `-${sel}`}`);
+
 const legConfigs = (ds, model) => {
   for (const [needle, configs] of Object.entries(ds.run.configExceptions ?? {})) {
     if (model.includes(needle)) return configs;
@@ -109,6 +116,30 @@ const legConfigs = (ds, model) => {
 };
 
 // ---- verbs ---------------------------------------------------------------------
+// Deterministic PRNG (mulberry32) for seeded draws: same seed + same sorted
+// population = same sample, forever. The committed selection file remains the
+// actual freeze; the seed is provenance for how it was produced.
+const mulberry32 = (seed) => {
+  let a = seed | 0;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
+const seededSample = (ids, n, seed) => {
+  const rand = mulberry32(seed);
+  const pool = [...ids];
+  // partial Fisher-Yates: shuffle the first n positions, take them
+  for (let i = 0; i < n; i++) {
+    const j = i + Math.floor(rand() * (pool.length - i));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, n).sort();
+};
+
 async function draw({ ds, selections }) {
   for (const sel of selections) {
     const decl = ds.selections[sel];
@@ -119,7 +150,8 @@ async function draw({ ds, selections }) {
     const rows = snapshotRows(ds).filter((r) => r[decl.rule.field] === decl.rule.equals);
     let ids = rows.map((r) => r.instance_id).sort();
     if (decl.rule.n && decl.rule.n < ids.length) {
-      throw new Error(`[draw] sampling (n=${decl.rule.n}) needs a seeded draw — not implemented for ${ds.name}/${sel}`);
+      ids = seededSample(ids, decl.rule.n, decl.rule.seed ?? 42);
+      console.log(`[draw] ${ds.name}/${sel}: sampled ${ids.length} of ${rows.length} (seed ${decl.rule.seed ?? 42})`);
     }
     writeFileSync(join(repoRoot, decl.file), ids.join('\n') + '\n');
     console.log(`[draw] ${ds.name}/${sel}: wrote ${ids.length} ids to ${decl.file}`);
@@ -234,7 +266,7 @@ async function mark(target, flags) {
           '--run_id', runId,
         ], { cwd: EVALS_DIR, onChild: (c) => { current = c; } });
       } else if (ds.marker.type === 'scale') {
-        const outDir = join(EVALS_DIR, ds.name, basename(leg.out));
+        const outDir = scaleOutDir(ds, leg, sel);
         mkdirSync(outDir, { recursive: true });
         const predsData = JSON.parse(readFileSync(preds, 'utf8'));
         const patches = Object.values(predsData).map((p) => ({ instance_id: p.instance_id, patch: p.model_patch }));
@@ -288,7 +320,7 @@ async function audit(target, flags) {
           console.log(`[audit] ${name}: ok — ${line}`);
         }
       } else if (ds.marker.type === 'scale') {
-        const resultsPath = join(EVALS_DIR, ds.name, basename(leg.out), 'eval_results.json');
+        const resultsPath = join(scaleOutDir(ds, leg, sel), 'eval_results.json');
         if (!existsSync(resultsPath)) {
           console.error(`[audit] ${name}: no eval_results.json`);
           problems++;
@@ -382,7 +414,7 @@ async function status(target, flags) {
           resolved = rep.resolved_instances;
         }
       } else if (ds.marker.type === 'scale') {
-        const resultsPath = join(EVALS_DIR, ds.name, basename(leg.out), 'eval_results.json');
+        const resultsPath = join(scaleOutDir(ds, leg, sel), 'eval_results.json');
         if (existsSync(resultsPath)) {
           const results = JSON.parse(readFileSync(resultsPath, 'utf8'));
           verdicts = Object.keys(results).length;
