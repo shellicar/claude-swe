@@ -64,7 +64,40 @@ def leg(model_dir, sel):
     if len(reports) == 1:
         resolved = len(json.load(open(reports[0]))["resolved_ids"])
     return dict(instances=len(trajs), empty=empty, cost=cost, steps=steps, out=out,
-                ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, resolved=resolved)
+                ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, resolved=resolved,
+                **test_outcomes(model_dir, sel))
+
+
+def test_outcomes(model_dir, sel):
+    """Test-level outcomes, from the marker's per-instance reports. Binary
+    resolve hides the difference between 'never fixed it', 'fixed it and
+    nicked one adjacent test', and 'shipped something that broke the build';
+    these three counts recover it.
+      fixed  : all FAIL_TO_PASS tests pass (the bug itself is fixed)
+      near   : fixed, but some PASS_TO_PASS broke (fixed - resolved = near)
+      wrecked: >20% of PASS_TO_PASS broke — in compiled repos this almost
+               always means the patch did not build
+    Requires evals/logs/run_evaluation/ locally (regenerable, not committed);
+    returns None values when the logs are absent."""
+    pattern = f"{ROOT}/evals/logs/run_evaluation/runs_multilingual_{model_dir}_{sel}/*/*/report.json"
+    files = glob.glob(pattern)
+    if not files:
+        return dict(fixed=None, near=None, wrecked=None)
+    fixed = near = wrecked = 0
+    for f in files:
+        rep = json.load(open(f))
+        ((iid, r),) = rep.items()
+        ts = r["tests_status"]
+        f2p_clean = len(ts["FAIL_TO_PASS"]["failure"]) == 0
+        p2p_fail = len(ts["PASS_TO_PASS"]["failure"])
+        p2p_total = p2p_fail + len(ts["PASS_TO_PASS"]["success"])
+        if f2p_clean:
+            fixed += 1
+            if p2p_fail > 0:
+                near += 1
+        if p2p_total > 0 and p2p_fail / p2p_total > 0.2:
+            wrecked += 1
+    return dict(fixed=fixed, near=near, wrecked=wrecked)
 
 
 def wire_thinking(model_dir):
@@ -105,6 +138,9 @@ def make_rows(sel):
         ("Instances", lambda L: str(L["instances"])),
         ("Resolved", lambda L: str(L["resolved"]) if L["resolved"] is not None else "—"),
         ("Resolved %", lambda L: f"{L['resolved']/expected*100:.0f}%" if L["resolved"] is not None else "—"),
+        ("Bug fixed (F2P clean)", lambda L: str(L["fixed"]) if L["fixed"] is not None else "—"),
+        ("Near misses (fixed, P2P broke)", lambda L: str(L["near"]) if L["near"] is not None else "—"),
+        ("Build-breakers (>20% P2P broke)", lambda L: str(L["wrecked"]) if L["wrecked"] is not None else "—"),
         ("Total cost", lambda L: f"${L['cost']:.2f}"),
         ("$/resolved", lambda L: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
         ("$/instance", lambda L: f"${L['cost']/L['instances']:.2f}" if L["instances"] else "—"),
