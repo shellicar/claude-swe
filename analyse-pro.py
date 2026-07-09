@@ -96,7 +96,8 @@ rows = [
 ]
 
 lines = []
-lines.append("| SWE-bench Pro — 10 ts instances (tutao/tutanota) | " + " | ".join(models) + " |")
+n_instances = max((d["instances"] for d in data.values()), default=0)
+lines.append(f"| SWE-bench Pro — {n_instances} ts instances (tutao/tutanota) | " + " | ".join(models) + " |")
 lines.append("|" + "---|" * (len(models) + 1))
 for label, fn in rows:
     lines.append(f"| {label} | " + " | ".join(fn(data[m]) for m in models) + " |")
