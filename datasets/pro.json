@@ -17,6 +17,7 @@
     "subset": "datasets/swe-bench-pro.jsonl"
   },
   "selections": {
-    "pro": { "file": "instances-pro.txt", "expected": 20, "rule": { "field": "repo_language", "equals": "ts" } }
+    "pro": { "file": "instances-pro.txt", "expected": 20, "rule": { "field": "repo_language", "equals": "ts" } },
+    "nodebb": { "file": "instances-nodebb.txt", "expected": 20, "rule": { "field": "repo", "equals": "NodeBB/NodeBB", "n": 20, "seed": 42 } }
   }
 }
