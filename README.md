@@ -27,8 +27,8 @@ uv sync       # creates .venv and installs the scaffold (editable), sb-cli, sweb
 Create a `.env` with `ANTHROPIC_AUTH_TOKEN` (and `SWEBENCH_API_KEY` for cloud marking), then:
 
 ```sh
-./run-experiment.sh         # generate patches (uses the API)
-node eval-experiment.mjs    # mark them locally (free): ensure + mark + audit
+./swe.mjs main run                     # generate patches (uses the API)
+./swe.mjs main mark audit analyse      # mark locally (free), audit, write analysis
 ```
 
 See `CLAUDE.md` for the full setup, including the corporate-TLS workaround.
@@ -39,28 +39,15 @@ Coding benchmarks report how many issues a model resolves, but not what it cost 
 
 ## Usage
 
-- **Run the benchmark.** One patch per issue, each in its own Docker sandbox.
+Everything runs through one entry point: `./swe.mjs <target> [verb...]`. Targets are declared combination sets (`combinations/*.json`) or `dataset[/selection]`; verbs chain in order and every verb resumes where it left off. A bare target shows status.
 
 ```sh
-./run-experiment.sh
-```
-
-- **Mark the results.** Local and free; safe to run while generation is still going. Verifies local images against `image-manifest.txt`, marks every leg with predictions, audits completeness. Outputs land under `evals/`.
-
-```sh
-node eval-experiment.mjs
-```
-
-- **Rebuild the analysis** from the marked results. Writes `evals/analysis.json` (raw figures) and `evals/analysis.md` (the table).
-
-```sh
-python analyse.py
-```
-
-- **Sweep effort levels** for a single model, low to max. Marking is the same `eval-experiment.mjs`; it picks up every leg under `runs/`.
-
-```sh
-./run-effort-sweep.sh
+./swe.mjs                                # list targets and verbs
+./swe.mjs main                           # where the main experiment stands, verb by verb
+./swe.mjs main run                       # generate patches (uses the API)
+./swe.mjs main mark audit analyse        # mark locally (free), audit completeness, write analysis/
+./swe.mjs effort-sweep run mark audit    # the effort sweep, same verbs
+./swe.mjs pro draw resolve ensure run mark audit analyse   # a whole paper, end to end
 ```
 
 ## Configuration

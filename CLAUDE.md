@@ -55,10 +55,12 @@ All scripts assume cwd = this directory and call `.venv/bin/` binaries directly 
 
 ## Workflow
 
-Two decoupled halves, connected only by `preds.json`:
+One entry point: `./swe.mjs <target> [verb...]` — verbs `draw resolve ensure run mark status audit analyse` chain in order against a declared target (`combinations/*.json` or `dataset[/selection]`); every verb resumes, a bare target shows status, `audit` blocks `analyse` on incomplete records. Conceptual model: `docs/diagrams/operations.d2`. Superseded per-experiment scripts live in `archive/` for reference.
 
-1. **The work** — `mini-extra swebench` runs one fresh agent per instance in its own Docker container; writes per-instance trajectories and `preds.json` (instance id + model name + diff) to the output dir. Batch mode is unattended; confirmation prompts exist only in `swebench-single` interactive mode.
-2. **The marking** — `node eval-experiment.mjs` (operations: `resolve | ensure | mark | audit`) applies each patch to a pristine container and runs that instance's tests, locally in Docker. Inputs are declared in the repo: `image-manifest.txt` (instance → image digest), `datasets/swe-bench-verified.jsonl` (dataset snapshot), `uv.lock` (harness). Outputs land under `evals/`: report JSONs (committed) and per-instance test logs (`evals/logs/`, ignored). Deterministic, model-free, no API cost.
+Two decoupled halves underneath, connected only by `preds.json`:
+
+1. **The work** (`run`) — drives `mini-extra swebench`: one fresh agent per instance in its own Docker container; writes per-instance trajectories, wire captures, and `preds.json` (instance id + model name + diff) to the leg's output dir.
+2. **The marking** (`mark`) — applies each patch to a pristine container and runs that instance's tests, locally in Docker, via the dataset's declared marker (swebench for Verified, Scale's harness for Pro). Inputs are declared in the repo: `image-manifest.txt` (instance → image digest), `datasets/*.jsonl` (snapshots), `uv.lock` (harness). Outputs land under `evals/`: verdicts (committed) and per-instance test logs (ignored). Deterministic, model-free, no API cost.
 
 The marker does not care what produced the patches — anything that emits a valid `preds.json` can be scored. That contract is the seam for benchmarking other scaffolds.
 
