@@ -44,6 +44,24 @@ const frozenInstanceIds = () => {
   return ids;
 };
 
+// SWE-bench Pro (frozen set: instances-pro.txt): the dataset row carries the
+// image reference itself (dockerhub_tag under the jefzda/sweap-images repo),
+// so the naming rule comes from the snapshot, not from a package convention.
+const PRO_IMAGE_REPO = 'docker.io/jefzda/sweap-images';
+const proInstances = () => {
+  const listPath = join(repoRoot, 'instances-pro.txt');
+  if (!existsSync(listPath)) return [];
+  const wanted = new Set(readFileSync(listPath, 'utf8').split('\n').map((l) => l.trim()).filter(Boolean));
+  const rows = [];
+  for (const line of readFileSync(join(repoRoot, 'datasets', 'swe-bench-pro.jsonl'), 'utf8').split('\n')) {
+    if (!line.trim()) continue;
+    const row = JSON.parse(line);
+    if (wanted.has(row.instance_id)) rows.push({ iid: row.instance_id, tag: row.dockerhub_tag });
+  }
+  if (rows.length !== wanted.size) throw new Error(`instances-pro.txt lists ${wanted.size} ids but snapshot matched ${rows.length}`);
+  return rows;
+};
+
 const readManifest = () => {
   const entries = [];
   for (const line of readFileSync(MANIFEST, 'utf8').split('\n')) {
@@ -60,9 +78,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // Hub's web API serves tag→digest under a much looser rate limit than the
 // registry endpoint (whose anonymous allowance is ~100 manifest reads / 6 h —
 // learned by burning it, 2026-07-09). Still the publisher, never the daemon.
-async function hubDigest(repo) {
+async function hubDigest(repo, tag = 'latest') {
   const name = repo.replace('docker.io/', '');
-  const url = `https://hub.docker.com/v2/repositories/${name}/tags/latest`;
+  const url = `https://hub.docker.com/v2/repositories/${name}/tags/${tag}`;
   for (let attempt = 1; ; attempt++) {
     const resp = await fetch(url);
     if (resp.status === 429 && attempt < 8) {
@@ -96,6 +114,20 @@ async function opResolve() {
     if ((i + 1) % 20 === 0) console.log(`[resolve] ${i + 1}/${todo.length}`);
   }
   console.log(`[resolve] ${resolved.size}/${ids.length} declarations in ${MANIFEST}`);
+
+  // Pro set, when drawn: same manifest, digests resolved from the row's tag.
+  const pro = proInstances();
+  const proTodo = pro.filter(({ iid }) => !resolved.has(iid));
+  if (pro.length > 0) console.log(`[resolve] pro: ${pro.length} instances — ${pro.length - proTodo.length} already declared, ${proTodo.length} to resolve`);
+  const proIds = pro.map((p) => p.iid);
+  const writeAll = () =>
+    writeFileSync(MANIFEST, [...ids, ...proIds].filter((i) => resolved.has(i)).map((i) => `${i} ${resolved.get(i)}`).join('\n') + '\n');
+  for (const { iid, tag } of proTodo) {
+    const digest = await hubDigest(PRO_IMAGE_REPO, tag);
+    resolved.set(iid, `${PRO_IMAGE_REPO}@${digest}`);
+    writeAll();
+  }
+  console.log(`[resolve] ${resolved.size} total declarations in ${MANIFEST}`);
   console.log('[resolve] review and commit it — committing is the act that makes it the specification.');
 }
 
@@ -120,9 +152,15 @@ async function opEnsure() {
   const missing = [];
   const mismatched = [];
   for (const { iid, ref } of entries) {
+    // Primary check: the exact declared reference. Docker resolves repo@digest
+    // whether the image arrived via a tag pull or a digest pull (Pro images
+    // have no local :latest tag at all).
+    try {
+      execFileSync('docker', ['image', 'inspect', ref], { stdio: 'ignore' });
+      continue;
+    } catch {}
     const repo = ref.split('@')[0];
     const digests = localDigests(repo).map(canonical);
-    if (digests.includes(canonical(ref))) continue;
     if (digests.length > 0) { mismatched.push({ iid, ref, have: digests }); continue; }
     missing.push({ iid, ref });
   }
@@ -176,7 +214,9 @@ async function opMark() {
         '-m', 'swebench.harness.run_evaluation',
         '--dataset_name', DATASET,
         '--predictions_path', preds,
-        '--max_workers', '3',
+        // 2, not 3: the machine is shared — marking must leave CPU for the
+        // developer. Override per run with MARK_WORKERS.
+        '--max_workers', process.env.MARK_WORKERS ?? '2',
         '--namespace', 'swebench',
         '--run_id', runId,
       ],
@@ -186,6 +226,86 @@ async function opMark() {
     );
   }
   console.log('[mark] all legs marked');
+}
+
+// ---- mark-pro / audit-pro ----------------------------------------------------
+// SWE-bench Pro marking via the vendored Scale harness (vendor/swe-bench-pro,
+// --use_local_docker). Inputs: the dataset snapshot (it accepts JSONL directly),
+// per-model preds.json reshaped to its patches format, the per-instance
+// run_scripts shipped in the harness repo. Output: evals/pro/<model>/ with
+// eval_results.json ({instance_id: bool}).
+const PRO_HARNESS = join(repoRoot, 'vendor', 'swe-bench-pro');
+const PRO_DATASET = join(repoRoot, 'datasets', 'swe-bench-pro.jsonl');
+
+function findProLegs() {
+  const proDir = join(repoRoot, 'runs', 'pro');
+  if (!existsSync(proDir)) return [];
+  const legs = [];
+  for (const model of readdirSync(proDir)) {
+    const preds = join(proDir, model, 'pro', 'preds.json');
+    if (existsSync(preds)) legs.push({ model, preds });
+  }
+  return legs;
+}
+
+async function opMarkPro() {
+  const legs = findProLegs();
+  console.log(`[mark-pro] ${legs.length} pro legs with predictions`);
+  let current = null;
+  onShutdown(async () => current?.kill('SIGTERM'));
+  for (const { model, preds } of legs) {
+    const outDir = join(EVALS_DIR, 'pro', model);
+    mkdirSync(outDir, { recursive: true });
+    // Their patches format: [{instance_id, patch}] — reshape from preds.json.
+    const predsData = JSON.parse(readFileSync(preds, 'utf8'));
+    const patches = Object.values(predsData).map((p) => ({ instance_id: p.instance_id, patch: p.model_patch }));
+    const patchPath = join(outDir, 'patches.json');
+    writeFileSync(patchPath, JSON.stringify(patches, null, 2));
+    console.log(`[mark-pro] === ${model} (${patches.length} patches) ===`);
+    await spawnAwait(
+      join(repoRoot, '.venv/bin/python'),
+      [
+        'swe_bench_pro_eval.py',
+        '--raw_sample_path', PRO_DATASET,
+        '--patch_path', patchPath,
+        '--output_dir', outDir,
+        '--dockerhub_username', 'jefzda',
+        '--scripts_dir', 'run_scripts',
+        '--use_local_docker',
+        '--docker_platform', 'linux/amd64',
+        '--num_workers', process.env.MARK_WORKERS ?? '2',
+      ],
+      // cwd: the harness loads dockerfiles/ and run_scripts/ relative to cwd.
+      { cwd: PRO_HARNESS, onChild: (child) => { current = child; } },
+    );
+  }
+  console.log('[mark-pro] all pro legs marked');
+}
+
+function opAuditPro() {
+  const expected = readFileSync(join(repoRoot, 'instances-pro.txt'), 'utf8').split('\n').filter((l) => l.trim());
+  const legs = findProLegs();
+  let problems = 0;
+  for (const { model } of legs) {
+    const resultsPath = join(EVALS_DIR, 'pro', model, 'eval_results.json');
+    if (!existsSync(resultsPath)) {
+      console.error(`[audit-pro] ${model}: no eval_results.json`);
+      problems++;
+      continue;
+    }
+    const results = JSON.parse(readFileSync(resultsPath, 'utf8'));
+    const missing = expected.filter((iid) => !(iid in results));
+    const resolved = Object.values(results).filter(Boolean).length;
+    const line = `${Object.keys(results).length}/${expected.length} verdicts, resolved ${resolved}`;
+    if (missing.length > 0) {
+      console.error(`[audit-pro] ${model}: INCOMPLETE — ${line}; missing ${missing.length}`);
+      problems++;
+    } else {
+      console.log(`[audit-pro] ${model}: ok — ${line}`);
+    }
+  }
+  if (problems > 0) throw new Error(`${problems} pro legs incomplete`);
+  console.log('[audit-pro] all pro legs complete');
 }
 
 // ---- audit -----------------------------------------------------------------
@@ -202,7 +322,10 @@ function opAudit() {
     }
     const rep = JSON.parse(readFileSync(join(EVALS_DIR, reports[0]), 'utf8'));
     const line = `submitted ${rep.submitted_instances}/${expected[set]}, completed ${rep.completed_instances}, resolved ${rep.resolved_instances}, errors ${rep.error_instances}, empty ${rep.empty_patch_instances}`;
-    if (rep.submitted_instances !== expected[set] || rep.completed_instances !== rep.submitted_instances || rep.error_instances > 0) {
+    // An empty patch is a legitimate (capped or surrendered) attempt: the
+    // harness does not run it, so it counts toward the leg's completeness as
+    // an automatic unresolved — not as a hole in the marking.
+    if (rep.submitted_instances !== expected[set] || rep.completed_instances + rep.empty_patch_instances !== rep.submitted_instances || rep.error_instances > 0) {
       console.error(`[audit] ${runId}: INCOMPLETE — ${line}`);
       problems++;
     } else {
@@ -214,7 +337,7 @@ function opAudit() {
 }
 
 // ---- main ------------------------------------------------------------------
-const OPS = { resolve: opResolve, ensure: opEnsure, mark: opMark, audit: opAudit };
+const OPS = { resolve: opResolve, ensure: opEnsure, mark: opMark, audit: opAudit, 'mark-pro': opMarkPro, 'audit-pro': opAuditPro };
 const requested = process.argv.slice(2);
 const sequence = requested.length > 0 ? requested : ['ensure', 'mark', 'audit'];
 for (const name of sequence) {
