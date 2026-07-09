@@ -5,3 +5,6 @@
 [submodule "vendor/swebench"]
 	path = vendor/swebench
 	url = https://github.com/shellicar/SWE-bench
+[submodule "vendor/swe-bench-pro"]
+	path = vendor/swe-bench-pro
+	url = https://github.com/shellicar/SWE-bench_Pro-os
