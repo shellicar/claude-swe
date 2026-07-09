@@ -13,7 +13,7 @@ title: "SWE-bench rig — end to end: every operation, its inputs, its outputs" 
   style.bold: true
 }
 
-dataset: "DATASET ROW (one instance) — frozen at dataset creation 2024; HF revision unpinned" {
+dataset: "DATASET ROW (one instance) — frozen at dataset creation 2024; snapshotted in datasets/*.jsonl (eval reads the snapshot, not HF)" {
   style.fill: "#14352A"
   style.stroke: "#2ECC71"
   style.font-color: "#E8F8F0"
@@ -48,7 +48,7 @@ imagebuild: "IMAGE BUILD — upstream, once, historical" {
   io: "IN: clone @ base_commit; requirements @ environment_setup_commit;\nthe tables of THE SWEBENCH VERSION USED THAT DAY\nOUT: instance image = snapshot + environment, materialised"
 }
 
-image: "INSTANCE IMAGE — frozen bytes (Docker Hub :latest tag; pinned locally by digest in image-digests.txt)" {
+image: "INSTANCE IMAGE — frozen bytes; declared per instance in image-manifest.txt\n(registry-resolved digests; 'ensure' op verifies local Docker conforms before marking)" {
   style.fill: "#2A1B3A"
   style.stroke: "#A569BD"
   style.font-color: "#F3EAFB"
@@ -68,11 +68,11 @@ specbuild: "SPEC BUILD — inside EVERY eval invocation" {
   io: "IN: dataset row + package tables + LIVE FETCH of requirements\nOUT: env-build script (NEVER RUN with prebuilt images)\n     repo-setup script (NEVER RUN with prebuilt images)\n     eval script (RUN: checkout tests @ base_commit, apply test_patch, run test cmd)"
 }
 
-eval: "EVAL — free, local" {
+eval: "EVAL — free, local (eval-experiment.mjs: resolve | ensure | mark | audit)" {
   style.fill: "#14352A"
   style.stroke: "#2ECC71"
   style.font-color: "#E8F8F0"
-  io: "IN: pristine container from instance image + patch + eval script\nOUT: test output → verdict (resolved / unresolved)"
+  io: "IN: pristine container from instance image + patch + eval script\nOUT: test output → verdict (resolved / unresolved), under evals/"
 }
 
 tally: "TALLY" {
@@ -106,7 +106,7 @@ specbuild -> eval: "eval script — the only output used" { style.stroke: "#2ECC
 eval -> tally: "verdicts"
 run -> tally: "trajectories"
 
-note: "The late-bound part: the requirements URN = repo + environment_setup_commit (frozen, dataset) + path (floating, package version). Assembled per invocation; content never stored on our side.\nWith prebuilt digest-pinned images, EVAL genuinely needs only: image + patch + eval script. The red dashed fetch feeds a script that never runs — it is the only network touch and the only unfrozen input in the marking path." {
+note: "The late-bound part: the requirements URN = repo + environment_setup_commit (frozen, dataset) + path (floating, package version). Assembled per invocation; content never stored on our side.\nWith declared images (image-manifest.txt) and the dataset snapshot, EVAL genuinely needs only: image + patch + eval script. The red dashed fetch feeds a script that never runs — it is the only network touch and the only unfrozen input left in the marking path (dies with the planned swebench fork)." {
   near: bottom-center
   shape: text
   style.font-color: "#7F8C8D"

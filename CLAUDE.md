@@ -58,7 +58,7 @@ All scripts assume cwd = this directory and call `.venv/bin/` binaries directly 
 Two decoupled halves, connected only by `preds.json`:
 
 1. **The work** — `mini-extra swebench` runs one fresh agent per instance in its own Docker container; writes per-instance trajectories and `preds.json` (instance id + model name + diff) to the output dir. Batch mode is unattended; confirmation prompts exist only in `swebench-single` interactive mode.
-2. **The marking** — `python -m swebench.harness.run_evaluation` applies each patch to a pristine repo and runs that instance's tests, locally in Docker. Writes a report JSON (resolved/unresolved per instance) and full test logs under `logs/run_evaluation/`. Deterministic, model-free, no API cost.
+2. **The marking** — `node eval-experiment.mjs` (operations: `resolve | ensure | mark | audit`) applies each patch to a pristine container and runs that instance's tests, locally in Docker. Inputs are declared in the repo: `image-manifest.txt` (instance → image digest), `datasets/swe-bench-verified.jsonl` (dataset snapshot), `uv.lock` (harness). Outputs land under `evals/`: report JSONs (committed) and per-instance test logs (`evals/logs/`, ignored). Deterministic, model-free, no API cost.
 
 The marker does not care what produced the patches — anything that emits a valid `preds.json` can be scored. That contract is the seam for benchmarking other scaffolds.
 
@@ -89,7 +89,7 @@ These are upstream properties of swebench itself, not artefacts of this rig's sc
 
 **Environment definitions live outside the benchmark.** The dataset row carries `repo` + `environment_setup_commit`, but the *content* of the dependency recipe is never shipped — it is fetched from the third-party project's GitHub at use time — and the *path* to it lives in lookup tables inside the installed package. The recipe's full identity is therefore late-bound (dataset × package version × GitHub availability), assembled per invocation, stored nowhere. Its only materialisation is inside the prebuilt images.
 
-**No reproducibility surface is published.** Images are pushed as mutable `:latest` tags with no digest manifest; the HF dataset revision floats; and the verdict semantics themselves (per-repo log parsers + grading rules) live in the package code, unversioned relative to the dataset — so the harness version is silently part of any experiment. Consumers must construct their own pins from observation (see `image-digests.txt`, `uv.lock`, `datasets/*.jsonl` — all rig-side patches over this gap; a declared instance→digest manifest does not exist yet on either side).
+**No reproducibility surface is published.** Images are pushed as mutable `:latest` tags with no digest manifest; the HF dataset revision floats; and the verdict semantics themselves (per-repo log parsers + grading rules) live in the package code, unversioned relative to the dataset — so the harness version is silently part of any experiment. Consumers must construct their own pins: rig-side these are `image-manifest.txt` (declared instance→digest, resolved from the registry per epoch), `uv.lock`, and `datasets/*.jsonl`; upstream publishes none of them.
 
 **Errors discard their causes.** A failed recipe fetch — any status, any transport error — surfaces as `ValueError: Could not find requirements.txt at <paths>…`. The HTTP status and body are thrown away, so wildly different faults (broken local TLS config, genuine 404 from a path-table mismatch) produce the same message. Diagnose at the wire, never from the exception text.
 

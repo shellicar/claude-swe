@@ -27,8 +27,8 @@ uv sync       # creates .venv and installs the scaffold (editable), sb-cli, sweb
 Create a `.env` with `ANTHROPIC_AUTH_TOKEN` (and `SWEBENCH_API_KEY` for cloud marking), then:
 
 ```sh
-./run-experiment.sh    # generate patches (uses the API)
-./eval-experiment.sh   # mark them locally (free)
+./run-experiment.sh         # generate patches (uses the API)
+node eval-experiment.mjs    # mark them locally (free): ensure + mark + audit
 ```
 
 See `CLAUDE.md` for the full setup, including the corporate-TLS workaround.
@@ -45,22 +45,22 @@ Coding benchmarks report how many issues a model resolves, but not what it cost 
 ./run-experiment.sh
 ```
 
-- **Mark the results.** Local and free; safe to run while generation is still going.
+- **Mark the results.** Local and free; safe to run while generation is still going. Verifies local images against `image-manifest.txt`, marks every leg with predictions, audits completeness. Outputs land under `evals/`.
 
 ```sh
-./eval-experiment.sh
+node eval-experiment.mjs
 ```
 
-- **Rebuild the report tables** from the marked results.
+- **Rebuild the analysis** from the marked results. Writes `evals/analysis.json` (raw figures) and `evals/analysis.md` (the table).
 
 ```sh
 python analyse.py
 ```
 
-- **Sweep effort levels** for a single model, low to max.
+- **Sweep effort levels** for a single model, low to max. Marking is the same `eval-experiment.mjs`; it picks up every leg under `runs/`.
 
 ```sh
-./run-effort-sweep.sh && ./eval-effort-sweep.sh
+./run-effort-sweep.sh
 ```
 
 ## Configuration
