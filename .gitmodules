@@ -2,3 +2,6 @@
 	path = vendor/mini-swe-agent
 	url = https://github.com/shellicar/mini-swe-agent.git
 	branch = feature/claude-swe-patches
+[submodule "vendor/swebench"]
+	path = vendor/swebench
+	url = https://github.com/shellicar/SWE-bench

@@ -13,3 +13,6 @@ dependencies = [
 
 [tool.uv.sources]
 mini-swe-agent = { path = "vendor/mini-swe-agent", editable = true }
+# Patched fork (branch feature/claude-swe-patches, off v4.1.0): evaluation with
+# --namespace skips env/repo script construction, so marking is fully offline.
+swebench = { path = "vendor/swebench", editable = true }
