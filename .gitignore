@@ -19,6 +19,15 @@ __pycache__/
 logs/
 sb-cli-reports/
 
+# Scaffold exhaust, not experimental record: the durable artefacts are
+# preds.json, trajectories and wire captures. These are console noise.
+runs/**/minisweagent.log
+exit_statuses_*.yaml
+
+# Marking outputs: report JSONs and analysis are committed from evals/;
+# per-instance test logs are bulky and regenerable from preds + images.
+evals/logs/
+
 # Local evaluation reports — promote into a committed results file deliberately
 *.local-*.json
 
