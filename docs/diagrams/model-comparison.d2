@@ -1,0 +1,65 @@
+vars: {
+  d2-config: {
+    theme-id: 200
+  }
+}
+
+title: "SWE-bench Verified (105 frozen instances) — resolve rate and cost" {
+  near: top-center
+  shape: text
+  style.font-size: 22
+  style.bold: true
+}
+
+# d2 markdown-table quirks, learned the hard way: any cell that wraps to two
+# lines makes d2 under-measure the node and clip the bottom. So every cell
+# here is kept to one line (Resolved and Resolved % are separate rows, the
+# $/resolved label has no spaces), and the final blank row is sacrificial —
+# if measurement still falls short, the clipping eats padding, not data.
+comparison: |||md
+  | | Fable 5 | Opus 4.8 | Sonnet 4.6 | Sonnet 5 |
+  |---|---|---|---|---|
+  | **Standard: 60 problems** | | | | |
+  | Resolved | **55** | 51 | 44 | 51 |
+  | Resolved % | **92%** | 85% | 73% | 85% |
+  | Total cost | $30.68 | $21.00 | $35.58 | $17.34 |
+  | $/resolved | $0.56 | $0.41 | $0.81 | **$0.34** |
+  | Steps | 657 | 887 | 1,953 | 1,383 |
+  | Output tokens | 309k | 400k | 954k | 388k |
+  | Input tokens | 6.8M | 12.1M | 49.8M | 23.7M |
+  | - non-cached | 1.3k | 1.8k | 2.1k | 2.8k |
+  | - cache read | 6.1M | 11.2M | 48.0M | 22.4M |
+  | - cache write | 731k | 862k | 1.83M | 1.28M |
+  | Wall-clock | 2.0 h | 2.1 h | 4.9 h | 2.0 h |
+  | **Hard: 45 problems** | | | | |
+  | Resolved | **39** | 32 | 21 | 34 |
+  | Resolved % | **87%** | 71% | 47% | 76% |
+  | Total cost | $52.85 | $33.97 | $105.45 | $39.63 |
+  | $/resolved | $1.36 | **$1.06** | $5.02 | $1.17 |
+  | Steps | 743 | 1,217 | 3,025 | 2,206 |
+  | Output tokens | 536k | 578k | 2.06M | 725k |
+  | Input tokens | 12.8M | 24.7M | 197.3M | 71.9M |
+  | - non-cached | 1.5k | 2.4k | 3.1k | 4.4k |
+  | - cache read | 11.7M | 23.4M | 192.9M | 69.8M |
+  | - cache write | 1.15M | 1.25M | 4.43M | 2.08M |
+  | Wall-clock | 2.4 h | 2.3 h | 10.4 h | 3.5 h |
+  | **Combined: 105 problems** | | | | |
+  | Resolved | **94** | 83 | 65 | 85 |
+  | Resolved % | **90%** | 79% | 62% | 81% |
+  | Total cost | $83.53 | $54.97 | $141.03 | $56.97 |
+  | $/resolved | $0.89 | **$0.66** | $2.17 | $0.67 |
+  | Steps | 1,400 | 2,104 | 4,978 | 3,589 |
+  | Output tokens | 845k | 978k | 3.02M | 1.11M |
+  | Input tokens | 19.6M | 36.7M | 247.1M | 95.5M |
+  | - non-cached | 2.8k | 4.2k | 5.2k | 7.2k |
+  | - cache read | 17.8M | 34.6M | 240.9M | 92.2M |
+  | - cache write | 1.88M | 2.11M | 6.26M | 3.36M |
+  | Wall-clock | 4.4 h | 4.4 h | 15.2 h | 5.5 h |
+  | | | | | |
+|||
+
+note: "Single pass, custom harness and prompt: these four runs compare against each other, not leaderboards. Bold = best in row. Wall-clock is 12-way-parallel machine time, not API latency." {
+  near: bottom-center
+  shape: text
+  style.font-color: "#7F8C8D"
+}
