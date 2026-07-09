@@ -5,10 +5,10 @@
 //
 // This is the entire orchestration. A run script is just config: it calls
 // runExperiment() with parameters and nothing else.
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, openSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
 import { startTimingProxy } from '../mitm/timing-mitm.mjs';
-import { spawnAwait, instanceFilter, onShutdown, repoRoot } from './harness.mjs';
+import { spawnAwait, instanceFilter, onShutdown, isDraining, repoRoot } from './harness.mjs';
 
 /**
  * @param {object} p
@@ -20,6 +20,9 @@ import { spawnAwait, instanceFilter, onShutdown, repoRoot } from './harness.mjs'
  * @param {string[]} [p.configs] -c yaml overlays (default swebench-local + adaptive thinking)
  * @param {string}   [p.subset] default 'verified'
  * @param {string}   [p.split]  default 'test'
+ * @param {number}   [p.port]   proxy port (default 18899); parallel legs must each use their own
+ * @param {string}   [p.log]    file (repo-relative) for the leg's mini-extra output; default inherits the console
+ * @param {string}   [p.label]  tag for console lines (e.g. 'sonnet-5'), so parallel legs' output is attributable
  */
 export async function runExperiment({
   model,
@@ -30,15 +33,25 @@ export async function runExperiment({
   configs = ['swebench-local.yaml', 'thinking-adaptive.yaml'],
   subset = 'verified',
   split = 'test',
+  port,
+  log,
+  label,
 }) {
+  const tag = label ?? model;
   // The proxy appends here on first request, so the dir must exist first.
   mkdirSync(join(repoRoot, out), { recursive: true });
 
-  const proxy = await startTimingProxy({ timingLog: join(repoRoot, out, 'api-timing.jsonl') });
-  console.log(`[run] proxy up at ${proxy.baseUrl}, timing -> ${out}/api-timing.jsonl`);
+  const proxy = await startTimingProxy({ port, timingLog: join(repoRoot, out, 'api-timing.jsonl'), label });
+  console.log(`[${tag}] proxy up at ${proxy.baseUrl}, timing -> ${out}/api-timing.jsonl`);
 
-  // Route the run's API traffic through the proxy.
-  const env = { ANTHROPIC_BASE_URL: proxy.baseUrl };
+  // Route the run's API traffic through the proxy. Retry for ~an hour
+  // (60 attempts, 60s backoff cap) instead of the scaffold's ~8-minute
+  // default, so instances sleep through API instability rather than dying
+  // as InternalServerError — the container idles alive and waiting is free.
+  const env = {
+    ANTHROPIC_BASE_URL: proxy.baseUrl,
+    MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT: '60',
+  };
 
   // Track the live leg so Ctrl-C kills it and the proxy together.
   let current = null;
@@ -50,9 +63,20 @@ export async function runExperiment({
   const cfgArgs = configs.flatMap((c) => ['-c', c]);
   if (effort) cfgArgs.push('-c', `model.model_kwargs.output_config.effort=${effort}`);
 
+  // Per-leg log file so parallel legs don't interleave on one console.
+  const logFd = log ? openSync(join(repoRoot, log), 'a') : null;
+  const stdio = logFd === null ? 'inherit' : ['ignore', logFd, logFd];
+
   try {
     for (const set of sets) {
-      console.log(`[run] === ${set} ===`);
+      // Drain (first Ctrl-C): the running set finishes its in-flight instances
+      // via mini's own SIGINT handling; starting the NEXT set is the one piece
+      // of new work mini can't see, so it is gated here.
+      if (isDraining()) {
+        console.log(`[${tag}] draining — not starting ${set}`);
+        break;
+      }
+      console.log(`[${tag}] === ${set} ===`);
       await spawnAwait(
         '.venv/bin/mini-extra',
         [
@@ -65,12 +89,13 @@ export async function runExperiment({
           '-o', `${out}/${set}`,
           '-w', String(workers),
         ],
-        { env, onChild: (child) => { current = child; } },
+        { env, stdio, onChild: (child) => { current = child; } },
       );
     }
-    console.log('[run] complete. Mark it with ./eval-experiment.sh');
+    console.log(`[${tag}] leg complete`);
   } finally {
     current = null;
+    if (logFd !== null) closeSync(logFd);
     await proxy.stop();
   }
 }

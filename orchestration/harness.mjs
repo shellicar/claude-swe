@@ -20,33 +20,60 @@ export const instanceFilter = (set) => {
   return `^(${ids.join('|')})$`;
 };
 
-// Spawn a child with inherited stdio, resolve on exit 0, reject otherwise.
+// Spawn a child, resolve on exit 0, reject otherwise. stdio defaults to
+// inherit; parallel legs pass their own fds so their output lands in per-leg
+// log files instead of interleaving on one console.
 // onChild hands the live process back so the caller can kill it on shutdown.
 // Args are passed as an array (no shell), so the filter regex needs no escaping.
-export const spawnAwait = (program, args, { env, onChild } = {}) =>
+export const spawnAwait = (program, args, { env, onChild, stdio = 'inherit', cwd = repoRoot } = {}) =>
   new Promise((resolve, reject) => {
-    const child = spawn(program, args, { cwd: repoRoot, env: { ...process.env, ...env }, stdio: 'inherit' });
+    const child = spawn(program, args, { cwd, env: { ...process.env, ...env }, stdio });
     onChild?.(child);
     child.on('error', reject);
     child.on('exit', (code, signal) =>
       code === 0 ? resolve() : reject(new Error(`${program} exited (code ${code}, signal ${signal})`)));
   });
 
-// Wire SIGINT/SIGTERM to a cleanup fn, then exit 130 — matches the sh
-// convention and guarantees the proxy and in-flight run come down together,
-// with no orphan left spending.
+// Shutdown semantics:
+//   1st Ctrl-C  — drain. The terminal delivers SIGINT to the whole process
+//                 group, so the mini children receive it directly and do their
+//                 own graceful drain (finish in-flight instances, start no new
+//                 ones). The orchestrator only flags drain mode — so legs stop
+//                 starting further sets — and keeps the proxies up for the
+//                 in-flight work.
+//   2nd Ctrl-C  — hard stop: kill children, stop proxies, exit 130.
+//   SIGTERM     — hard stop immediately (non-interactive kills don't drain).
+//
+// A registry, not one handler per caller: with parallel legs each registering
+// its own cleanup, per-caller handlers would race — the first to finish would
+// process.exit() while other legs' children were still alive (the orphaned-
+// spend trap, learned 2026-06-10). One handler awaits every cleanup, then exits.
+const cleanups = [];
+let handlerInstalled = false;
+let draining = false;
+export const isDraining = () => draining;
 export const onShutdown = (cleanup) => {
+  cleanups.push(cleanup);
+  if (handlerInstalled) return;
+  handlerInstalled = true;
   let firing = false;
-  const handle = async (sig) => {
+  const hardStop = async (sig) => {
     if (firing) return;
     firing = true;
-    console.error(`\n[run] ${sig} received — tearing down...`);
+    console.error(`\n[run] ${sig} — hard stop, tearing down...`);
     try {
-      await cleanup();
+      await Promise.allSettled(cleanups.map((fn) => fn()));
     } finally {
       process.exit(130);
     }
   };
-  process.on('SIGINT', () => handle('SIGINT'));
-  process.on('SIGTERM', () => handle('SIGTERM'));
+  process.on('SIGINT', () => {
+    if (!draining) {
+      draining = true;
+      console.error('\n[run] Ctrl-C — draining: in-flight instances finish, nothing new starts. Ctrl-C again to stop now.');
+      return; // children got their own SIGINT from the tty and drain themselves
+    }
+    hardStop('SIGINT (second)');
+  });
+  process.on('SIGTERM', () => hardStop('SIGTERM'));
 };

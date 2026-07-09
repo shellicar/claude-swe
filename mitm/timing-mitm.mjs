@@ -67,8 +67,11 @@ const extractResult = (raw, streamed) => {
 export function startTimingProxy({
   port = Number(process.env.PORT ?? 18899),
   timingLog = process.env.TIMING_LOG ?? new URL('./api-timing.jsonl', import.meta.url).pathname,
+  label,
 } = {}) {
   let counter = 0;
+  // Console prefix so parallel proxies' lines are attributable to their leg.
+  const pre = label ? `[${label}] ` : '';
 
   const server = http.createServer((req, res) => {
     let body = '';
@@ -103,13 +106,13 @@ export function startTimingProxy({
             ...extractResult(raw, meta.stream),
           };
           appendFileSync(timingLog, JSON.stringify(line) + '\n');
-          console.log(`# ${n} ${meta.model ?? '?'} conv=${meta.conv ?? '?'} msgs=${meta.n_messages ?? '?'} ${up.statusCode} ttfb=${line.ttfb_ms}ms total=${line.total_ms}ms`);
+          console.log(`${pre}# ${n} ${meta.model ?? '?'} conv=${meta.conv ?? '?'} msgs=${meta.n_messages ?? '?'} ${up.statusCode} ttfb=${line.ttfb_ms}ms total=${line.total_ms}ms`);
         });
       });
 
       fwd.on('error', (e) => {
         appendFileSync(timingLog, JSON.stringify({ n, ts: new Date(tStart).toISOString(), ...meta, status: null, error: e.message, total_ms: Date.now() - tStart }) + '\n');
-        console.error(`# ${n} forward error:`, e.message);
+        console.error(`${pre}# ${n} forward error:`, e.message);
         res.writeHead(502);
         res.end('Bad Gateway');
       });
@@ -123,7 +126,7 @@ export function startTimingProxy({
     server.once('error', reject); // e.g. EADDRINUSE
     server.listen(port, () => {
       server.off('error', reject);
-      console.log(`# timing-proxy on :${port} -> ${TARGET}, logging to ${timingLog}`);
+      console.log(`${pre}# timing-proxy on :${port} -> ${TARGET}, logging to ${timingLog}`);
       resolve({
         baseUrl: `http://localhost:${port}`,
         port,
