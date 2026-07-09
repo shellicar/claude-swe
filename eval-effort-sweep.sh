@@ -9,6 +9,7 @@ for d in runs/effort-sweep/*/*/; do
     d="${d%/}"
     [ -f "$d/preds.json" ] || continue
     RUN_ID=$(echo "$d" | tr '/' '_')
-    .venv/bin/python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Verified --predictions_path "$d/preds.json" --max_workers 3 --run_id "$RUN_ID"
+    # --namespace swebench: pull the official prebuilt instance images.
+    .venv/bin/python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Verified --predictions_path "$d/preds.json" --max_workers 3 --namespace swebench --run_id "$RUN_ID"
 done
 echo "Evaluation complete."

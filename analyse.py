@@ -13,7 +13,9 @@ Sources, per model/set:
 """
 
 import glob
+import hashlib
 import json
+import os
 
 MODELS = [  # display name -> dir
     ("Claude Fable 5", "fable-5"),
@@ -22,16 +24,46 @@ MODELS = [  # display name -> dir
     ("Claude Opus 4.7", "opus-4-7"),
     ("Claude Opus 4.6", "opus-4-6"),
     ("Claude Sonnet 4.6", "sonnet-4-6"),
+    ("Claude Sonnet 5", "sonnet-5"),
     ("Claude Haiku 4.5", "haiku-4-5"),
 ]
 SETS = [("standard", 60), ("hard", 45)]
-ROOT = "/Users/shellicar/claude-swe"
+ROOT = os.path.dirname(os.path.abspath(__file__))  # was hardcoded to the old machine's path
 
-# wire-derived thinking tokens (see module docstring); None => unknown
-THINKING = {
+# Legacy wire-derived thinking tokens: the opus-4-6/4-7 shared capture lives in
+# a different file format (opus46-47-responses.jsonl) and predates per-leg
+# captures, so its totals stay hardcoded. Every leg run since gets a per-leg
+# runs/main/<dir>/api-timing.jsonl and is computed automatically below.
+THINKING_LEGACY = {
     "opus-4-6": {"standard": 127114, "hard": 298606},
     "opus-4-7": {"standard": 190279, "hard": 345513},
 }
+
+
+def wire_thinking(dirn):
+    """Per-set thinking tokens from the leg's own proxy capture, attributed to
+    instances by first-user-message fingerprint (same hash the proxy uses).
+    Returns None when the leg has no capture."""
+    timing = f"{ROOT}/runs/main/{dirn}/api-timing.jsonl"
+    if not os.path.exists(timing):
+        return THINKING_LEGACY.get(dirn)
+    conv2set = {}
+    for s, _ in SETS:
+        for tf in glob.glob(f"{ROOT}/runs/main/{dirn}/{s}/*/*.traj.json"):
+            t = json.load(open(tf))
+            first = next((m for m in t["messages"] if m.get("role") == "user"), None)
+            c = first["content"]
+            text = c if isinstance(c, str) else "\n".join(b.get("text", "") for b in c)
+            conv2set[hashlib.sha256(text.encode()).hexdigest()[:12]] = s
+    totals = {s: 0 for s, _ in SETS}
+    for line in open(timing):
+        d = json.loads(line)
+        u = d.get("usage") or {}
+        th = (u.get("output_tokens_details") or {}).get("thinking_tokens") or 0
+        s = conv2set.get(d.get("conv"))
+        if s is not None:
+            totals[s] += th
+    return totals
 
 
 def leg(dirn, s):
@@ -71,6 +103,10 @@ def tok(x):
     return f"{x/1e6:.2f}M" if x >= 1e6 else f"{x/1e3:.0f}k"
 
 
+# gather thinking once per model (None => no capture exists for that leg)
+THINKING = {d: wire_thinking(d) for _, d in MODELS}
+
+
 def think(dirn, s):
     v = THINKING.get(dirn)
     return tok(v[s]) if v else "—"
@@ -94,10 +130,9 @@ rows = [
     ("Wall-clock (12-way parallel)", lambda L, n: f"{L['wall']/3600:.1f} h"),
 ]
 
-hdr = "| | " + " | ".join(name for name, _ in MODELS) + " |"
-sep = "|" + "---|" * (len(MODELS) + 1)
-print(hdr)
-print(sep)
+OUT_LINES = []
+OUT_LINES.append("| | " + " | ".join(name for name, _ in MODELS) + " |")
+OUT_LINES.append("|" + "---|" * (len(MODELS) + 1))
 
 
 def combined(d):
@@ -108,7 +143,7 @@ def combined(d):
 
 
 def emit(section_label, getter, n, thinking_set):
-    print(f"| **{section_label}** |" + " |" * len(MODELS))
+    OUT_LINES.append(f"| **{section_label}** |" + " |" * len(MODELS))
     for label, fn in rows:
         if fn is None:  # thinking row
             cells = [think(d, thinking_set) if thinking_set else
@@ -118,13 +153,25 @@ def emit(section_label, getter, n, thinking_set):
                 for _, d in MODELS:
                     v = THINKING.get(d)
                     cells.append(tok(v["standard"] + v["hard"]) if v else "—")
-            print(f"| {label} | " + " | ".join(cells) + " |")
+            OUT_LINES.append(f"| {label} | " + " | ".join(cells) + " |")
             continue
         lab = label.format(n=n) if "{n}" in label else label
         cells = [fn(getter(d), n) for _, d in MODELS]
-        print(f"| {lab} | " + " | ".join(cells) + " |")
+        OUT_LINES.append(f"| {lab} | " + " | ".join(cells) + " |")
 
 
 emit("Standard \u2014 60 problems (<1 h human effort)", lambda d: data[d]["standard"], 60, "standard")
 emit("Hard \u2014 45 problems (1+ h human effort)", lambda d: data[d]["hard"], 45, "hard")
 emit("Combined \u2014 105 problems", lambda d: combined(d), 105, None)
+
+# Outputs land on disk, not stdout: the numbers are data, not chat.
+# - analysis.json: every raw figure (per model, per set, plus thinking) for
+#   any downstream consumer, human or scripted.
+# - analysis.md:   the rendered table, to be reconciled into report.md.
+os.makedirs(f"{ROOT}/evals", exist_ok=True)
+with open(f"{ROOT}/evals/analysis.json", "w") as f:
+    json.dump({"models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
+                          for name, d in MODELS}}, f, indent=2)
+with open(f"{ROOT}/evals/analysis.md", "w") as f:
+    f.write("\n".join(OUT_LINES) + "\n")
+print(f"wrote {ROOT}/evals/analysis.json and {ROOT}/evals/analysis.md")
