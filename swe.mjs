@@ -405,6 +405,7 @@ async function status(target, flags) {
 
   // run + mark per leg × selection — gathered once, printed grouped by verb
   let auditProblems = 0;
+  let newestVerdict = 0; // mtime of the freshest verdict file, for staleness
   const rows = [];
   for (const leg of theLegs) {
     for (const sel of selections) {
@@ -423,9 +424,11 @@ async function status(target, flags) {
         const runId = `${leg.out.replaceAll('/', '_')}_${sel}`;
         const reports = existsSync(EVALS_DIR) ? readdirSync(EVALS_DIR).filter((f) => f.endsWith(`.${runId}.json`)) : [];
         if (reports.length === 1) {
-          const rep = JSON.parse(readFileSync(join(EVALS_DIR, reports[0]), 'utf8'));
+          const repPath = join(EVALS_DIR, reports[0]);
+          const rep = JSON.parse(readFileSync(repPath, 'utf8'));
           verdicts = rep.completed_instances + rep.empty_patch_instances;
           resolved = rep.resolved_instances;
+          newestVerdict = Math.max(newestVerdict, statSync(repPath).mtimeMs);
         }
       } else if (ds.marker.type === 'scale') {
         const resultsPath = join(scaleOutDir(ds, leg, sel), 'eval_results.json');
@@ -433,6 +436,7 @@ async function status(target, flags) {
           const results = JSON.parse(readFileSync(resultsPath, 'utf8'));
           verdicts = Object.keys(results).length;
           resolved = Object.values(results).filter(Boolean).length;
+          newestVerdict = Math.max(newestVerdict, statSync(resultsPath).mtimeMs);
         }
       }
       if (ran < ids.length || verdicts < ids.length) auditProblems++;
@@ -452,14 +456,20 @@ async function status(target, flags) {
   // audit: would it pass right now
   console.log(`[status] audit    ${auditProblems === 0 ? '✅ would pass' : `❌ would FAIL: ${auditProblems} leg/selection pairs incomplete`}`);
 
-  // analyse: do the outputs exist, and from when
+  // analyse: do the outputs exist, and are they newer than the verdicts —
+  // an analysis older than the freshest verdict is showing stale numbers.
   const analysisBase = join(repoRoot, 'analysis', ds.name === 'verified' ? 'verified' : ds.name);
   for (const ext of ['json', 'md']) {
     const p = `${analysisBase}.${ext}`;
-    if (existsSync(p)) {
-      console.log(`[status] analyse  ✅ ${p.replace(repoRoot + '/', '')}: written ${statSync(p).mtime.toISOString()}`);
-    } else {
+    if (!existsSync(p)) {
       console.log(`[status] analyse  ℹ️ ${p.replace(repoRoot + '/', '')}: not written yet`);
+      continue;
+    }
+    const st = statSync(p);
+    if (newestVerdict > st.mtimeMs) {
+      console.log(`[status] analyse  ⚠️ ${p.replace(repoRoot + '/', '')}: STALE — written ${st.mtime.toISOString()}, verdicts are newer`);
+    } else {
+      console.log(`[status] analyse  ✅ ${p.replace(repoRoot + '/', '')}: written ${st.mtime.toISOString()}`);
     }
   }
 }
