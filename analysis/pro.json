@@ -1,46 +1,94 @@
 {
   "models": {
     "fable-5": {
-      "instances": 20,
-      "empty": 0,
-      "cost": 43.185695,
-      "steps": 645,
-      "out": 272938,
-      "ncc": 1290,
-      "cr": 18843020,
-      "cw": 854630,
-      "intot": 19698940,
-      "wall": 5964.944822072983,
-      "thinking": 130967,
-      "resolved": 17
+      "pro": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 43.185695,
+        "steps": 645,
+        "out": 272938,
+        "ncc": 1290,
+        "cr": 18843020,
+        "cw": 854630,
+        "intot": 19698940,
+        "wall": 5964.944822072983,
+        "thinking": 130967,
+        "resolved": 17
+      },
+      "nodebb": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 39.398860000000006,
+        "steps": 585,
+        "out": 285280,
+        "ncc": 1170,
+        "cr": 15540785,
+        "cw": 766590,
+        "intot": 16308545,
+        "wall": 5980.297579526901,
+        "thinking": 158086,
+        "resolved": 20
+      }
     },
     "opus-4-8": {
-      "instances": 20,
-      "empty": 0,
-      "cost": 23.57108425,
-      "steps": 694,
-      "out": 313212,
-      "ncc": 1388,
-      "cr": 21227201,
-      "cw": 819239,
-      "intot": 22047828,
-      "wall": 5187.4024612903595,
-      "thinking": 162589,
-      "resolved": 11
+      "pro": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 23.57108425,
+        "steps": 694,
+        "out": 313212,
+        "ncc": 1388,
+        "cr": 21227201,
+        "cw": 819239,
+        "intot": 22047828,
+        "wall": 5187.4024612903595,
+        "thinking": 162589,
+        "resolved": 11
+      },
+      "nodebb": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 19.231313,
+        "steps": 664,
+        "out": 251151,
+        "ncc": 1328,
+        "cr": 16945221,
+        "cw": 715726,
+        "intot": 17662275,
+        "wall": 4395.177596092224,
+        "thinking": 128650,
+        "resolved": 16
+      }
     },
     "sonnet-5": {
-      "instances": 20,
-      "empty": 1,
-      "cost": 25.2229263,
-      "steps": 1146,
-      "out": 369487,
-      "ncc": 2292,
-      "cr": 50400526,
-      "cw": 1214290,
-      "intot": 51617108,
-      "wall": 5194.999904870987,
-      "thinking": 188462,
-      "resolved": 14
+      "pro": {
+        "instances": 20,
+        "empty": 1,
+        "cost": 25.2229263,
+        "steps": 1146,
+        "out": 369487,
+        "ncc": 2292,
+        "cr": 50400526,
+        "cw": 1214290,
+        "intot": 51617108,
+        "wall": 5194.999904870987,
+        "thinking": 188462,
+        "resolved": 14
+      },
+      "nodebb": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 27.926223000000004,
+        "steps": 1244,
+        "out": 362133,
+        "ncc": 2488,
+        "cr": 59254080,
+        "cw": 1256144,
+        "intot": 60512712,
+        "wall": 5577.525127887726,
+        "thinking": 183568,
+        "resolved": 11
+      }
     }
   }
 }
