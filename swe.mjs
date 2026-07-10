@@ -113,7 +113,10 @@ const legs = ({ combo, ds }, flags) => {
 const scaleOutDir = (ds, leg, sel) =>
   join(EVALS_DIR, ds.name, `${basename(leg.out)}${sel === 'pro' ? '' : `-${sel}`}`);
 
-const legConfigs = (ds, model) => {
+const legConfigs = (ds, model, combo) => {
+  // A combination may override the dataset's config list — configs are a knob
+  // (that is what makes prompt/timeout variations declarable, not code).
+  if (combo?.configs) return combo.configs;
   for (const [needle, configs] of Object.entries(ds.run.configExceptions ?? {})) {
     if (model.includes(needle)) return configs;
   }
@@ -224,11 +227,14 @@ async function run(target, flags) {
       sets: selections,
       workers,
       effort: leg.effort,
-      configs: legConfigs(ds, leg.model),
+      configs: legConfigs(ds, leg.model, combo),
       subset: ds.run.subset,
       port: basePort + i,
       log: `logs/${label}.log`,
       label,
+      // the declared selections' ids — never the instances-<set>.txt filename
+      // convention, which collides when two datasets name a selection alike
+      selectionIds: Object.fromEntries(selections.map((s) => [s, selectionIds(ds, s)])),
     }).then(
       () => ({ label, ok: true }),
       (err) => ({ label, ok: false, err }),
@@ -243,6 +249,19 @@ async function run(target, flags) {
   const failed = results.filter((r) => !r.ok);
   for (const f of failed) console.error(`[run] FAILED ${f.label} — ${f.err.message} (see logs/${f.label}.log)`);
   if (failed.length > 0) throw new Error(`${failed.length} legs failed`);
+  // Tripwire: preds containing ids outside the selection means the filter and
+  // the declaration disagree — exactly the accident of 2026-07-11. Say so.
+  for (const leg of theLegs) {
+    for (const sel of selections) {
+      const preds = join(repoRoot, leg.out, sel, 'preds.json');
+      if (!existsSync(preds)) continue;
+      const idSet = new Set(selectionIds(ds, sel));
+      const strays = Object.keys(JSON.parse(readFileSync(preds, 'utf8'))).filter((iid) => !idSet.has(iid));
+      if (strays.length > 0) {
+        console.error(`[run] ⚠️ ${leg.out}/${sel}: preds contains ${strays.length} instances OUTSIDE the selection (e.g. ${strays[0]})`);
+      }
+    }
+  }
   console.log(`[run] ${results.length} legs complete`);
 }
 
@@ -415,8 +434,11 @@ async function status(target, flags) {
       const preds = join(repoRoot, leg.out, sel, 'preds.json');
       if (existsSync(preds)) {
         const data = JSON.parse(readFileSync(preds, 'utf8'));
-        ran = Object.keys(data).length;
-        empty = Object.values(data).filter((p) => !(p.model_patch ?? '').trim()).length;
+        // count only instances in the selection — preds may carry strays from
+        // the pre-fix naming collision, and they must not inflate progress
+        const inSel = ids.filter((iid) => iid in data);
+        ran = inSel.length;
+        empty = inSel.filter((iid) => !(data[iid].model_patch ?? '').trim()).length;
       }
       let verdicts = 0;
       let resolved = 0;

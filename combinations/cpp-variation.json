@@ -1,0 +1,14 @@
+{
+  "name": "cpp-variation",
+  "dataset": "multi",
+  "selections": ["cpp"],
+  "parallel": true,
+  "basePort": 19160,
+  "workers": 2,
+  "configs": ["swebench-local.yaml", "swebench-multi.yaml", "swebench-cpp-variation.yaml", "thinking-adaptive.yaml"],
+  "legs": [
+    { "model": "anthropic/claude-opus-4-8", "out": "runs/cpp-variation/opus-4-8" },
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/cpp-variation/sonnet-5" },
+    { "model": "anthropic/claude-fable-5", "out": "runs/cpp-variation/fable-5" }
+  ]
+}

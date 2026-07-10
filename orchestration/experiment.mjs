@@ -10,6 +10,14 @@ import { join } from 'node:path';
 import { startTimingProxy } from '../mitm/timing-mitm.mjs';
 import { spawnAwait, instanceFilter, onShutdown, isDraining, repoRoot } from './harness.mjs';
 
+// Anchored alternation from explicit ids — the caller's declaration is the
+// single source of truth. (instanceFilter's filename convention remains only
+// for the archived scripts; it once routed multi/cpp to Multilingual's list.)
+const idsFilter = (ids) => {
+  if (!ids?.length) throw new Error('empty instance id list');
+  return `^(${ids.join('|')})$`;
+};
+
 /**
  * @param {object} p
  * @param {string}   p.model    e.g. 'anthropic/claude-fable-5'
@@ -23,6 +31,7 @@ import { spawnAwait, instanceFilter, onShutdown, isDraining, repoRoot } from './
  * @param {number}   [p.port]   proxy port (default 18899); parallel legs must each use their own
  * @param {string}   [p.log]    file (repo-relative) for the leg's mini-extra output; default inherits the console
  * @param {string}   [p.label]  tag for console lines (e.g. 'sonnet-5'), so parallel legs' output is attributable
+ * @param {Object}   [p.selectionIds] set name → array of instance ids; when absent the instances-<set>.txt convention applies (archived scripts only)
  */
 export async function runExperiment({
   model,
@@ -36,6 +45,7 @@ export async function runExperiment({
   port,
   log,
   label,
+  selectionIds,
 }) {
   const tag = label ?? model;
   // The proxy appends here on first request, so the dir must exist first.
@@ -83,7 +93,7 @@ export async function runExperiment({
           'swebench',
           '--subset', subset,
           '--split', split,
-          '--filter', instanceFilter(set),
+          '--filter', selectionIds?.[set] ? idsFilter(selectionIds[set]) : instanceFilter(set),
           '-m', model,
           ...cfgArgs,
           '-o', `${out}/${set}`,

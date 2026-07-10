@@ -9,14 +9,18 @@ import { dirname, join } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 export const repoRoot = join(here, '..');
 
-// Build the anchored alternation mini-extra expects from instances-<set>.txt,
+// Build the anchored alternation mini-extra expects from the selection file,
 // e.g. ^(id-a|id-b|id-c)$ — the frozen set, identical across runs.
-export const instanceFilter = (set) => {
-  const ids = readFileSync(join(repoRoot, `instances-${set}.txt`), 'utf8')
+// The file must come from the dataset declaration when sets share a name
+// across datasets: the instances-<set>.txt naming convention once routed
+// multi/cpp to Multilingual's cpp list (8 stray instances ran, 2026-07-11).
+export const instanceFilter = (set, file) => {
+  const path = file ?? `instances-${set}.txt`;
+  const ids = readFileSync(join(repoRoot, path), 'utf8')
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean);
-  if (ids.length === 0) throw new Error(`instances-${set}.txt is empty`);
+  if (ids.length === 0) throw new Error(`${path} is empty`);
   return `^(${ids.join('|')})$`;
 };
 
