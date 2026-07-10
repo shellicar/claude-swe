@@ -56,6 +56,11 @@ const snapshotRows = (ds) =>
 // The dataset's image rule, applied to one row: returns { repo, tag }.
 const imageRef = (ds, row) => {
   if (ds.image.source === 'row') return { repo: ds.image.repo, tag: row[ds.image.tagField] };
+  if (ds.image.source === 'template') {
+    // repo and tag both rendered from row fields: {org}, {repo}, {number}, ...
+    const render = (tpl) => tpl.replace(/\{(\w+)\}/g, (_, f) => String(row[f]));
+    return { repo: render(ds.image.repo).toLowerCase(), tag: render(ds.image.tag) };
+  }
   // convention: template with {instance_id:FROM=TO} substitution
   const repo = ds.image.repo.replace(/\{instance_id:(.+)=(.+)\}/, (_, from, to) =>
     row.instance_id.replaceAll(from, to)).toLowerCase();
@@ -337,6 +342,9 @@ async function audit(target, flags) {
         } else {
           console.log(`[audit] ${name}: ok — ${line}`);
         }
+      } else {
+        // An unknown marker must fail the audit, not silently pass it.
+        throw new Error(`audit has no reader for marker type '${ds.marker.type}'`);
       }
     }
   }
@@ -346,6 +354,10 @@ async function audit(target, flags) {
 
 // Read-only: where the target stands with EVERY verb, in pipeline order.
 // Reports state without changing anything; audit is shown as would-pass/fail.
+// Emoji key: ✅ complete / nothing to do · ⚠️ partial or issue · ℹ️ not
+// started · ❌ error or missing prerequisite.
+const mark3 = (have, want) => (have >= want ? '✅' : have > 0 ? '⚠️' : 'ℹ️');
+
 async function status(target, flags) {
   const { ds, selections } = target;
   const theLegs = legs(target, flags);
@@ -357,19 +369,20 @@ async function status(target, flags) {
     const decl = ds.selections[sel];
     const file = join(repoRoot, decl.file);
     if (!existsSync(file)) {
-      console.log(`[status] draw     ${ds.name}/${sel}: NOT DRAWN (${decl.file} missing)`);
+      console.log(`[status] draw     ❌ ${ds.name}/${sel}: NOT DRAWN (${decl.file} missing)`);
       continue;
     }
     const n = selectionIds(ds, sel).length;
     const how = decl.rule ? 'drawn by rule' : 'hand-frozen';
-    console.log(`[status] draw     ${ds.name}/${sel}: ${n} ids (${how}, expected ${decl.expected})`);
+    const mk = n === decl.expected ? '✅' : '⚠️';
+    console.log(`[status] draw     ${mk} ${ds.name}/${sel}: ${n} ids (${how}, expected ${decl.expected})`);
   }
 
   // resolve: manifest coverage per selection
   for (const sel of selections) {
     const ids = selectionIds(ds, sel);
     const declared = ids.filter((iid) => manifest.has(iid)).length;
-    console.log(`[status] resolve  ${ds.name}/${sel}: ${declared}/${ids.length} in manifest`);
+    console.log(`[status] resolve  ${mark3(declared, ids.length)} ${ds.name}/${sel}: ${declared}/${ids.length} in manifest`);
   }
 
   // ensure: images actually present locally
@@ -386,7 +399,8 @@ async function status(target, flags) {
       } catch {}
     }
     const note = undeclared > 0 ? ` (${undeclared} unresolved)` : '';
-    console.log(`[status] ensure   ${ds.name}/${sel}: ${present}/${ids.length} images local${note}`);
+    const mk = undeclared > 0 ? '❌' : mark3(present, ids.length);
+    console.log(`[status] ensure   ${mk} ${ds.name}/${sel}: ${present}/${ids.length} images local${note}`);
   }
 
   // run + mark per leg × selection — gathered once, printed grouped by verb
@@ -427,28 +441,31 @@ async function status(target, flags) {
   }
   for (const r of rows) {
     const emptyNote = r.empty > 0 ? ` (${r.empty} empty)` : '';
-    console.log(`[status] run      ${r.name}: ${r.ran}/${r.total}${emptyNote}`);
+    // Empty patches are legitimate but always worth an eyebrow: ⚠️ even at n/n.
+    const mk = r.empty > 0 && r.ran >= r.total ? '⚠️' : mark3(r.ran, r.total);
+    console.log(`[status] run      ${mk} ${r.name}: ${r.ran}/${r.total}${emptyNote}`);
   }
   for (const r of rows) {
-    console.log(`[status] mark     ${r.name}: ${r.verdicts}/${r.total} verdicts (${r.resolved} resolved)`);
+    console.log(`[status] mark     ${mark3(r.verdicts, r.total)} ${r.name}: ${r.verdicts}/${r.total} verdicts (${r.resolved} resolved)`);
   }
 
   // audit: would it pass right now
-  console.log(`[status] audit    ${auditProblems === 0 ? 'would pass' : `would FAIL: ${auditProblems} leg/selection pairs incomplete`}`);
+  console.log(`[status] audit    ${auditProblems === 0 ? '✅ would pass' : `❌ would FAIL: ${auditProblems} leg/selection pairs incomplete`}`);
 
   // analyse: do the outputs exist, and from when
   const analysisBase = join(repoRoot, 'analysis', ds.name === 'verified' ? 'verified' : ds.name);
   for (const ext of ['json', 'md']) {
     const p = `${analysisBase}.${ext}`;
     if (existsSync(p)) {
-      console.log(`[status] analyse  ${p.replace(repoRoot + '/', '')}: written ${statSync(p).mtime.toISOString()}`);
+      console.log(`[status] analyse  ✅ ${p.replace(repoRoot + '/', '')}: written ${statSync(p).mtime.toISOString()}`);
     } else {
-      console.log(`[status] analyse  ${p.replace(repoRoot + '/', '')}: not written yet`);
+      console.log(`[status] analyse  ℹ️ ${p.replace(repoRoot + '/', '')}: not written yet`);
     }
   }
 }
 
 async function analyse({ ds }) {
+  if (!ds.analyser) throw new Error(`dataset ${ds.name} declares no analyser yet`);
   // The audit gate: a chain places audit before analyse; running analyse alone
   // is allowed but the analyser only sees what exists — verdicts it cannot
   // find render as "—" in its output, never as invented numbers.
