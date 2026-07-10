@@ -1,0 +1,13 @@
+{
+  "name": "multi",
+  "dataset": "multi",
+  "selections": ["cpp", "rust"],
+  "parallel": true,
+  "basePort": 19150,
+  "workers": 2,
+  "legs": [
+    { "model": "anthropic/claude-opus-4-8", "out": "runs/multi/opus-4-8" },
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/multi/sonnet-5" },
+    { "model": "anthropic/claude-fable-5", "out": "runs/multi/fable-5" }
+  ]
+}

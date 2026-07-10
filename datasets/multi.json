@@ -1,0 +1,21 @@
+{
+  "name": "multi",
+  "snapshot": "datasets/multi-swe-bench.jsonl",
+  "image": {
+    "source": "template",
+    "repo": "docker.io/mswebench/{org}_m_{repo}",
+    "tag": "pr-{number}"
+  },
+  "marker": {
+    "type": "multi-swe",
+    "note": "ByteDance's harness — not integrated yet; mark/audit fail loudly by design"
+  },
+  "run": {
+    "configs": ["swebench-local.yaml", "swebench-multi.yaml", "thinking-adaptive.yaml"],
+    "subset": "datasets/multi-swe-bench.jsonl"
+  },
+  "selections": {
+    "cpp": { "file": "instances-multi-cpp.txt", "expected": 20, "rule": { "field": "language", "equals": "cpp", "n": 20, "seed": 42 } },
+    "rust": { "file": "instances-multi-rust.txt", "expected": 20, "rule": { "field": "language", "equals": "rust", "n": 20, "seed": 42 } }
+  }
+}
