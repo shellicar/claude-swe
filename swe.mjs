@@ -194,12 +194,15 @@ async function resolve({ ds, selections }) {
 
 async function ensure({ ds, selections }) {
   const manifest = readManifest();
+  const rowsById = new Map(snapshotRows(ds).map((r) => [r.instance_id, r]));
   const missing = [];
+  const wanted = [];
   let present = 0;
   for (const sel of selections) {
     for (const iid of selectionIds(ds, sel)) {
       const ref = manifest.get(iid);
       if (!ref) throw new Error(`[ensure] ${iid} not in the manifest — run resolve first`);
+      wanted.push({ iid, ref });
       try {
         execFileSync('docker', ['image', 'inspect', ref], { stdio: 'ignore' });
         present++;
@@ -212,7 +215,24 @@ async function ensure({ ds, selections }) {
     console.log(`[ensure] pulling ${i + 1}/${missing.length} ${missing[i].iid} by digest...`);
     await spawnAwait('docker', ['pull', '--platform', 'linux/amd64', missing[i].ref]);
   }
-  console.log(`[ensure] ok — ${present} present, ${missing.length} pulled`);
+  // Digest pulls leave images UNTAGGED, but markers look images up by name
+  // (e.g. Multi-SWE's harness would fall back to BUILDING — the unpinned path).
+  // Stamp each verified digest with its declared name so name lookups resolve
+  // to exactly the declared bytes.
+  let tagged = 0;
+  for (const { iid, ref } of wanted) {
+    const row = rowsById.get(iid);
+    if (!row) continue;
+    const { repo, tag } = imageRef(ds, row);
+    const named = `${repo.replace('docker.io/', '')}:${tag}`;
+    try {
+      execFileSync('docker', ['image', 'inspect', named], { stdio: 'ignore' });
+    } catch {
+      execFileSync('docker', ['tag', ref, named], { stdio: 'ignore' });
+      tagged++;
+    }
+  }
+  console.log(`[ensure] ok — ${present} present, ${missing.length} pulled, ${tagged} tagged`);
 }
 
 async function run(target, flags) {
