@@ -8,7 +8,7 @@
   },
   "marker": {
     "type": "multi-swe",
-    "note": "ByteDance's harness — not integrated yet; mark/audit fail loudly by design"
+    "harness": "vendor/multi-swe-bench"
   },
   "run": {
     "configs": ["swebench-local.yaml", "swebench-multi.yaml", "thinking-adaptive.yaml"],

@@ -7,6 +7,7 @@ version = "0"
 requires-python = ">=3.11"
 dependencies = [
     "mini-swe-agent",
+    "multi-swe-bench",
     "sb-cli",
     "swebench",
 ]
@@ -16,3 +17,5 @@ mini-swe-agent = { path = "vendor/mini-swe-agent", editable = true }
 # Patched fork (branch feature/claude-swe-patches, off v4.1.0): evaluation with
 # --namespace skips env/repo script construction, so marking is fully offline.
 swebench = { path = "vendor/swebench", editable = true }
+# ByteDance's Multi-SWE-bench harness — the 'multi-swe' marker.
+multi-swe-bench = { path = "vendor/multi-swe-bench", editable = true }

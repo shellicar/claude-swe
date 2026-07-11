@@ -8,3 +8,6 @@
 [submodule "vendor/swe-bench-pro"]
 	path = vendor/swe-bench-pro
 	url = https://github.com/shellicar/SWE-bench_Pro-os
+[submodule "vendor/multi-swe-bench"]
+	path = vendor/multi-swe-bench
+	url = https://github.com/shellicar/multi-swe-bench

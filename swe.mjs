@@ -113,6 +113,11 @@ const legs = ({ combo, ds }, flags) => {
 const scaleOutDir = (ds, leg, sel) =>
   join(EVALS_DIR, ds.name, `${basename(leg.out)}${sel === 'pro' ? '' : `-${sel}`}`);
 
+// Multi-SWE marker: verdicts (final_report.json) live per leg × selection; the
+// harness's scratch (workdir, repos, logs) goes under evals/logs/, which is
+// gitignored as regenerable.
+const multiSweOutDir = (ds, leg, sel) => join(EVALS_DIR, ds.name, `${basename(leg.out)}-${sel}`);
+
 const legConfigs = (ds, model, combo) => {
   // A combination may override the dataset's config list — configs are a knob
   // (that is what makes prompt/timeout variations declarable, not code).
@@ -308,6 +313,52 @@ async function mark(target, flags) {
           '--docker_platform', 'linux/amd64',
           '--num_workers', process.env.MARK_WORKERS ?? '2',
         ], { cwd: join(repoRoot, ds.marker.harness), onChild: (c) => { current = c; } });
+      } else if (ds.marker.type === 'multi-swe') {
+        const outDir = multiSweOutDir(ds, leg, sel);
+        const scratch = join(EVALS_DIR, 'logs', 'multi-swe', `${basename(leg.out)}-${sel}`);
+        mkdirSync(outDir, { recursive: true });
+        mkdirSync(scratch, { recursive: true });
+        // Their patches format: JSONL of {org, repo, number, fix_patch};
+        // org/repo/number come from the snapshot row. Selection members only —
+        // strays in preds are not part of the paper.
+        const predsData = JSON.parse(readFileSync(preds, 'utf8'));
+        const rowsById = new Map(snapshotRows(ds).map((r) => [r.instance_id, r]));
+        const lines = [];
+        for (const iid of selectionIds(ds, sel)) {
+          const p = predsData[iid];
+          if (!p) continue;
+          const row = rowsById.get(iid);
+          lines.push(JSON.stringify({ org: row.org, repo: row.repo, number: row.number, fix_patch: p.model_patch ?? '' }));
+        }
+        const patchPath = join(outDir, 'patches.jsonl');
+        writeFileSync(patchPath, lines.join('\n') + '\n');
+        const workers = Number(process.env.MARK_WORKERS ?? 2);
+        const cfgPath = join(outDir, 'config.json');
+        writeFileSync(cfgPath, JSON.stringify({
+          mode: 'evaluation',
+          workdir: join(scratch, 'workdir'),
+          patch_files: [patchPath],
+          dataset_files: [join(repoRoot, ds.snapshot)],
+          force_build: false,
+          output_dir: outDir,
+          specifics: [],
+          skips: [],
+          repo_dir: join(scratch, 'repos'),
+          need_clone: false,
+          global_env: [],
+          clear_env: true,
+          stop_on_error: false,
+          max_workers: workers,
+          max_workers_build_image: workers,
+          max_workers_run_instance: workers,
+          log_dir: join(scratch, 'logs'),
+          log_level: 'INFO',
+        }, null, 2));
+        console.log(`[mark] === ${ds.name}/${basename(leg.out)}-${sel} (${lines.length} patches) ===`);
+        await spawnAwait(join(repoRoot, '.venv/bin/python'), [
+          '-m', 'multi_swe_bench.harness.run_evaluation',
+          '--config', cfgPath,
+        ], { onChild: (c) => { current = c; } });
       } else {
         throw new Error(`unknown marker type: ${ds.marker.type}`);
       }
@@ -357,6 +408,21 @@ async function audit(target, flags) {
         const line = `${Object.keys(results).length}/${ids.length} verdicts, resolved ${resolved}`;
         if (missing.length > 0) {
           console.error(`[audit] ${name}: INCOMPLETE — ${line}; missing ${missing.length}`);
+          problems++;
+        } else {
+          console.log(`[audit] ${name}: ok — ${line}`);
+        }
+      } else if (ds.marker.type === 'multi-swe') {
+        const reportPath = join(multiSweOutDir(ds, leg, sel), 'final_report.json');
+        if (!existsSync(reportPath)) {
+          console.error(`[audit] ${name}: no final_report.json`);
+          problems++;
+          continue;
+        }
+        const rep = JSON.parse(readFileSync(reportPath, 'utf8'));
+        const line = `submitted ${rep.submitted_instances}/${expected}, completed ${rep.completed_instances}, resolved ${rep.resolved_instances}, errors ${rep.error_instances}, incomplete ${rep.incomplete_instances}, empty ${rep.empty_patch_instances}`;
+        if (rep.submitted_instances !== expected || rep.error_instances > 0 || rep.incomplete_instances > 0) {
+          console.error(`[audit] ${name}: INCOMPLETE — ${line}`);
           problems++;
         } else {
           console.log(`[audit] ${name}: ok — ${line}`);
@@ -459,6 +525,14 @@ async function status(target, flags) {
           verdicts = Object.keys(results).length;
           resolved = Object.values(results).filter(Boolean).length;
           newestVerdict = Math.max(newestVerdict, statSync(resultsPath).mtimeMs);
+        }
+      } else if (ds.marker.type === 'multi-swe') {
+        const reportPath = join(multiSweOutDir(ds, leg, sel), 'final_report.json');
+        if (existsSync(reportPath)) {
+          const rep = JSON.parse(readFileSync(reportPath, 'utf8'));
+          verdicts = rep.completed_instances + rep.empty_patch_instances;
+          resolved = rep.resolved_instances;
+          newestVerdict = Math.max(newestVerdict, statSync(reportPath).mtimeMs);
         }
       }
       if (ran < ids.length || verdicts < ids.length) auditProblems++;
