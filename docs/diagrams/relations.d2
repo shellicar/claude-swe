@@ -10,6 +10,7 @@ multi: "DATASET multi\nmarker: multi-swe" {
   style.fill: "#14352A"; style.stroke: "#2ECC71"; style.font-color: "#E8F8F0"
   cpp: "cpp — 20 instances\n(seeded 20)"
   rust: "rust — 20 instances\n(seeded 20)"
+  tokio: "tokio — 20 instances\n(seeded 20)"
 }
 
 multilingual: "DATASET multilingual\nmarker: swebench" {
@@ -22,6 +23,7 @@ pro: "DATASET pro\nmarker: scale" {
   style.fill: "#14352A"; style.stroke: "#2ECC71"; style.font-color: "#E8F8F0"
   pro: "pro — 20 instances\n(rule: all)"
   nodebb: "nodebb — 44 instances\n(rule: all)"
+  element: "element — 20 instances\n(seeded 20)"
 }
 
 verified: "DATASET verified\nmarker: swebench" {
@@ -36,6 +38,9 @@ combo_cpp_variation -> multi.cpp: "visits"
 combo_effort_sweep: "combination effort-sweep\nopus-4-8, opus-4-8, opus-4-8, opus-4-8\nefforts: low, medium, xhigh, max\n→ runs/effort-sweep/" { style.fill: "#2E1E0E"; style.stroke: "#E67E22"; style.font-color: "#FBEFE3" }
 combo_effort_sweep -> verified.standard: "visits"
 combo_effort_sweep -> verified.hard: "visits"
+
+combo_element: "combination element\nopus-4-8, sonnet-5, fable-5\n→ runs/element/" { style.fill: "#2E1E0E"; style.stroke: "#E67E22"; style.font-color: "#FBEFE3" }
+combo_element -> pro.element: "visits"
 
 combo_fmt_variation: "combination fmt-variation\nopus-4-8, sonnet-5, fable-5\nVARIATION: own prompt/timeout configs\n→ runs/fmt-variation/" { style.fill: "#3A1714"; style.stroke: "#E74C3C"; style.font-color: "#FBEAEA"; style.stroke-dash: 3 }
 combo_fmt_variation -> multilingual.cpp: "visits"
@@ -57,6 +62,9 @@ combo_nodebb -> pro.nodebb: "visits"
 
 combo_pro: "combination pro\nopus-4-8, sonnet-5, fable-5\n→ runs/pro/" { style.fill: "#2E1E0E"; style.stroke: "#E67E22"; style.font-color: "#FBEFE3" }
 combo_pro -> pro.pro: "visits"
+
+combo_tokio: "combination tokio\nopus-4-8, sonnet-5, fable-5\n→ runs/tokio/" { style.fill: "#2E1E0E"; style.stroke: "#E67E22"; style.font-color: "#FBEFE3" }
+combo_tokio -> multi.tokio: "visits"
 
 note: "Green containers are datasets with their frozen selections. Orange boxes are combinations (solid = control knobs); red dashed are variations — same selection, different prompt/timeout. Generated from datasets/*.json and combinations/*.json by generate-relations.mjs." {
   near: bottom-center; shape: text; style.font-color: "#7F8C8D"
