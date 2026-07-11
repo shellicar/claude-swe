@@ -1,0 +1,54 @@
+<!doctype html><meta charset='utf-8'><title>Multi-SWE-bench</title>
+<style>body{background:#1b1b2b;color:#e8e8f0;font:14px -apple-system,sans-serif;padding:2em}
+table{border-collapse:collapse}td,th{border:1px solid #555;padding:.35em .8em;text-align:left}
+th{background:#2a2a3f}td.sec{background:#2a2a3f;font-weight:bold}</style>
+<table><tr><th>Multi-SWE-bench</th><th>fable-5</th><th>opus-4-8</th><th>sonnet-5</th></tr>
+<tr><td class='sec' colspan='4'>cpp control (20 instances)</td></tr>
+<tr><td>Instances</td><td>20</td><td>20</td><td>20</td></tr>
+<tr><td>Resolved</td><td>14</td><td>13</td><td>12</td></tr>
+<tr><td>Resolved %</td><td>70%</td><td>65%</td><td>60%</td></tr>
+<tr><td>$/resolved</td><td>$2.15</td><td>$1.33</td><td>$1.24</td></tr>
+<tr><td>Empty patches</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Total cost</td><td>$30.07</td><td>$17.32</td><td>$14.91</td></tr>
+<tr><td>$/instance</td><td>$1.50</td><td>$0.87</td><td>$0.75</td></tr>
+<tr><td>Steps</td><td>503</td><td>635</td><td>910</td></tr>
+<tr><td>Output tokens</td><td>244k</td><td>260k</td><td>244k</td></tr>
+<tr><td>Thinking (output)</td><td>126k</td><td>109k</td><td>91k</td></tr>
+<tr><td>Input tokens</td><td>10.82M</td><td>14.32M</td><td>27.74M</td></tr>
+<tr><td>- non-cached</td><td>1k</td><td>1k</td><td>2k</td></tr>
+<tr><td>- cache read</td><td>10.20M</td><td>13.68M</td><td>26.89M</td></tr>
+<tr><td>- cache write</td><td>613k</td><td>637k</td><td>848k</td></tr>
+<tr><td>Wall-clock</td><td>1.4 h</td><td>1.0 h</td><td>0.9 h</td></tr>
+<tr><td class='sec' colspan='4'>rust control (20 instances)</td></tr>
+<tr><td>Instances</td><td>20</td><td>20</td><td>20</td></tr>
+<tr><td>Resolved</td><td>14</td><td>11</td><td>13</td></tr>
+<tr><td>Resolved %</td><td>70%</td><td>55%</td><td>65%</td></tr>
+<tr><td>$/resolved</td><td>$1.28</td><td>$0.97</td><td>$0.73</td></tr>
+<tr><td>Empty patches</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Total cost</td><td>$17.86</td><td>$10.64</td><td>$9.46</td></tr>
+<tr><td>$/instance</td><td>$0.89</td><td>$0.53</td><td>$0.47</td></tr>
+<tr><td>Steps</td><td>425</td><td>466</td><td>715</td></tr>
+<tr><td>Output tokens</td><td>133k</td><td>164k</td><td>159k</td></tr>
+<tr><td>Thinking (output)</td><td>61k</td><td>86k</td><td>63k</td></tr>
+<tr><td>Input tokens</td><td>5.87M</td><td>7.92M</td><td>16.27M</td></tr>
+<tr><td>- non-cached</td><td>1k</td><td>1k</td><td>1k</td></tr>
+<tr><td>- cache read</td><td>5.41M</td><td>7.47M</td><td>15.63M</td></tr>
+<tr><td>- cache write</td><td>463k</td><td>449k</td><td>634k</td></tr>
+<tr><td>Wall-clock</td><td>1.1 h</td><td>0.7 h</td><td>0.7 h</td></tr>
+<tr><td class='sec' colspan='4'>cpp variation (verify + 900s) (20 instances)</td></tr>
+<tr><td>Instances</td><td>20</td><td>20</td><td>20</td></tr>
+<tr><td>Resolved</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Resolved %</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>$/resolved</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Empty patches</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Total cost</td><td>$47.71</td><td>$32.21</td><td>$20.61</td></tr>
+<tr><td>$/instance</td><td>$2.39</td><td>$1.61</td><td>$1.03</td></tr>
+<tr><td>Steps</td><td>967</td><td>1,152</td><td>1,356</td></tr>
+<tr><td>Output tokens</td><td>284k</td><td>328k</td><td>266k</td></tr>
+<tr><td>Thinking (output)</td><td>124k</td><td>122k</td><td>100k</td></tr>
+<tr><td>Input tokens</td><td>25.22M</td><td>39.20M</td><td>44.26M</td></tr>
+<tr><td>- non-cached</td><td>2k</td><td>2k</td><td>3k</td></tr>
+<tr><td>- cache read</td><td>24.50M</td><td>38.43M</td><td>43.29M</td></tr>
+<tr><td>- cache write</td><td>719k</td><td>765k</td><td>966k</td></tr>
+<tr><td>Wall-clock</td><td>2.0 h</td><td>1.5 h</td><td>1.3 h</td></tr>
+</table><p>Verdicts from ByteDance&#x27;s Multi-SWE harness; — means a leg is not yet marked.</p>

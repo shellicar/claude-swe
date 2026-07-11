@@ -10,6 +10,7 @@
     "type": "multi-swe",
     "harness": "vendor/multi-swe-bench"
   },
+  "analyser": "analyse-multi.py",
   "run": {
     "configs": ["swebench-local.yaml", "swebench-multi.yaml", "thinking-adaptive.yaml"],
     "subset": "datasets/multi-swe-bench.jsonl"

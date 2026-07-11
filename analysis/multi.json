@@ -1,0 +1,136 @@
+{
+  "models": {
+    "fable-5": {
+      "cpp control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 30.069006499999997,
+        "steps": 503,
+        "out": 243780,
+        "ncc": 1006,
+        "cr": 10202459,
+        "cw": 613399,
+        "intot": 10816864,
+        "wall": 4962.308630943298,
+        "thinking": 125877,
+        "resolved": 14
+      },
+      "rust control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 17.861215,
+        "steps": 425,
+        "out": 133151,
+        "ncc": 850,
+        "cr": 5410290,
+        "cw": 462790,
+        "intot": 5873930,
+        "wall": 3899.9085681438446,
+        "thinking": 60518,
+        "resolved": 14
+      },
+      "cpp variation (verify + 900s)": {
+        "instances": 20,
+        "empty": 2,
+        "cost": 47.71436200000002,
+        "steps": 967,
+        "out": 284254,
+        "ncc": 1918,
+        "cr": 24499482,
+        "cw": 718640,
+        "intot": 25220040,
+        "wall": 7350.5220675468445,
+        "thinking": 124021,
+        "resolved": null
+      }
+    },
+    "opus-4-8": {
+      "cpp control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 17.32385125,
+        "steps": 635,
+        "out": 259723,
+        "ncc": 1270,
+        "cr": 13680640,
+        "cw": 637457,
+        "intot": 14319367,
+        "wall": 3731.715783596039,
+        "thinking": 108515,
+        "resolved": 13
+      },
+      "rust control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 10.64201375,
+        "steps": 466,
+        "out": 163876,
+        "ncc": 932,
+        "cr": 7472170,
+        "cw": 448699,
+        "intot": 7921801,
+        "wall": 2508.847327232361,
+        "thinking": 85625,
+        "resolved": 11
+      },
+      "cpp variation (verify + 900s)": {
+        "instances": 20,
+        "empty": 2,
+        "cost": 32.21404075,
+        "steps": 1152,
+        "out": 328245,
+        "ncc": 2298,
+        "cr": 38431664,
+        "cw": 764895,
+        "intot": 39198857,
+        "wall": 5483.5849459171295,
+        "thinking": 122267,
+        "resolved": null
+      }
+    },
+    "sonnet-5": {
+      "cpp control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 14.91061665,
+        "steps": 910,
+        "out": 243925,
+        "ncc": 1820,
+        "cr": 26890243,
+        "cw": 847789,
+        "intot": 27739852,
+        "wall": 3251.4159848690033,
+        "thinking": 91189,
+        "resolved": 12
+      },
+      "rust control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 9.46204065,
+        "steps": 715,
+        "out": 159411,
+        "ncc": 1430,
+        "cr": 15630198,
+        "cw": 634007,
+        "intot": 16265635,
+        "wall": 2412.1074776649475,
+        "thinking": 63205,
+        "resolved": 13
+      },
+      "cpp variation (verify + 900s)": {
+        "instances": 20,
+        "empty": 2,
+        "cost": 20.6062914,
+        "steps": 1356,
+        "out": 265738,
+        "ncc": 2712,
+        "cr": 43293418,
+        "cw": 966416,
+        "intot": 44262546,
+        "wall": 4584.036306858063,
+        "thinking": 100037,
+        "resolved": null
+      }
+    }
+  }
+}
