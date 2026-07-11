@@ -115,8 +115,12 @@ const scaleOutDir = (ds, leg, sel) =>
 
 // Multi-SWE marker: verdicts (final_report.json) live per leg × selection; the
 // harness's scratch (workdir, repos, logs) goes under evals/logs/, which is
-// gitignored as regenerable.
-const multiSweOutDir = (ds, leg, sel) => join(EVALS_DIR, ds.name, `${basename(leg.out)}-${sel}`);
+// gitignored as regenerable. The key is the leg's FULL out path, not the model
+// basename — two combinations sharing dataset, selection and model (control vs
+// variation) collided on basename alone and the later mark overwrote the
+// earlier one's verdicts (2026-07-11).
+const multiSweOutDir = (ds, leg, sel) =>
+  join(EVALS_DIR, ds.name, `${leg.out.replace(/^runs\//, '').replaceAll('/', '-')}-${sel}`);
 
 const legConfigs = (ds, model, combo) => {
   // A combination may override the dataset's config list — configs are a knob
