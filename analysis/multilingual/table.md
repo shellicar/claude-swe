@@ -1,4 +1,4 @@
-| Multilingual | fable-5 | opus-4-8 | sonnet-5 |
+| SWE-bench Multilingual | fable-5 | opus-4-8 | sonnet-5 |
 |---|---|---|---|
 | **rust (tokio-rs/tokio, 9 instances)** | | | |
 | Instances | 9 | 9 | 9 |

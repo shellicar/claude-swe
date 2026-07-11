@@ -1,0 +1,28 @@
+<!doctype html><meta charset='utf-8'><title>claude-swe — all experiments</title>
+<style>body{background:#1b1b2b;color:#e8e8f0;font:14px -apple-system,sans-serif;padding:2em}
+table{border-collapse:collapse}td,th{border:1px solid #555;padding:.35em .8em;text-align:left}
+th{background:#2a2a3f}td.sec{background:#2a2a3f;font-weight:bold}</style>
+<table><tr><th>claude-swe — all experiments</th><th>fable-5</th><th>opus-4-8</th><th>opus-4-7</th><th>opus-4-6</th><th>sonnet-4-6</th><th>sonnet-5</th><th>haiku-4-5</th></tr>
+<tr><td class='sec' colspan='8'>SWE-bench Verified</td></tr>
+<tr><td>standard (60)</td><td>55 (92%)</td><td>51 (85%)</td><td>50 (83%)</td><td>46 (77%)</td><td>44 (73%)</td><td>51 (85%)</td><td>38 (63%)</td></tr>
+<tr><td>— cost/resolved</td><td>$0.56</td><td>$0.41</td><td>$0.52</td><td>$0.53</td><td>$0.81</td><td>$0.34</td><td>$0.47</td></tr>
+<tr><td>hard (45)</td><td>39 (87%)</td><td>32 (71%)</td><td>25 (56%)</td><td>18 (40%)</td><td>21 (47%)</td><td>34 (76%)</td><td>13 (29%)</td></tr>
+<tr><td>— cost/resolved</td><td>$1.36</td><td>$1.06</td><td>$2.08</td><td>$2.90</td><td>$5.02</td><td>$1.17</td><td>$1.65</td></tr>
+<tr><td class='sec' colspan='8'>SWE-bench Pro</td></tr>
+<tr><td>tutanota ts (20)</td><td>17 (85%)</td><td>11 (55%)</td><td>—</td><td>—</td><td>—</td><td>14 (70%)</td><td>—</td></tr>
+<tr><td>— cost/resolved</td><td>$2.54</td><td>$2.14</td><td>—</td><td>—</td><td>—</td><td>$1.80</td><td>—</td></tr>
+<tr><td>NodeBB js (44)</td><td>42 (95%)</td><td>35 (80%)</td><td>—</td><td>—</td><td>—</td><td>32 (73%)</td><td>—</td></tr>
+<tr><td>— cost/resolved</td><td>$1.87</td><td>$1.10</td><td>—</td><td>—</td><td>—</td><td>$1.47</td><td>—</td></tr>
+<tr><td class='sec' colspan='8'>SWE-bench Multilingual</td></tr>
+<tr><td>rust: tokio (9)</td><td>7 (78%)</td><td>7 (78%)</td><td>—</td><td>—</td><td>—</td><td>7 (78%)</td><td>—</td></tr>
+<tr><td>— cost/resolved</td><td>$0.71</td><td>$0.41</td><td>—</td><td>—</td><td>—</td><td>$0.41</td><td>—</td></tr>
+<tr><td>cpp: fmt (11)</td><td>3 (27%)</td><td>4 (36%)</td><td>—</td><td>—</td><td>—</td><td>6 (55%)</td><td>—</td></tr>
+<tr><td>— cost/resolved</td><td>$3.27</td><td>$1.90</td><td>—</td><td>—</td><td>—</td><td>$1.45</td><td>—</td></tr>
+<tr><td class='sec' colspan='8'>Multi-SWE-bench</td></tr>
+<tr><td>cpp control (20)</td><td>14 (70%)</td><td>13 (65%)</td><td>—</td><td>—</td><td>—</td><td>12 (60%)</td><td>—</td></tr>
+<tr><td>— cost/resolved</td><td>$2.15</td><td>$1.33</td><td>—</td><td>—</td><td>—</td><td>$1.24</td><td>—</td></tr>
+<tr><td>rust control (20)</td><td>14 (70%)</td><td>11 (55%)</td><td>—</td><td>—</td><td>—</td><td>13 (65%)</td><td>—</td></tr>
+<tr><td>— cost/resolved</td><td>$1.28</td><td>$0.97</td><td>—</td><td>—</td><td>—</td><td>$0.73</td><td>—</td></tr>
+<tr><td>cpp variation (20)</td><td>14 (70%)</td><td>13 (65%)</td><td>—</td><td>—</td><td>—</td><td>12 (60%)</td><td>—</td></tr>
+<tr><td>— cost/resolved</td><td>$3.41</td><td>$2.48</td><td>—</td><td>—</td><td>—</td><td>$1.72</td><td>—</td></tr>
+</table><p>Resolved n (%) and cost per resolved, per selection. — = not run or not yet marked. Details per dataset in analysis/&lt;dataset&gt;/table.md.</p>

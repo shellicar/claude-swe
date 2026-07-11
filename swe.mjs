@@ -587,9 +587,8 @@ async function status(target, flags) {
 
   // analyse: do the outputs exist, and are they newer than the verdicts —
   // an analysis older than the freshest verdict is showing stale numbers.
-  const analysisBase = join(repoRoot, 'analysis', ds.name === 'verified' ? 'verified' : ds.name);
-  for (const ext of ['json', 'md']) {
-    const p = `${analysisBase}.${ext}`;
+  for (const fname of ['data.json', 'table.md']) {
+    const p = join(repoRoot, 'analysis', ds.name, fname);
     if (!existsSync(p)) {
       console.log(`[status] analyse  ℹ️ ${p.replace(repoRoot + '/', '')}: not written yet`);
       continue;

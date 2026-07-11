@@ -20,6 +20,8 @@ import hashlib
 import json
 import os
 
+from analysis_output import emit
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SELECTIONS = ["rust", "cpp"]
 EXPECTED = {"rust": 9, "cpp": 11}
@@ -155,24 +157,17 @@ def make_rows(sel):
     ]
 
 
-lines = []
-lines.append("| Multilingual | " + " | ".join(models) + " |")
-lines.append("|" + "---|" * (len(models) + 1))
+NOTE = "Verdicts from the swebench marker; — means a leg is not yet marked."
+
+sections = []
 for sel in SELECTIONS:
-    lines.append(f"| **{sel} ({REPOS[sel]}, {EXPECTED[sel]} instances)** |" + " |" * len(models))
-    for label, fn in make_rows(sel):
-        lines.append(f"| {label} | " + " | ".join(fn(data[m][sel]) for m in models) + " |")
+    body = [(label, [fn(data[m][sel]) for m in models]) for label, fn in make_rows(sel)]
     thinks = []
     for m in models:
         v = THINKING.get(m)
         thinks.append(tok(v[sel]) if v else "—")
-    lines.append(f"| Thinking (output) | " + " | ".join(thinks) + " |")
-lines.append("")
-lines.append("Verdicts from the swebench marker; — means a leg is not yet marked.")
+    body.append(("Thinking (output)", thinks))
+    sections.append((f"{sel} ({REPOS[sel]}, {EXPECTED[sel]} instances)", body))
 
-os.makedirs(f"{ROOT}/analysis", exist_ok=True)
-with open(f"{ROOT}/analysis/multilingual.json", "w") as f:
-    json.dump({"models": data, "thinking": THINKING}, f, indent=2)
-with open(f"{ROOT}/analysis/multilingual.md", "w") as f:
-    f.write("\n".join(lines) + "\n")
-print(f"wrote {ROOT}/analysis/multilingual.json and {ROOT}/analysis/multilingual.md")
+emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
+     {"models": data, "thinking": THINKING})

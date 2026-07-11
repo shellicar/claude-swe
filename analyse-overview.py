@@ -6,23 +6,23 @@ dataset's selections as rows and the union of models as columns. Two rows per
 selection: resolved n (%) and $/resolved. Cells read "—" where a model never
 ran that selection or it is not yet marked.
 
-Reads the per-dataset analysis/*.json files (the machine layer each analyser
-writes), so it can only ever be as stale as they are; swe.mjs regenerates it
-after every analyse.
+Reads the per-dataset analysis/<name>/data.json files (the machine layer each
+analyser writes), so it can only ever be as stale as they are; swe.mjs
+regenerates it after every analyse.
 
-Outputs: analysis/overview.{md,html,png,svg} (+ .d2 intermediate).
+Outputs: analysis/overview/ (data.json, table.md, table.html, table.png).
 """
 
 import json
 import os
-import shutil
-import subprocess
+
+from analysis_output import emit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 def load(name):
-    path = f"{ROOT}/analysis/{name}.json"
+    path = f"{ROOT}/analysis/{name}/data.json"
     return json.load(open(path)) if os.path.exists(path) else None
 
 
@@ -34,7 +34,9 @@ def cellpair(leg):
     n = leg.get("instances") or 0
     if resolved is None or not n:
         return "—", "—"
-    res = f"{resolved} ({resolved / n * 100:.0f}%)"
+    # non-breaking space: a wrapped cell makes d2 under-measure the table and
+    # clip its bottom (the Pro section lost rows to exactly this)
+    res = f"{resolved}\u00a0({resolved / n * 100:.0f}%)"
     cost = leg.get("cost") or 0
     return res, (f"${cost / resolved:.2f}" if resolved else "—")
 
@@ -102,63 +104,18 @@ cols = [COLUMNS[i] for i in keep]
 for si, (title, body) in enumerate(sections):
     sections[si] = (title, [(l, [r[i] for i in keep], [c[i] for i in keep]) for l, r, c in body])
 
-# No '$' here: d2 parses $ inside quoted labels as a substitution and dies.
-NOTE = "Resolved n (%) and cost per resolved, per selection. — = not run or not yet marked. Details per dataset in analysis/<dataset>.md."
+NOTE = "Resolved n (%) and cost per resolved, per selection. — = not run or not yet marked. Details per dataset in analysis/<dataset>/table.md."
 
-# markdown
-lines = ["| | " + " | ".join(cols) + " |", "|" + "---|" * (len(cols) + 1)]
+# Flatten the (label, res, cost) triples into the emitter's (label, cells) rows.
+emit_sections = []
 for title, body in sections:
-    lines.append(f"| **{title}** |" + " |" * len(cols))
+    flat = []
     for label, res, cost in body:
-        lines.append(f"| {label} | " + " | ".join(res) + " |")
-        lines.append(f"| — $/resolved | " + " | ".join(cost) + " |")
-lines += ["", NOTE]
+        flat.append((label.replace(" ", "\u00a0"), res))
+        flat.append(("—\u00a0cost/resolved", cost))
+    emit_sections.append((title, flat))
 
-# html
-import html as html_mod
-h = ["<!doctype html><meta charset='utf-8'><title>claude-swe overview</title>",
-     "<style>body{background:#1b1b2b;color:#e8e8f0;font:14px -apple-system,sans-serif;padding:2em}",
-     "table{border-collapse:collapse}td,th{border:1px solid #555;padding:.35em .8em;text-align:left}",
-     "th{background:#2a2a3f}td.sec{background:#2a2a3f;font-weight:bold}td.sub{color:#9a9ab0}</style>",
-     "<table><tr><th></th>" + "".join(f"<th>{html_mod.escape(c)}</th>" for c in cols) + "</tr>"]
-for title, body in sections:
-    h.append(f"<tr><td class='sec' colspan='{len(cols) + 1}'>{html_mod.escape(title)}</td></tr>")
-    for label, res, cost in body:
-        h.append("<tr><td>" + html_mod.escape(label) + "</td>" + "".join(f"<td>{html_mod.escape(c)}</td>" for c in res) + "</tr>")
-        h.append("<tr><td class='sub'>— $/resolved</td>" + "".join(f"<td class='sub'>{html_mod.escape(c)}</td>" for c in cost) + "</tr>")
-h.append(f"</table><p>{html_mod.escape(NOTE)}</p>")
-
-# d2 — one md table per dataset section (the known measurement traps: split
-# tables, one-line cells, sacrificial blank last row)
-d2 = ["vars: { d2-config: { theme-id: 200 } }", "",
-      'title: "claude-swe — all experiments" { near: top-center; shape: text; style.font-size: 22; style.bold: true }', ""]
-prev = None
-for idx, (title, body) in enumerate(sections):
-    name = f"section{idx}"
-    d2.append(f"{name}: |||md")
-    d2.append(f"  | {title} | " + " | ".join(cols) + " |")
-    d2.append("  |" + "---|" * (len(cols) + 1))
-    for label, res, cost in body:
-        d2.append(f"  | {label} | " + " | ".join(res) + " |")
-        d2.append(f"  | $/resolved | " + " | ".join(cost) + " |")
-    d2.append("  | " + " | " * (len(cols) + 1))
-    d2.append("|||")
-    if prev is not None:
-        d2.append(f"{prev} -> {name}: {{style.opacity: 0}}")
-    prev = name
-d2.append(f'note: "{NOTE}" {{ near: bottom-center; shape: text; style.font-color: "#7F8C8D" }}')
-
-os.makedirs(f"{ROOT}/analysis", exist_ok=True)
-with open(f"{ROOT}/analysis/overview.md", "w") as f:
-    f.write("\n".join(lines) + "\n")
-with open(f"{ROOT}/analysis/overview.html", "w") as f:
-    f.write("\n".join(h) + "\n")
-with open(f"{ROOT}/analysis/overview.d2", "w") as f:
-    f.write("\n".join(d2) + "\n")
-wrote = "overview.md, overview.html, overview.d2"
-if shutil.which("d2"):
-    for ext in ("png", "svg"):
-        subprocess.run(["d2", f"{ROOT}/analysis/overview.d2", f"{ROOT}/analysis/overview.{ext}"],
-                       check=True, capture_output=True)
-    wrote += ", overview.png, overview.svg"
-print(f"wrote analysis/: {wrote}")
+emit("overview", "claude-swe — all experiments", cols, emit_sections, NOTE,
+     {"columns": cols, "sections": [
+         {"dataset": title, "rows": [{"selection": l, "resolved": r, "cost_per_resolved": c} for l, r, c in body]}
+         for title, body in sections]})

@@ -17,6 +17,8 @@ import hashlib
 import json
 import os
 
+from analysis_output import emit
+
 MODELS = [  # display name -> dir
     ("Claude Fable 5", "fable-5"),
     ("Claude Fable 5 (2 Jul)", "fable-5-high-2026-07-02"),
@@ -131,11 +133,6 @@ rows = [
     ("Wall-clock (12-way parallel)", lambda L, n: f"{L['wall']/3600:.1f} h"),
 ]
 
-OUT_LINES = []
-OUT_LINES.append("| | " + " | ".join(name for name, _ in MODELS) + " |")
-OUT_LINES.append("|" + "---|" * (len(MODELS) + 1))
-
-
 def combined(d):
     c = {}
     for k in data[d]["standard"]:
@@ -143,36 +140,32 @@ def combined(d):
     return c
 
 
-def emit(section_label, getter, n, thinking_set):
-    OUT_LINES.append(f"| **{section_label}** |" + " |" * len(MODELS))
+def section(getter, n, thinking_set):
+    body = []
     for label, fn in rows:
         if fn is None:  # thinking row
-            cells = [think(d, thinking_set) if thinking_set else
-                     (think(d, "standard") if False else "—") for _, d in MODELS]
             if thinking_set is None:  # combined
                 cells = []
                 for _, d in MODELS:
                     v = THINKING.get(d)
                     cells.append(tok(v["standard"] + v["hard"]) if v else "—")
-            OUT_LINES.append(f"| {label} | " + " | ".join(cells) + " |")
+            else:
+                cells = [think(d, thinking_set) for _, d in MODELS]
+            body.append((label, cells))
             continue
         lab = label.format(n=n) if "{n}" in label else label
-        cells = [fn(getter(d), n) for _, d in MODELS]
-        OUT_LINES.append(f"| {lab} | " + " | ".join(cells) + " |")
+        body.append((lab, [fn(getter(d), n) for _, d in MODELS]))
+    return body
 
 
-emit("Standard \u2014 60 problems (<1 h human effort)", lambda d: data[d]["standard"], 60, "standard")
-emit("Hard \u2014 45 problems (1+ h human effort)", lambda d: data[d]["hard"], 45, "hard")
-emit("Combined \u2014 105 problems", lambda d: combined(d), 105, None)
+sections = [
+    ("Standard — 60 problems (<1 h human effort)", section(lambda d: data[d]["standard"], 60, "standard")),
+    ("Hard — 45 problems (1+ h human effort)", section(lambda d: data[d]["hard"], 45, "hard")),
+    ("Combined — 105 problems", section(lambda d: combined(d), 105, None)),
+]
 
-# Outputs land on disk, not stdout: the numbers are data, not chat.
-# analysis/ is derived figures; evals/ is raw verdicts — kept apart on purpose.
-# - analysis/verified.json: every raw figure (per model, per set, plus thinking).
-# - analysis/verified.md:   the rendered table, to be reconciled into report.md.
-os.makedirs(f"{ROOT}/analysis", exist_ok=True)
-with open(f"{ROOT}/analysis/verified.json", "w") as f:
-    json.dump({"models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
-                          for name, d in MODELS}}, f, indent=2)
-with open(f"{ROOT}/analysis/verified.md", "w") as f:
-    f.write("\n".join(OUT_LINES) + "\n")
-print(f"wrote {ROOT}/analysis/verified.json and {ROOT}/analysis/verified.md")
+NOTE = "Verdicts from the pinned swebench marker. Full caveats in report.md."
+
+emit("verified", "SWE-bench Verified", [name for name, _ in MODELS], sections, NOTE,
+     {"models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
+                 for name, d in MODELS}})

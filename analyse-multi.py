@@ -12,17 +12,16 @@ Sources, per section x model:
 - thinking       : the leg's own wire capture, attributed by fingerprint
 - empty patches  : submissions with no diff (automatic unresolved)
 
-Outputs: analysis/multi.{json,md,html,d2} — and multi.{png,svg} when d2 is
-on PATH. analysis/ is derived figures; evals/ is raw verdicts.
+Outputs: analysis/multi/ (data.json, table.md, table.html, table.png) via the
+shared emitter. analysis/ is derived figures; evals/ is raw verdicts.
 """
 
 import glob
 import hashlib
-import html as html_mod
 import json
 import os
-import shutil
-import subprocess
+
+from analysis_output import emit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -183,58 +182,4 @@ for label, decl in SECTIONS.items():
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
     sections_out.append((f"{label} ({n} instances)", body))
 
-# markdown
-lines = ["| Multi-SWE-bench | " + " | ".join(models) + " |", "|" + "---|" * (len(models) + 1)]
-for title, body in sections_out:
-    lines.append(f"| **{title}** |" + " |" * len(models))
-    for rl, cells in body:
-        lines.append(f"| {rl} | " + " | ".join(cells) + " |")
-lines += ["", NOTE]
-
-# html
-h = ["<!doctype html><meta charset='utf-8'><title>Multi-SWE-bench</title>",
-     "<style>body{background:#1b1b2b;color:#e8e8f0;font:14px -apple-system,sans-serif;padding:2em}",
-     "table{border-collapse:collapse}td,th{border:1px solid #555;padding:.35em .8em;text-align:left}",
-     "th{background:#2a2a3f}td.sec{background:#2a2a3f;font-weight:bold}</style>",
-     "<table><tr><th>Multi-SWE-bench</th>" + "".join(f"<th>{html_mod.escape(m)}</th>" for m in models) + "</tr>"]
-for title, body in sections_out:
-    h.append(f"<tr><td class='sec' colspan='{len(models) + 1}'>{html_mod.escape(title)}</td></tr>")
-    for rl, cells in body:
-        h.append("<tr><td>" + html_mod.escape(rl) + "</td>" + "".join(f"<td>{html_mod.escape(c)}</td>" for c in cells) + "</tr>")
-h.append(f"</table><p>{html_mod.escape(NOTE)}</p>")
-
-# d2 — one md table per section, sacrificial blank last rows (see
-# docs/diagrams/model-comparison.d2 for the measurement traps)
-d2 = ["vars: { d2-config: { theme-id: 200 } }", "",
-      'title: "Multi-SWE-bench" { near: top-center; shape: text; style.font-size: 22; style.bold: true }', ""]
-prev = None
-for idx, (title, body) in enumerate(sections_out):
-    name = f"section{idx}"
-    d2.append(f"{name}: |||md")
-    d2.append(f"  | {title} | " + " | ".join(models) + " |")
-    d2.append("  |" + "---|" * (len(models) + 1))
-    for rl, cells in body:
-        d2.append(f"  | {rl} | " + " | ".join(cells) + " |")
-    d2.append("  | " + " | " * (len(models) + 1))
-    d2.append("|||")
-    if prev is not None:
-        d2.append(f"{prev} -> {name}: {{style.opacity: 0}}")
-    prev = name
-d2.append(f'note: "{NOTE}" {{ near: bottom-center; shape: text; style.font-color: "#7F8C8D" }}')
-
-os.makedirs(f"{ROOT}/analysis", exist_ok=True)
-with open(f"{ROOT}/analysis/multi.json", "w") as f:
-    json.dump({"models": data}, f, indent=2)
-with open(f"{ROOT}/analysis/multi.md", "w") as f:
-    f.write("\n".join(lines) + "\n")
-with open(f"{ROOT}/analysis/multi.html", "w") as f:
-    f.write("\n".join(h) + "\n")
-with open(f"{ROOT}/analysis/multi.d2", "w") as f:
-    f.write("\n".join(d2) + "\n")
-wrote = "multi.json, multi.md, multi.html, multi.d2"
-if shutil.which("d2"):
-    for ext in ("png", "svg"):
-        subprocess.run(["d2", f"{ROOT}/analysis/multi.d2", f"{ROOT}/analysis/multi.{ext}"],
-                       check=True, capture_output=True)
-    wrote += ", multi.png, multi.svg"
-print(f"wrote analysis/: {wrote}")
+emit("multi", "Multi-SWE-bench", models, sections_out, NOTE, {"models": data})

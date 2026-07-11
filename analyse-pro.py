@@ -12,17 +12,15 @@ Sources, per selection x model:
 - thinking       : the leg's own wire capture (one per selection leg dir)
 - empty patches  : submissions with no diff (automatic unresolved)
 
-Outputs: analysis/pro.{json,md,html,d2} — and pro.{png,svg} when d2 is on
-PATH (the PNG is the paste-into-chat form; markdown pastes as plain text).
-analysis/ is derived figures; evals/ is raw verdicts — kept apart on purpose.
+Outputs: analysis/pro/ (data.json, table.md, table.html, table.png) via the
+shared emitter. analysis/ is derived figures; evals/ is raw verdicts.
 """
 
 import glob
-import html as html_mod
 import json
 import os
-import shutil
-import subprocess
+
+from analysis_output import emit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -139,64 +137,4 @@ for sel, decl in SELECTIONS.items():
     body = [(label, [fn(data[m][sel]) for m in models]) for label, fn in rows]
     sections.append((f"{decl['label']} ({scope} instances)", body))
 
-# markdown
-lines = []
-lines.append("| SWE-bench Pro | " + " | ".join(models) + " |")
-lines.append("|" + "---|" * (len(models) + 1))
-for title, body in sections:
-    lines.append(f"| **{title}** |" + " |" * len(models))
-    for label, cells in body:
-        lines.append(f"| {label} | " + " | ".join(cells) + " |")
-lines.append("")
-lines.append(NOTE)
-
-# html — self-contained, dark, opens anywhere
-h = ["<!doctype html><meta charset='utf-8'><title>SWE-bench Pro</title>",
-     "<style>body{background:#1b1b2b;color:#e8e8f0;font:14px -apple-system,sans-serif;padding:2em}",
-     "table{border-collapse:collapse}td,th{border:1px solid #555;padding:.35em .8em;text-align:left}",
-     "th{background:#2a2a3f}td.sec{background:#2a2a3f;font-weight:bold}</style>",
-     "<table><tr><th>SWE-bench Pro</th>" + "".join(f"<th>{html_mod.escape(m)}</th>" for m in models) + "</tr>"]
-for title, body in sections:
-    h.append(f"<tr><td class='sec' colspan='{len(models) + 1}'>{html_mod.escape(title)}</td></tr>")
-    for label, cells in body:
-        h.append("<tr><td>" + html_mod.escape(label) + "</td>" + "".join(f"<td>{html_mod.escape(c)}</td>" for c in cells) + "</tr>")
-h.append(f"</table><p>{html_mod.escape(NOTE)}</p>")
-
-# d2 — one md-block table per section (a single long table gets clipped by
-# d2's mis-measurement; the trailing blank row is sacrificial — see
-# docs/diagrams/model-comparison.d2 for the full account of these traps)
-d2 = ["vars: { d2-config: { theme-id: 200 } }", "",
-      'title: "SWE-bench Pro" { near: top-center; shape: text; style.font-size: 22; style.bold: true }', ""]
-prev = None
-for idx, (title, body) in enumerate(sections):
-    name = f"section{idx}"
-    d2.append(f"{name}: |||md")
-    d2.append(f"  | {title} | " + " | ".join(models) + " |")
-    d2.append("  |" + "---|" * (len(models) + 1))
-    for label, cells in body:
-        d2.append(f"  | {label} | " + " | ".join(cells) + " |")
-    d2.append("  | " + " | " * (len(models) + 1))
-    d2.append("|||")
-    if prev is not None:
-        d2.append(f"{prev} -> {name}: {{style.opacity: 0}}")
-    prev = name
-d2.append(f'note: "{NOTE}" {{ near: bottom-center; shape: text; style.font-color: "#7F8C8D" }}')
-
-os.makedirs(f"{ROOT}/analysis", exist_ok=True)
-with open(f"{ROOT}/analysis/pro.json", "w") as f:
-    json.dump({"models": data}, f, indent=2)
-with open(f"{ROOT}/analysis/pro.md", "w") as f:
-    f.write("\n".join(lines) + "\n")
-with open(f"{ROOT}/analysis/pro.html", "w") as f:
-    f.write("\n".join(h) + "\n")
-with open(f"{ROOT}/analysis/pro.d2", "w") as f:
-    f.write("\n".join(d2) + "\n")
-wrote = "pro.json, pro.md, pro.html, pro.d2"
-if shutil.which("d2"):
-    for ext in ("png", "svg"):
-        subprocess.run(["d2", f"{ROOT}/analysis/pro.d2", f"{ROOT}/analysis/pro.{ext}"],
-                       check=True, capture_output=True)
-    wrote += ", pro.png, pro.svg"
-else:
-    print("d2 not on PATH — skipped png/svg render")
-print(f"wrote analysis/: {wrote}")
+emit("pro", "SWE-bench Pro", models, sections, NOTE, {"models": data})
