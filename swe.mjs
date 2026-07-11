@@ -345,21 +345,29 @@ async function mark(target, flags) {
         const predsData = JSON.parse(readFileSync(preds, 'utf8'));
         const rowsById = new Map(snapshotRows(ds).map((r) => [r.instance_id, r]));
         const lines = [];
+        const datasetLines = [];
         for (const iid of selectionIds(ds, sel)) {
           const p = predsData[iid];
           if (!p) continue;
           const row = rowsById.get(iid);
           lines.push(JSON.stringify({ org: row.org, repo: row.repo, number: row.number, fix_patch: p.model_patch ?? '' }));
+          // The harness selects dataset rows by PR NUMBER ALONE, so feeding it
+          // the full snapshot lets a number collision drag in foreign repos
+          // (rayon pr-986 summoned fd#986 and json#986 as phantom errors).
+          // Give it only the selection's own rows.
+          datasetLines.push(JSON.stringify(row));
         }
         const patchPath = join(outDir, 'patches.jsonl');
         writeFileSync(patchPath, lines.join('\n') + '\n');
+        const datasetPath = join(outDir, 'dataset.jsonl');
+        writeFileSync(datasetPath, datasetLines.join('\n') + '\n');
         const workers = Number(process.env.MARK_WORKERS ?? 2);
         const cfgPath = join(outDir, 'config.json');
         writeFileSync(cfgPath, JSON.stringify({
           mode: 'evaluation',
           workdir: join(scratch, 'workdir'),
           patch_files: [patchPath],
-          dataset_files: [join(repoRoot, ds.snapshot)],
+          dataset_files: [datasetPath],
           force_build: false,
           output_dir: outDir,
           specifics: [],
