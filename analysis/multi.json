@@ -41,7 +41,7 @@
         "intot": 25220040,
         "wall": 7350.5220675468445,
         "thinking": 124021,
-        "resolved": null
+        "resolved": 14
       }
     },
     "opus-4-8": {
@@ -85,7 +85,7 @@
         "intot": 39198857,
         "wall": 5483.5849459171295,
         "thinking": 122267,
-        "resolved": null
+        "resolved": 13
       }
     },
     "sonnet-5": {
@@ -129,7 +129,7 @@
         "intot": 44262546,
         "wall": 4584.036306858063,
         "thinking": 100037,
-        "resolved": null
+        "resolved": 12
       }
     }
   }

@@ -34,9 +34,9 @@
 | Wall-clock | 1.1 h | 0.7 h | 0.7 h |
 | **cpp variation (verify + 900s) (20 instances)** | | | |
 | Instances | 20 | 20 | 20 |
-| Resolved | — | — | — |
-| Resolved % | — | — | — |
-| $/resolved | — | — | — |
+| Resolved | 14 | 13 | 12 |
+| Resolved % | 70% | 65% | 60% |
+| $/resolved | $3.41 | $2.48 | $1.72 |
 | Empty patches | 2 | 2 | 2 |
 | Total cost | $47.71 | $32.21 | $20.61 |
 | $/instance | $2.39 | $1.61 | $1.03 |
