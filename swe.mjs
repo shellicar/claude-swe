@@ -609,6 +609,9 @@ async function analyse({ ds }) {
   // is allowed but the analyser only sees what exists — verdicts it cannot
   // find render as "—" in its output, never as invented numbers.
   await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, ds.analyser)]);
+  // The overview joins every dataset's json into one card; regenerating it
+  // here means it can never be staler than the analysis it summarises.
+  await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, 'analyse-overview.py')]);
 }
 
 // ---- main ----------------------------------------------------------------------
