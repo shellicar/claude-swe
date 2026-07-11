@@ -86,6 +86,9 @@ COLUMNS = ["fable-5", "opus-4-8", "opus-4-7", "opus-4-6", "sonnet-4-6", "sonnet-
 
 sections = []
 seen = set()
+# per-column running totals over CONTROLS (variations revisit the same
+# instances and would double-count them)
+totals = {col: dict(resolved=0, instances=0, cost=0.0) for col in COLUMNS}
 for title, name, rows_fn in DATASETS:
     d = load(name)
     if d is None:
@@ -95,13 +98,31 @@ for title, name, rows_fn in DATASETS:
         res_cells = []
         cost_cells = []
         for col in COLUMNS:
-            res, cost = cellpair(per_model.get(col))
+            leg = per_model.get(col)
+            res, cost = cellpair(leg)
             res_cells.append(res)
             cost_cells.append(cost)
-            if per_model.get(col) is not None:
+            if leg is not None:
                 seen.add(col)
+                if "variation" not in label and leg.get("resolved") is not None and leg.get("instances"):
+                    t = totals[col]
+                    t["resolved"] += leg["resolved"]
+                    t["instances"] += leg["instances"]
+                    t["cost"] += leg.get("cost") or 0
         body.append((label, res_cells, cost_cells))
     sections.append((title, body))
+
+total_res = []
+total_cost = []
+for col in COLUMNS:
+    t = totals[col]
+    if t["instances"]:
+        total_res.append(f"{t['resolved']}/{t['instances']}\u00a0({t['resolved'] / t['instances'] * 100:.0f}%)")
+        total_cost.append(f"${t['cost'] / t['resolved']:.2f}" if t["resolved"] else "—")
+    else:
+        total_res.append("—")
+        total_cost.append("—")
+sections.append(("TOTAL — all controls (variations excluded)", [("resolved / attempted", total_res, total_cost)]))
 
 # Drop columns no dataset ever populated.
 keep = [i for i, c in enumerate(COLUMNS) if c in seen]

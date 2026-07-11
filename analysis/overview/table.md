@@ -24,5 +24,8 @@
 | — cost/resolved | $1.28 | $0.97 | — | — | — | $0.73 | — |
 | cpp variation (20) | 14 (70%) | 13 (65%) | — | — | — | 12 (60%) | — |
 | — cost/resolved | $3.41 | $2.48 | — | — | — | $1.72 | — |
+| **TOTAL — all controls (variations excluded)** | | | | | | | |
+| resolved / attempted | 191/229 (83%) | 164/229 (72%) | 75/105 (71%) | 64/105 (61%) | 65/105 (62%) | 169/229 (74%) | 51/105 (49%) |
+| — cost/resolved | $1.40 | $0.95 | $1.04 | $1.20 | $2.17 | $0.98 | $0.77 |
 
 Resolved n (%) and cost per resolved, per selection. — = not run or not yet marked. Details per dataset in analysis/<dataset>/table.md.
