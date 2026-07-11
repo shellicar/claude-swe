@@ -17,6 +17,7 @@
   },
   "selections": {
     "cpp": { "file": "instances-multi-cpp.txt", "expected": 20, "rule": { "field": "language", "equals": "cpp", "n": 20, "seed": 42 } },
-    "rust": { "file": "instances-multi-rust.txt", "expected": 20, "rule": { "field": "language", "equals": "rust", "n": 20, "seed": 42 } }
+    "rust": { "file": "instances-multi-rust.txt", "expected": 20, "rule": { "field": "language", "equals": "rust", "n": 20, "seed": 42 } },
+    "tokio": { "file": "instances-tokio-stack.txt", "expected": 20, "rule": { "field": "org", "equals": "tokio-rs", "n": 20, "seed": 42 } }
   }
 }

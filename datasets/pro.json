@@ -18,6 +18,7 @@
   },
   "selections": {
     "pro": { "file": "instances-pro.txt", "expected": 20, "rule": { "field": "repo_language", "equals": "ts" } },
-    "nodebb": { "file": "instances-nodebb.txt", "expected": 44, "rule": { "field": "repo", "equals": "NodeBB/NodeBB" } }
+    "nodebb": { "file": "instances-nodebb.txt", "expected": 44, "rule": { "field": "repo", "equals": "NodeBB/NodeBB" } },
+    "element": { "file": "instances-element.txt", "expected": 20, "rule": { "field": "repo", "equals": "element-hq/element-web", "n": 20, "seed": 42 } }
   }
 }
