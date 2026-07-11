@@ -337,7 +337,8 @@ async function mark(target, flags) {
         const outDir = multiSweOutDir(ds, leg, sel);
         const scratch = join(EVALS_DIR, 'logs', 'multi-swe', `${basename(leg.out)}-${sel}`);
         mkdirSync(outDir, { recursive: true });
-        mkdirSync(scratch, { recursive: true });
+        // The harness validates these dirs at startup rather than creating them.
+        for (const d of ['workdir', 'repos', 'logs']) mkdirSync(join(scratch, d), { recursive: true });
         // Their patches format: JSONL of {org, repo, number, fix_patch};
         // org/repo/number come from the snapshot row. Selection members only —
         // strays in preds are not part of the paper.
