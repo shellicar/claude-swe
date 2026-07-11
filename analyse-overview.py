@@ -89,11 +89,26 @@ seen = set()
 # per-column running totals over CONTROLS (variations revisit the same
 # instances and would double-count them)
 totals = {col: dict(resolved=0, instances=0, cost=0.0) for col in COLUMNS}
+def total_cells(tot):
+    res_cells = []
+    cost_cells = []
+    for col in COLUMNS:
+        t = tot[col]
+        if t["instances"]:
+            res_cells.append(f"{t['resolved']}/{t['instances']}\u00a0({t['resolved'] / t['instances'] * 100:.0f}%)")
+            cost_cells.append(f"${t['cost'] / t['resolved']:.2f}" if t["resolved"] else "—")
+        else:
+            res_cells.append("—")
+            cost_cells.append("—")
+    return res_cells, cost_cells
+
+
 for title, name, rows_fn in DATASETS:
     d = load(name)
     if d is None:
         continue
     body = []
+    ds_totals = {col: dict(resolved=0, instances=0, cost=0.0) for col in COLUMNS}
     for label, per_model in rows_fn(d):
         res_cells = []
         cost_cells = []
@@ -105,23 +120,17 @@ for title, name, rows_fn in DATASETS:
             if leg is not None:
                 seen.add(col)
                 if "variation" not in label and leg.get("resolved") is not None and leg.get("instances"):
-                    t = totals[col]
-                    t["resolved"] += leg["resolved"]
-                    t["instances"] += leg["instances"]
-                    t["cost"] += leg.get("cost") or 0
+                    for t in (totals[col], ds_totals[col]):
+                        t["resolved"] += leg["resolved"]
+                        t["instances"] += leg["instances"]
+                        t["cost"] += leg.get("cost") or 0
         body.append((label, res_cells, cost_cells))
+    # per-dataset total row (controls only, same rule as the grand total)
+    res_cells, cost_cells = total_cells(ds_totals)
+    body.append(("total", res_cells, cost_cells))
     sections.append((title, body))
 
-total_res = []
-total_cost = []
-for col in COLUMNS:
-    t = totals[col]
-    if t["instances"]:
-        total_res.append(f"{t['resolved']}/{t['instances']}\u00a0({t['resolved'] / t['instances'] * 100:.0f}%)")
-        total_cost.append(f"${t['cost'] / t['resolved']:.2f}" if t["resolved"] else "—")
-    else:
-        total_res.append("—")
-        total_cost.append("—")
+total_res, total_cost = total_cells(totals)
 sections.append(("TOTAL — all controls (variations excluded)", [("resolved / attempted", total_res, total_cost)]))
 
 # Drop columns no dataset ever populated.
