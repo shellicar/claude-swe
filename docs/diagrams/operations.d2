@@ -30,7 +30,17 @@ declared: "DECLARED IN THE REPO (authority flows outward from here)" {
   }
 
   combination: "COMBINATION — one visit: selection × model × knobs" {
-    coords: "model, effort, workers; its id keys all outputs"
+    coords: "model, effort, workers, prompt/timeout configs;\nits name keys all outputs (runs/<name>/, evals/, logs/)"
+    variation: "SEVERAL combinations may visit the SAME selection\nwith different knobs — that is a control and its variation.\nSame instances, same marker: only the knobs differ."
+  }
+
+  example: "EXAMPLE — the fmt experiment (2026-07-11)" {
+    style.stroke-dash: 3
+    sel: "selection multilingual/cpp:\nthe same 11 fmt instances, frozen once"
+    control: "combination 'multilingual' (control)\ndefault prompt · 60s actions\n→ runs/multilingual/"
+    variation: "combination 'fmt-variation'\nverify-your-work prompt · 900s actions\n→ runs/fmt-variation/"
+    control -> sel: "visits"
+    variation -> sel: "visits"
   }
 
   manifest: "MANIFEST — instance → image@digest, per selection"
@@ -119,7 +129,7 @@ produced.verdicts -> analyse
 analyse -> produced.analysisout
 produced.analysisout -> produced.reportout: "reconciled, eventually generated"
 
-note: "Every operation is a function of declared inputs. draw/resolve are the only ones allowed to consult the outside world, and each writes a committed declaration. ensure is the only one that changes machine state. run is the only one that spends. Nothing downstream of a record can alter it." {
+note: "Every operation is a function of declared inputs. draw/resolve are the only ones allowed to consult the outside world, and each writes a committed declaration. ensure is the only one that changes machine state. run is the only one that spends. Nothing downstream of a record can alter it. Comparing a control with its variation = comparing two combinations' records over the same selection." {
   near: bottom-center
   shape: text
   style.font-color: "#7F8C8D"
