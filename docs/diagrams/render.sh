@@ -9,6 +9,8 @@ if ! command -v d2 >/dev/null 2>&1; then
   echo "error: d2 is not on PATH (install: brew install d2)" >&2
   exit 1
 fi
+# relations.d2 is generated from the declarations so it cannot go stale
+node generate-relations.mjs
 for src in *.d2; do
   case "$src" in _*) continue ;; esac
   base="${src%.d2}"
