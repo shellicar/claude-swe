@@ -55,8 +55,13 @@ def pro_rows(d):
 
 
 def multilingual_rows(d):
-    for sel, label in (("rust", "rust: tokio (9)"), ("cpp", "cpp: fmt (11)")):
-        yield label, {m: v.get(sel) for m, v in d["models"].items()}
+    labels = {
+        "rust (tokio-rs/tokio, 9 instances)": "rust: tokio (9)",
+        "cpp (fmtlib/fmt, 11 instances)": "cpp: fmt (11)",
+        "cpp variation (verify + 900s, same 11)": "cpp variation (11)",
+    }
+    for key, label in labels.items():
+        yield label, {m: v.get(key) for m, v in d["models"].items()}
 
 
 def multi_rows(d):

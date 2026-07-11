@@ -1,7 +1,7 @@
 {
   "models": {
     "fable-5": {
-      "rust": {
+      "rust (tokio-rs/tokio, 9 instances)": {
         "instances": 9,
         "empty": 0,
         "cost": 4.9892385,
@@ -12,12 +12,13 @@
         "cw": 121897,
         "intot": 1201343,
         "wall": 964.8514666557312,
+        "thinking": 21633,
         "resolved": 7,
         "fixed": 8,
         "near": 1,
         "wrecked": 0
       },
-      "cpp": {
+      "cpp (fmtlib/fmt, 11 instances)": {
         "instances": 11,
         "empty": 0,
         "cost": 9.7982825,
@@ -28,14 +29,32 @@
         "cw": 217419,
         "intot": 2573198,
         "wall": 1859.1335000991821,
+        "thinking": 50281,
         "resolved": 3,
         "fixed": 4,
         "near": 1,
         "wrecked": 5
+      },
+      "cpp variation (verify + 900s, same 11)": {
+        "instances": 11,
+        "empty": 0,
+        "cost": 14.530776999999999,
+        "steps": 272,
+        "out": 127594,
+        "ncc": 544,
+        "cr": 4689012,
+        "cw": 276530,
+        "intot": 4966086,
+        "wall": 2635.895017147064,
+        "thinking": 68615,
+        "resolved": 4,
+        "fixed": 4,
+        "near": 0,
+        "wrecked": 5
       }
     },
     "opus-4-8": {
-      "rust": {
+      "rust (tokio-rs/tokio, 9 instances)": {
         "instances": 9,
         "empty": 0,
         "cost": 2.9035682499999997,
@@ -46,12 +65,13 @@
         "cw": 130877,
         "intot": 1774467,
         "wall": 875.5412702560425,
+        "thinking": 21541,
         "resolved": 7,
         "fixed": 8,
         "near": 1,
         "wrecked": 0
       },
-      "cpp": {
+      "cpp (fmtlib/fmt, 11 instances)": {
         "instances": 11,
         "empty": 0,
         "cost": 7.60368225,
@@ -62,14 +82,32 @@
         "cw": 268981,
         "intot": 5615351,
         "wall": 2219.383960008621,
+        "thinking": 77110,
         "resolved": 4,
         "fixed": 4,
+        "near": 0,
+        "wrecked": 5
+      },
+      "cpp variation (verify + 900s, same 11)": {
+        "instances": 11,
+        "empty": 0,
+        "cost": 10.817214499999999,
+        "steps": 361,
+        "out": 148779,
+        "ncc": 722,
+        "cr": 10146959,
+        "cw": 323304,
+        "intot": 10470985,
+        "wall": 2415.913137435913,
+        "thinking": 85529,
+        "resolved": 5,
+        "fixed": 5,
         "near": 0,
         "wrecked": 5
       }
     },
     "sonnet-5": {
-      "rust": {
+      "rust (tokio-rs/tokio, 9 instances)": {
         "instances": 9,
         "empty": 0,
         "cost": 2.8997981999999998,
@@ -80,12 +118,13 @@
         "cw": 215082,
         "intot": 3677055,
         "wall": 931.7398989200592,
+        "thinking": 36006,
         "resolved": 7,
         "fixed": 8,
         "near": 1,
         "wrecked": 0
       },
-      "cpp": {
+      "cpp (fmtlib/fmt, 11 instances)": {
         "instances": 11,
         "empty": 0,
         "cost": 8.712363899999998,
@@ -96,25 +135,29 @@
         "cw": 411360,
         "intot": 18040707,
         "wall": 1907.3367941379547,
+        "thinking": 63381,
+        "resolved": 6,
+        "fixed": 6,
+        "near": 0,
+        "wrecked": 5
+      },
+      "cpp variation (verify + 900s, same 11)": {
+        "instances": 11,
+        "empty": 0,
+        "cost": 6.070757400000001,
+        "steps": 436,
+        "out": 113507,
+        "ncc": 872,
+        "cr": 9735363,
+        "cw": 385314,
+        "intot": 10121549,
+        "wall": 1677.8709259033203,
+        "thinking": 47966,
         "resolved": 6,
         "fixed": 6,
         "near": 0,
         "wrecked": 5
       }
-    }
-  },
-  "thinking": {
-    "fable-5": {
-      "rust": 21633,
-      "cpp": 50281
-    },
-    "opus-4-8": {
-      "rust": 21541,
-      "cpp": 77110
-    },
-    "sonnet-5": {
-      "rust": 36006,
-      "cpp": 63381
     }
   }
 }

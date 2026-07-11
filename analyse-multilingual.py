@@ -1,18 +1,19 @@
-"""Aggregate the Multilingual experiment into files under analysis/.
+"""Aggregate the Multilingual experiments into files under analysis/.
 
-Same conventions and row set as analyse.py/analyse-pro.py. Verdicts come from
-the swebench marker's report JSONs in evals/ (run ids derive from the leg's
-out path); when a leg is unmarked its resolve cells read "—" rather than
-pretending.
+Three sections: the control arms (rust, cpp) and the fmt verification
+variation — the SAME 11 cpp instances, prompt told to build and run the
+suite, 900s action timeout (combinations/fmt-variation.json). Verdicts come
+from the swebench marker's report JSONs in evals/; when a leg is unmarked its
+resolve cells read "—" rather than pretending.
 
-Sources, per model x selection:
-- resolved       : evals/*.runs_multilingual_<model>_<selection>.json
-- cost/steps/tok : trajectories runs/multilingual/<model>/<selection>/*/*.traj.json
-- thinking       : the leg's wire capture, attributed to selections by
-                   first-user-message fingerprint (same hash the proxy uses)
+Sources, per section x model:
+- resolved       : evals/*.<runid prefix>_<model>_cpp.json
+- cost/steps/tok : trajectories under the section's runs root
+- test outcomes  : the marker's per-instance reports (evals/logs/, regenerable)
+- thinking       : the leg's wire capture, attributed by fingerprint
 
-Outputs: analysis/multilingual.json (raw figures), analysis/multilingual.md.
-analysis/ is derived figures; evals/ is raw verdicts — kept apart on purpose.
+Outputs: analysis/multilingual/ (data.json, table.md, table.html, table.png)
+via the shared emitter. analysis/ is derived figures; evals/ is raw verdicts.
 """
 
 import glob
@@ -23,20 +24,50 @@ import os
 from analysis_output import emit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-SELECTIONS = ["rust", "cpp"]
-EXPECTED = {"rust": 9, "cpp": 11}
-REPOS = {"rust": "tokio-rs/tokio", "cpp": "fmtlib/fmt"}
+
+# label -> (selection, runs root, run-id prefix, expected)
+SECTIONS = {
+    "rust (tokio-rs/tokio, 9 instances)": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", expected=9),
+    "cpp (fmtlib/fmt, 11 instances)": dict(sel="cpp", runs="runs/multilingual", runid="runs_multilingual", expected=11),
+    "cpp variation (verify + 900s, same 11)": dict(sel="cpp", runs="runs/fmt-variation", runid="runs_fmt-variation", expected=11),
+}
 
 
 def tok(x):
     return f"{x/1e6:.2f}M" if x >= 1e6 else f"{x/1e3:.0f}k"
 
 
-def leg(model_dir, sel):
+def test_outcomes(decl, model_dir):
+    """Test-level outcomes from the marker's per-instance reports. Binary
+    resolve hides 'never fixed it' vs 'fixed it and nicked a test' vs 'broke
+    the build'; these counts recover it. None when the logs are absent."""
+    pattern = f"{ROOT}/evals/logs/run_evaluation/{decl['runid']}_{model_dir}_{decl['sel']}/*/*/report.json"
+    files = glob.glob(pattern)
+    if not files:
+        return dict(fixed=None, near=None, wrecked=None)
+    fixed = near = wrecked = 0
+    for f in files:
+        rep = json.load(open(f))
+        ((iid, r),) = rep.items()
+        ts = r["tests_status"]
+        f2p_clean = len(ts["FAIL_TO_PASS"]["failure"]) == 0
+        p2p_fail = len(ts["PASS_TO_PASS"]["failure"])
+        p2p_total = p2p_fail + len(ts["PASS_TO_PASS"]["success"])
+        if f2p_clean:
+            fixed += 1
+            if p2p_fail > 0:
+                near += 1
+        if p2p_total > 0 and p2p_fail / p2p_total > 0.2:
+            wrecked += 1
+    return dict(fixed=fixed, near=near, wrecked=wrecked)
+
+
+def leg(model_dir, decl):
     cost = steps = out = cr = cw = ncc = 0
     wall = 0.0
     empty = 0
-    trajs = sorted(glob.glob(f"{ROOT}/runs/multilingual/{model_dir}/{sel}/*/*.traj.json"))
+    runs_dir = f"{decl['runs']}/{model_dir}/{decl['sel']}"
+    trajs = sorted(glob.glob(f"{ROOT}/{runs_dir}/*/*.traj.json"))
     for tf in trajs:
         t = json.load(open(tf))
         info = t["info"]
@@ -61,81 +92,48 @@ def leg(model_dir, sel):
                     wall += ts - prev
             if ts:
                 prev = ts
-    resolved = None
-    reports = glob.glob(f"{ROOT}/evals/*.runs_multilingual_{model_dir}_{sel}.json")
-    if len(reports) == 1:
-        resolved = len(json.load(open(reports[0]))["resolved_ids"])
-    return dict(instances=len(trajs), empty=empty, cost=cost, steps=steps, out=out,
-                ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, resolved=resolved,
-                **test_outcomes(model_dir, sel))
-
-
-def test_outcomes(model_dir, sel):
-    """Test-level outcomes, from the marker's per-instance reports. Binary
-    resolve hides the difference between 'never fixed it', 'fixed it and
-    nicked one adjacent test', and 'shipped something that broke the build';
-    these three counts recover it.
-      fixed  : all FAIL_TO_PASS tests pass (the bug itself is fixed)
-      near   : fixed, but some PASS_TO_PASS broke (fixed - resolved = near)
-      wrecked: >20% of PASS_TO_PASS broke — in compiled repos this almost
-               always means the patch did not build
-    Requires evals/logs/run_evaluation/ locally (regenerable, not committed);
-    returns None values when the logs are absent."""
-    pattern = f"{ROOT}/evals/logs/run_evaluation/runs_multilingual_{model_dir}_{sel}/*/*/report.json"
-    files = glob.glob(pattern)
-    if not files:
-        return dict(fixed=None, near=None, wrecked=None)
-    fixed = near = wrecked = 0
-    for f in files:
-        rep = json.load(open(f))
-        ((iid, r),) = rep.items()
-        ts = r["tests_status"]
-        f2p_clean = len(ts["FAIL_TO_PASS"]["failure"]) == 0
-        p2p_fail = len(ts["PASS_TO_PASS"]["failure"])
-        p2p_total = p2p_fail + len(ts["PASS_TO_PASS"]["success"])
-        if f2p_clean:
-            fixed += 1
-            if p2p_fail > 0:
-                near += 1
-        if p2p_total > 0 and p2p_fail / p2p_total > 0.2:
-            wrecked += 1
-    return dict(fixed=fixed, near=near, wrecked=wrecked)
-
-
-def wire_thinking(model_dir):
-    """Per-selection thinking tokens from the leg's own capture."""
-    timing = f"{ROOT}/runs/multilingual/{model_dir}/api-timing.jsonl"
-    if not os.path.exists(timing):
-        return None
-    conv2sel = {}
-    for sel in SELECTIONS:
-        for tf in glob.glob(f"{ROOT}/runs/multilingual/{model_dir}/{sel}/*/*.traj.json"):
+    # thinking: the leg's own capture, attributed by first-user-message
+    # fingerprint (the multilingual control shares one capture across selections)
+    thinking = None
+    timing = f"{ROOT}/{decl['runs']}/{model_dir}/api-timing.jsonl"
+    if os.path.exists(timing):
+        conv2here = set()
+        for tf in trajs:
             t = json.load(open(tf))
             first = next((m for m in t["messages"] if m.get("role") == "user"), None)
             c = first["content"]
             text = c if isinstance(c, str) else "\n".join(b.get("text", "") for b in c)
-            conv2sel[hashlib.sha256(text.encode()).hexdigest()[:12]] = sel
-    totals = {sel: 0 for sel in SELECTIONS}
-    for line in open(timing):
-        d = json.loads(line)
-        u = d.get("usage") or {}
-        th = (u.get("output_tokens_details") or {}).get("thinking_tokens") or 0
-        sel = conv2sel.get(d.get("conv"))
-        if sel is not None:
-            totals[sel] += th
-    return totals
+            conv2here.add(hashlib.sha256(text.encode()).hexdigest()[:12])
+        thinking = 0
+        for line in open(timing):
+            d = json.loads(line)
+            u = d.get("usage") or {}
+            th = (u.get("output_tokens_details") or {}).get("thinking_tokens") or 0
+            if d.get("conv") in conv2here:
+                thinking += th
+    resolved = None
+    reports = glob.glob(f"{ROOT}/evals/*.{decl['runid']}_{model_dir}_{decl['sel']}.json")
+    if len(reports) == 1:
+        resolved = len(json.load(open(reports[0]))["resolved_ids"])
+    return dict(instances=len(trajs), empty=empty, cost=cost, steps=steps, out=out,
+                ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, thinking=thinking,
+                resolved=resolved, **test_outcomes(decl, model_dir))
 
 
-models = sorted(
-    d for d in os.listdir(f"{ROOT}/runs/multilingual")
-    if os.path.isdir(f"{ROOT}/runs/multilingual/{d}")
-) if os.path.isdir(f"{ROOT}/runs/multilingual") else []
-data = {m: {sel: leg(m, sel) for sel in SELECTIONS} for m in models}
-THINKING = {m: wire_thinking(m) for m in models}
+def find_models():
+    models = set()
+    for decl in SECTIONS.values():
+        root = f"{ROOT}/{decl['runs']}"
+        if os.path.isdir(root):
+            models.update(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)))
+    return sorted(models)
 
 
-def make_rows(sel):
-    expected = EXPECTED[sel]
+models = find_models()
+data = {m: {label: leg(m, decl) for label, decl in SECTIONS.items()} for m in models}
+
+
+def make_rows(expected):
     return [
         ("Instances", lambda L: str(L["instances"])),
         ("Resolved", lambda L: str(L["resolved"]) if L["resolved"] is not None else "—"),
@@ -149,6 +147,7 @@ def make_rows(sel):
         ("Empty patches", lambda L: str(L["empty"])),
         ("Steps", lambda L: f"{L['steps']:,}"),
         ("Output tokens", lambda L: tok(L["out"])),
+        ("Thinking (output)", lambda L: tok(L["thinking"]) if L["thinking"] is not None else "—"),
         ("Input tokens", lambda L: tok(L["intot"])),
         ("- non-cached", lambda L: tok(L["ncc"])),
         ("- cache read", lambda L: tok(L["cr"])),
@@ -157,17 +156,12 @@ def make_rows(sel):
     ]
 
 
-NOTE = "Verdicts from the swebench marker; — means a leg is not yet marked."
+NOTE = "Verdicts from the swebench marker; — means a leg is not yet marked or never ran."
 
 sections = []
-for sel in SELECTIONS:
-    body = [(label, [fn(data[m][sel]) for m in models]) for label, fn in make_rows(sel)]
-    thinks = []
-    for m in models:
-        v = THINKING.get(m)
-        thinks.append(tok(v[sel]) if v else "—")
-    body.append(("Thinking (output)", thinks))
-    sections.append((f"{sel} ({REPOS[sel]}, {EXPECTED[sel]} instances)", body))
+for label, decl in SECTIONS.items():
+    body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in make_rows(decl["expected"])]
+    sections.append((label, body))
 
 emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
-     {"models": data, "thinking": THINKING})
+     {"models": data})
