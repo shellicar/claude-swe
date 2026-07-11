@@ -3,6 +3,10 @@
 | **cpp control (20 instances)** | | | |
 | Instances | 20 | 20 | 20 |
 | Resolved | 14 | 13 | 12 |
+| — Catch2 | 1/2 | 1/2 | 1/2 |
+| — fmt | 0/5 | 0/5 | 0/5 |
+| — json | 10/10 | 9/10 | 8/10 |
+| — simdjson | 3/3 | 3/3 | 3/3 |
 | Resolved % | 70% | 65% | 60% |
 | $/resolved | $2.15 | $1.33 | $1.24 |
 | Empty patches | 0 | 0 | 0 |
@@ -19,6 +23,12 @@
 | **rust control (20 instances)** | | | |
 | Instances | 20 | 20 | 20 |
 | Resolved | 14 | 11 | 13 |
+| — bat | 0/1 | 0/1 | 0/1 |
+| — clap | 11/12 | 8/12 | 9/12 |
+| — fd | 1/1 | 1/1 | 1/1 |
+| — nushell | 1/2 | 1/2 | 2/2 |
+| — rayon | 1/1 | 1/1 | 1/1 |
+| — tokio | 0/3 | 0/3 | 0/3 |
 | Resolved % | 70% | 55% | 65% |
 | $/resolved | $1.28 | $0.97 | $0.73 |
 | Empty patches | 0 | 0 | 0 |
@@ -35,6 +45,10 @@
 | **cpp variation (verify + 900s) (20 instances)** | | | |
 | Instances | 20 | 20 | 20 |
 | Resolved | 14 | 13 | 12 |
+| — Catch2 | 1/2 | 1/2 | 1/2 |
+| — fmt | 0/5 | 0/5 | 0/5 |
+| — json | 10/10 | 9/10 | 8/10 |
+| — simdjson | 3/3 | 3/3 | 3/3 |
 | Resolved % | 70% | 65% | 60% |
 | $/resolved | $3.41 | $2.48 | $1.72 |
 | Empty patches | 2 | 2 | 2 |

@@ -13,7 +13,25 @@
         "intot": 10816864,
         "wall": 4962.308630943298,
         "thinking": 125877,
-        "resolved": 14
+        "resolved": 14,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            10
+          ],
+          "simdjson": [
+            3,
+            3
+          ]
+        }
       },
       "rust control": {
         "instances": 20,
@@ -27,7 +45,33 @@
         "intot": 5873930,
         "wall": 3899.9085681438446,
         "thinking": 60518,
-        "resolved": 14
+        "resolved": 14,
+        "by_repo": {
+          "clap": [
+            12,
+            11
+          ],
+          "nushell": [
+            2,
+            1
+          ],
+          "rayon": [
+            1,
+            1
+          ],
+          "bat": [
+            1,
+            0
+          ],
+          "fd": [
+            1,
+            1
+          ],
+          "tokio": [
+            3,
+            0
+          ]
+        }
       },
       "cpp variation (verify + 900s)": {
         "instances": 20,
@@ -41,7 +85,25 @@
         "intot": 25220040,
         "wall": 7350.5220675468445,
         "thinking": 124021,
-        "resolved": 14
+        "resolved": 14,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            10
+          ],
+          "simdjson": [
+            3,
+            3
+          ]
+        }
       }
     },
     "opus-4-8": {
@@ -57,7 +119,25 @@
         "intot": 14319367,
         "wall": 3731.715783596039,
         "thinking": 108515,
-        "resolved": 13
+        "resolved": 13,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            9
+          ],
+          "simdjson": [
+            3,
+            3
+          ]
+        }
       },
       "rust control": {
         "instances": 20,
@@ -71,7 +151,33 @@
         "intot": 7921801,
         "wall": 2508.847327232361,
         "thinking": 85625,
-        "resolved": 11
+        "resolved": 11,
+        "by_repo": {
+          "clap": [
+            12,
+            8
+          ],
+          "nushell": [
+            2,
+            1
+          ],
+          "rayon": [
+            1,
+            1
+          ],
+          "bat": [
+            1,
+            0
+          ],
+          "fd": [
+            1,
+            1
+          ],
+          "tokio": [
+            3,
+            0
+          ]
+        }
       },
       "cpp variation (verify + 900s)": {
         "instances": 20,
@@ -85,7 +191,25 @@
         "intot": 39198857,
         "wall": 5483.5849459171295,
         "thinking": 122267,
-        "resolved": 13
+        "resolved": 13,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            9
+          ],
+          "simdjson": [
+            3,
+            3
+          ]
+        }
       }
     },
     "sonnet-5": {
@@ -101,7 +225,25 @@
         "intot": 27739852,
         "wall": 3251.4159848690033,
         "thinking": 91189,
-        "resolved": 12
+        "resolved": 12,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            8
+          ],
+          "simdjson": [
+            3,
+            3
+          ]
+        }
       },
       "rust control": {
         "instances": 20,
@@ -115,7 +257,33 @@
         "intot": 16265635,
         "wall": 2412.1074776649475,
         "thinking": 63205,
-        "resolved": 13
+        "resolved": 13,
+        "by_repo": {
+          "clap": [
+            12,
+            9
+          ],
+          "nushell": [
+            2,
+            2
+          ],
+          "rayon": [
+            1,
+            1
+          ],
+          "bat": [
+            1,
+            0
+          ],
+          "fd": [
+            1,
+            1
+          ],
+          "tokio": [
+            3,
+            0
+          ]
+        }
       },
       "cpp variation (verify + 900s)": {
         "instances": 20,
@@ -129,7 +297,25 @@
         "intot": 44262546,
         "wall": 4584.036306858063,
         "thinking": 100037,
-        "resolved": 12
+        "resolved": 12,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            8
+          ],
+          "simdjson": [
+            3,
+            3
+          ]
+        }
       }
     }
   }

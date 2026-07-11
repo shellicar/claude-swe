@@ -98,12 +98,27 @@ def leg(model_dir, decl):
             if d.get("conv") in conv2here:
                 thinking += th
     resolved = None
+    by_repo = None
     report = f"{ROOT}/{decl['evals'].format(m=model_dir)}/final_report.json"
     if os.path.exists(report):
-        resolved = json.load(open(report))["resolved_instances"]
+        rep = json.load(open(report))
+        resolved = rep["resolved_instances"]
+        # per-repo slice: selections mix repos, and a per-selection number
+        # hides which repo carried it (fmt's zeros hid inside 14/20 until
+        # sliced by hand — 2026-07-11). resolved_ids look like 'org/repo:pr-N';
+        # selection ids like 'org__repo-N'.
+        won = {}
+        for rid in rep.get("resolved_ids", []):
+            repo = rid.split("/")[1].split(":")[0]
+            won[repo] = won.get(repo, 0) + 1
+        by_repo = {}
+        for iid in sorted(ids):
+            repo = iid.split("__")[1].rsplit("-", 1)[0]
+            t, _ = by_repo.get(repo, (0, 0))
+            by_repo[repo] = (t + 1, won.get(repo, 0))
     return dict(instances=len(trajs), empty=empty, cost=cost, steps=steps, out=out,
                 ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, thinking=thinking,
-                resolved=resolved)
+                resolved=resolved, by_repo=by_repo)
 
 
 def find_models():
@@ -117,6 +132,28 @@ def find_models():
 
 models = find_models()
 data = {m: {label: leg(m, decl) for label, decl in SECTIONS.items()} for m in models}
+
+def repo_rows(label_models):
+    """One 'resolved n/m' row per repo appearing in a section's selections —
+    the slice that survives selection changes."""
+    repos = []
+    for m in models:
+        br = label_models[m].get("by_repo")
+        if br:
+            for r in br:
+                if r not in repos:
+                    repos.append(r)
+    out = []
+    for r in sorted(repos):
+        def fn(L, _r=r):
+            br = L.get("by_repo")
+            if not br or _r not in br:
+                return "—"
+            t, w = br[_r]
+            return f"{w}/{t}"
+        out.append((f"— {r}", fn))
+    return out
+
 
 rows = [
     ("Instances", lambda L: str(L["instances"])),
@@ -141,7 +178,9 @@ NOTE = "Verdicts from ByteDance's Multi-SWE harness; — means a leg is not yet 
 sections_out = []
 for label, decl in SECTIONS.items():
     n = max((data[m][label]["instances"] for m in models), default=0)
-    body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in rows]
+    per_model = {m: data[m][label] for m in models}
+    section_rows = rows[:2] + repo_rows(per_model) + rows[2:]
+    body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
     sections_out.append((f"{label} ({n} instances)", body))
 
 # markdown
