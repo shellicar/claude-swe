@@ -27,10 +27,10 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # label -> (runs root, selection ids file, evals dir prefix)
 SECTIONS = {
-    "cpp control": dict(runs="runs/multi/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/multi-{m}-cpp"),
-    "rust control": dict(runs="runs/multi/{m}/rust", ids="instances-multi-rust.txt", evals="evals/multi/multi-{m}-rust"),
-    "cpp variation (verify + 900s — exhibition)": dict(runs="runs/cpp-variation/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/cpp-variation-{m}-cpp"),
-    "tokio stack (org tokio-rs)": dict(runs="runs/tokio/{m}/tokio", ids="instances-tokio-stack.txt", evals="evals/multi/tokio-{m}-tokio"),
+    "*C++* control": dict(runs="runs/multi/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/multi-{m}-cpp"),
+    "*Rust* control": dict(runs="runs/multi/{m}/rust", ids="instances-multi-rust.txt", evals="evals/multi/multi-{m}-rust"),
+    "*C++* variation (verify + 900s — exhibition)": dict(runs="runs/cpp-variation/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/cpp-variation-{m}-cpp"),
+    "tokio stack — *Rust* (org tokio-rs)": dict(runs="runs/tokio/{m}/tokio", ids="instances-tokio-stack.txt", evals="evals/multi/tokio-{m}-tokio"),
 }
 
 
@@ -213,7 +213,7 @@ for label, decl in SECTIONS.items():
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
     sections_out.append((f"{label} ({n} events)", body))
 
-sections_out.append(("TOTAL — controls (variation excluded)", total_section(["cpp control", "rust control", "tokio stack (org tokio-rs)"])))
+sections_out.append(("TOTAL — controls (variation excluded)", total_section(["*C++* control", "*Rust* control", "tokio stack — *Rust* (org tokio-rs)"])))
 
 emit("multi", "Multi-SWE-bench", models, sections_out, NOTE,
      {"covers": ["cpp", "rust", "tokio"], "models": data})

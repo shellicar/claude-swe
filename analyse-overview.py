@@ -45,20 +45,20 @@ def four_rows(per_column):
 def verified_rows(d):
     # verified.json predates the leg shape the others use: no 'instances' key,
     # the set sizes are implicit. Supply them.
-    for sel, label, n in (("standard", "standard (60)", 60), ("hard", "hard (45)", 45)):
+    for sel, label, n in (("standard", "standard — *Python* (60)", 60), ("hard", "hard — *Python* (45)", 45)):
         yield label, {m: {**v["sets"][sel], "instances": n} for m, v in d["models"].items()}
 
 
 def pro_rows(d):
-    for sel, label in (("pro", "tutanota ts (20)"), ("nodebb", "NodeBB js (44)"), ("element", "element-web js (20)")):
+    for sel, label in (("pro", "tutanota — *TypeScript* (20)"), ("nodebb", "NodeBB — *JavaScript* (44)"), ("element", "element-web — *JavaScript* (20)")):
         yield label, {m: v.get(sel) for m, v in d["models"].items()}
 
 
 def multilingual_rows(d):
     labels = {
-        "rust (tokio-rs/tokio, 9 events)": "rust: tokio (9)",
-        "cpp (fmtlib/fmt, 11 events)": "cpp: fmt (11)",
-        "cpp variation (verify + 900s, same 11 — exhibition)": "cpp variation (11)",
+        "tokio-rs/tokio — *Rust* (9 events)": "tokio — *Rust* (9)",
+        "fmtlib/fmt — *C++* (11 events)": "fmt — *C++* (11)",
+        "*C++* variation (verify + 900s, same 11 — exhibition)": "*C++* variation (11)",
     }
     for key, label in labels.items():
         yield label, {m: v.get(key) for m, v in d["models"].items()}
@@ -66,10 +66,10 @@ def multilingual_rows(d):
 
 def multi_rows(d):
     labels = {
-        "cpp control": "cpp control (20)",
-        "rust control": "rust control (20)",
-        "cpp variation (verify + 900s — exhibition)": "cpp variation (20)",
-        "tokio stack (org tokio-rs)": "tokio stack (20)",
+        "*C++* control": "*C++* control (20)",
+        "*Rust* control": "*Rust* control (20)",
+        "*C++* variation (verify + 900s — exhibition)": "*C++* variation (20)",
+        "tokio stack — *Rust* (org tokio-rs)": "tokio stack — *Rust* (20)",
     }
     for key, label in labels.items():
         yield label, {m: v.get(key) for m, v in d["models"].items()}

@@ -1,6 +1,6 @@
 | Sonnet division — the lineage (SWE-bench Verified) | Claude Sonnet 4.6 | Claude Sonnet 5 |
 |---|---|---|
-| **Standard — 60 events (<1 h human effort)** | | |
+| **Standard — 60 *Python* events (<1 h human effort)** | | |
 | **Results** | | |
 | Resolved | 🥈 44 | 🥇 **51** |
 | Resolved % | 🥈 73% | 🥇 **85%** |
@@ -15,7 +15,7 @@
 | — cache read | 47.98M | 22.39M |
 | — cache write | 1.83M | 1.28M |
 | Wall-clock (12-way parallel) | 4.9 h | 2.0 h |
-| **Hard — 45 events (1+ h human effort)** | | |
+| **Hard — 45 *Python* events (1+ h human effort)** | | |
 | **Results** | | |
 | Resolved | 🥈 21 | 🥇 **34** |
 | Resolved % | 🥈 47% | 🥇 **76%** |
@@ -30,7 +30,7 @@
 | — cache read | 192.88M | 69.78M |
 | — cache write | 4.43M | 2.08M |
 | Wall-clock (12-way parallel) | 10.4 h | 3.5 h |
-| **Combined — 105 events** | | |
+| **Combined — 105 *Python* events** | | |
 | **Results** | | |
 | Resolved | 🥈 65 | 🥇 **85** |
 | Resolved % | 🥈 62% | 🥇 **81%** |

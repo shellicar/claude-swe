@@ -6,7 +6,7 @@
   ],
   "models": {
     "fable-5": {
-      "cpp control": {
+      "*C++* control": {
         "instances": 20,
         "empty": 0,
         "cost": 30.069006499999997,
@@ -38,7 +38,7 @@
           ]
         }
       },
-      "rust control": {
+      "*Rust* control": {
         "instances": 20,
         "empty": 0,
         "cost": 17.861215,
@@ -78,7 +78,7 @@
           ]
         }
       },
-      "cpp variation (verify + 900s \u2014 exhibition)": {
+      "*C++* variation (verify + 900s \u2014 exhibition)": {
         "instances": 20,
         "empty": 2,
         "cost": 47.71436200000002,
@@ -110,7 +110,7 @@
           ]
         }
       },
-      "tokio stack (org tokio-rs)": {
+      "tokio stack \u2014 *Rust* (org tokio-rs)": {
         "instances": 20,
         "empty": 0,
         "cost": 21.639853999999996,
@@ -136,7 +136,7 @@
       }
     },
     "opus-4-8": {
-      "cpp control": {
+      "*C++* control": {
         "instances": 20,
         "empty": 0,
         "cost": 17.32385125,
@@ -168,7 +168,7 @@
           ]
         }
       },
-      "rust control": {
+      "*Rust* control": {
         "instances": 20,
         "empty": 0,
         "cost": 10.64201375,
@@ -208,7 +208,7 @@
           ]
         }
       },
-      "cpp variation (verify + 900s \u2014 exhibition)": {
+      "*C++* variation (verify + 900s \u2014 exhibition)": {
         "instances": 20,
         "empty": 2,
         "cost": 32.21404075,
@@ -240,7 +240,7 @@
           ]
         }
       },
-      "tokio stack (org tokio-rs)": {
+      "tokio stack \u2014 *Rust* (org tokio-rs)": {
         "instances": 20,
         "empty": 0,
         "cost": 22.365933499999997,
@@ -266,7 +266,7 @@
       }
     },
     "sonnet-5": {
-      "cpp control": {
+      "*C++* control": {
         "instances": 20,
         "empty": 0,
         "cost": 14.91061665,
@@ -298,7 +298,7 @@
           ]
         }
       },
-      "rust control": {
+      "*Rust* control": {
         "instances": 20,
         "empty": 0,
         "cost": 9.46204065,
@@ -338,7 +338,7 @@
           ]
         }
       },
-      "cpp variation (verify + 900s \u2014 exhibition)": {
+      "*C++* variation (verify + 900s \u2014 exhibition)": {
         "instances": 20,
         "empty": 2,
         "cost": 20.6062914,
@@ -370,7 +370,7 @@
           ]
         }
       },
-      "tokio stack (org tokio-rs)": {
+      "tokio stack \u2014 *Rust* (org tokio-rs)": {
         "instances": 20,
         "empty": 0,
         "cost": 10.69384335,

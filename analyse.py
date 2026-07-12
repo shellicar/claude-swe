@@ -162,9 +162,9 @@ def section(dirs, getter, n, thinking_set):
 
 def sections_for(dirs):
     return [
-        ("Standard — 60 events (<1 h human effort)", section(dirs, lambda d: data[d]["standard"], 60, "standard")),
-        ("Hard — 45 events (1+ h human effort)", section(dirs, lambda d: data[d]["hard"], 45, "hard")),
-        ("Combined — 105 events", section(dirs, lambda d: combined(d), 105, None)),
+        ("Standard — 60 *Python* events (<1 h human effort)", section(dirs, lambda d: data[d]["standard"], 60, "standard")),
+        ("Hard — 45 *Python* events (1+ h human effort)", section(dirs, lambda d: data[d]["hard"], 45, "hard")),
+        ("Combined — 105 *Python* events", section(dirs, lambda d: combined(d), 105, None)),
     ]
 
 

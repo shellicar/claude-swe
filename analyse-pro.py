@@ -28,9 +28,9 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 # (the 'pro' selection keeps the original evals/pro/<model> layout; later
 # selections carry a -<sel> suffix — mirrors scaleOutDir in swe.mjs).
 SELECTIONS = {
-    "pro": dict(label="tutanota ts", runs="runs/pro/{m}/pro", evals="evals/pro/{m}", repo="repo_language", equals="ts"),
-    "nodebb": dict(label="NodeBB js", runs="runs/nodebb/{m}/nodebb", evals="evals/pro/{m}-nodebb", repo="repo", equals="NodeBB/NodeBB"),
-    "element": dict(label="element-web js", runs="runs/element/{m}/element", evals="evals/pro/{m}-element", repo="repo", equals="element-hq/element-web"),
+    "pro": dict(label="tutanota — *TypeScript*", runs="runs/pro/{m}/pro", evals="evals/pro/{m}", repo="repo_language", equals="ts"),
+    "nodebb": dict(label="NodeBB — *JavaScript*", runs="runs/nodebb/{m}/nodebb", evals="evals/pro/{m}-nodebb", repo="repo", equals="NodeBB/NodeBB"),
+    "element": dict(label="element-web — *JavaScript*", runs="runs/element/{m}/element", evals="evals/pro/{m}-element", repo="repo", equals="element-hq/element-web"),
 }
 
 

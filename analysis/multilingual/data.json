@@ -5,7 +5,7 @@
   ],
   "models": {
     "fable-5": {
-      "rust (tokio-rs/tokio, 9 events)": {
+      "tokio-rs/tokio \u2014 *Rust* (9 events)": {
         "instances": 9,
         "empty": 0,
         "cost": 4.9892385,
@@ -22,7 +22,7 @@
         "near": 1,
         "wrecked": 0
       },
-      "cpp (fmtlib/fmt, 11 events)": {
+      "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
         "empty": 0,
         "cost": 9.7982825,
@@ -39,7 +39,7 @@
         "near": 1,
         "wrecked": 5
       },
-      "cpp variation (verify + 900s, same 11 \u2014 exhibition)": {
+      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
         "instances": 11,
         "empty": 0,
         "cost": 14.530776999999999,
@@ -58,7 +58,7 @@
       }
     },
     "opus-4-8": {
-      "rust (tokio-rs/tokio, 9 events)": {
+      "tokio-rs/tokio \u2014 *Rust* (9 events)": {
         "instances": 9,
         "empty": 0,
         "cost": 2.9035682499999997,
@@ -75,7 +75,7 @@
         "near": 1,
         "wrecked": 0
       },
-      "cpp (fmtlib/fmt, 11 events)": {
+      "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
         "empty": 0,
         "cost": 7.60368225,
@@ -92,7 +92,7 @@
         "near": 0,
         "wrecked": 5
       },
-      "cpp variation (verify + 900s, same 11 \u2014 exhibition)": {
+      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
         "instances": 11,
         "empty": 0,
         "cost": 10.817214499999999,
@@ -111,7 +111,7 @@
       }
     },
     "sonnet-5": {
-      "rust (tokio-rs/tokio, 9 events)": {
+      "tokio-rs/tokio \u2014 *Rust* (9 events)": {
         "instances": 9,
         "empty": 0,
         "cost": 2.8997981999999998,
@@ -128,7 +128,7 @@
         "near": 1,
         "wrecked": 0
       },
-      "cpp (fmtlib/fmt, 11 events)": {
+      "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
         "empty": 0,
         "cost": 8.712363899999998,
@@ -145,7 +145,7 @@
         "near": 0,
         "wrecked": 5
       },
-      "cpp variation (verify + 900s, same 11 \u2014 exhibition)": {
+      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
         "instances": 11,
         "empty": 0,
         "cost": 6.070757400000001,

@@ -1,6 +1,6 @@
 | SWE-bench Verified — latest-generation division | Claude Fable 5 | Claude Opus 4.8 | Claude Sonnet 5 | Claude Haiku 4.5 |
 |---|---|---|---|---|
-| **Standard — 60 events (<1 h human effort)** | | | | |
+| **Standard — 60 *Python* events (<1 h human effort)** | | | | |
 | **Results** | | | | |
 | Resolved | 🥇 **55** | 🥈 51 | 🥈 51 | 🥉 38 |
 | Resolved % | 🥇 **92%** | 🥈 85% | 🥈 85% | 🥉 63% |
@@ -15,7 +15,7 @@
 | — cache read | 6.07M | 11.21M | 22.39M | 91.46M |
 | — cache write | 731k | 862k | 1.28M | 2.56M |
 | Wall-clock (12-way parallel) | 2.0 h | 2.1 h | 2.0 h | 3.5 h |
-| **Hard — 45 events (1+ h human effort)** | | | | |
+| **Hard — 45 *Python* events (1+ h human effort)** | | | | |
 | **Results** | | | | |
 | Resolved | 🥇 **39** | 🥉 32 | 🥈 34 | 13 |
 | Resolved % | 🥇 **87%** | 🥉 71% | 🥈 76% | 29% |
@@ -30,7 +30,7 @@
 | — cache read | 11.69M | 23.42M | 69.78M | 123.32M |
 | — cache write | 1.15M | 1.25M | 2.08M | 2.66M |
 | Wall-clock (12-way parallel) | 2.4 h | 2.3 h | 3.5 h | 3.5 h |
-| **Combined — 105 events** | | | | |
+| **Combined — 105 *Python* events** | | | | |
 | **Results** | | | | |
 | Resolved | 🥇 **94** | 🥉 83 | 🥈 85 | 51 |
 | Resolved % | 🥇 **90%** | 🥉 79% | 🥈 81% | 49% |
