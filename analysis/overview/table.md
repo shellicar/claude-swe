@@ -75,32 +75,32 @@
 | Total cost | 🥉 $47.71 | 🥈 $32.21 | 🥇 **$20.61** | — |
 | $/resolved | 🥉 $3.41 | 🥈 $2.48 | 🥇 **$1.72** | — |
 | **tokio stack — *Rust* (20)** | | | | |
-| Resolved | 🥈 10/20 | 🥇 **11/20** | 🥇 **11/20** | — |
-| Resolved % | 🥈 50% | 🥇 **55%** | 🥇 **55%** | — |
-| Total cost | 🥈 $21.64 | 🥉 $22.37 | 🥇 **$10.69** | — |
-| $/resolved | 🥉 $2.16 | 🥈 $2.03 | 🥇 **$0.97** | — |
+| Resolved | — | — | — | — |
+| Resolved % | — | — | — | — |
+| Total cost | — | — | — | — |
+| $/resolved | — | — | — | — |
 | **total (controls)** | | | | |
-| Resolved | 🥇 **38/60** | 🥉 35/60 | 🥈 36/60 | — |
-| Resolved % | 🥇 **63%** | 🥉 58% | 🥈 60% | — |
-| Total cost | 🥉 $69.57 | 🥈 $50.33 | 🥇 **$35.07** | — |
-| $/resolved | 🥉 $1.83 | 🥈 $1.44 | 🥇 **$0.97** | — |
+| Resolved | 🥇 **28/40** | 🥉 24/40 | 🥈 25/40 | — |
+| Resolved % | 🥇 **70%** | 🥉 60% | 🥈 62% | — |
+| Total cost | 🥉 $47.93 | 🥈 $27.97 | 🥇 **$24.37** | — |
+| $/resolved | 🥉 $1.71 | 🥈 $1.17 | 🥇 **$0.97** | — |
 | **TOTAL — all controls (variations excluded)** | | | | |
-| Resolved | 🥇 **220/269** | 🥉 192/269 | 🥈 200/269 | 51/105 |
-| Resolved % | 🥇 **82%** | 🥉 71% | 🥈 74% | 49% |
-| Total cost | $383.41 | 🥈 $203.92 | 🥉 $226.91 | 🥇 **$39.32** |
-| $/resolved | $1.74 | 🥈 $1.06 | 🥉 $1.13 | 🥇 **$0.77** |
+| Resolved | 🥇 **210/249** | 🥉 181/249 | 🥈 189/249 | 51/105 |
+| Resolved % | 🥇 **84%** | 🥉 73% | 🥈 76% | 49% |
+| Total cost | $361.77 | 🥈 $181.56 | 🥉 $216.22 | 🥇 **$39.32** |
+| $/resolved | $1.72 | 🥈 $1.00 | 🥉 $1.14 | 🥇 **$0.77** |
 | **Medal tally** | | | | |
 | **Resolved** | | | | |
-| 🥇 gold | 7 | 1 | 4 | 0 |
-| 🥈 silver | 2 | 6 | 4 | 0 |
+| 🥇 gold | 7 | 0 | 3 | 0 |
+| 🥈 silver | 1 | 6 | 4 | 0 |
 | 🥉 bronze | 2 | 4 | 3 | 1 |
 | **Total cost** | | | | |
-| 🥇 gold | 0 | 5 | 7 | 1 |
-| 🥈 silver | 2 | 5 | 4 | 1 |
-| 🥉 bronze | 8 | 2 | 1 | 0 |
+| 🥇 gold | 0 | 5 | 6 | 1 |
+| 🥈 silver | 1 | 5 | 4 | 1 |
+| 🥉 bronze | 8 | 1 | 1 | 0 |
 | **$/resolved** | | | | |
-| 🥇 gold | 0 | 4 | 9 | 0 |
-| 🥈 silver | 1 | 8 | 3 | 0 |
-| 🥉 bronze | 10 | 0 | 0 | 1 |
+| 🥇 gold | 0 | 4 | 8 | 0 |
+| 🥈 silver | 1 | 7 | 3 | 0 |
+| 🥉 bronze | 9 | 0 | 0 | 1 |
 
 Each meet's event programs, the Results block medalled per row. — = did not enter or unjudged. Full results per meet in analysis/<dataset>/table.md.

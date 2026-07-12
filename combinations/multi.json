@@ -3,7 +3,8 @@
   "dataset": "multi",
   "selections": [
     "cpp",
-    "rust"
+    "rust",
+    "tokio"
   ],
   "parallel": true,
   "basePort": 19150,

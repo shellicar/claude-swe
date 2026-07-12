@@ -38,7 +38,7 @@
 | $/instance | $0.89 | $0.53 | $0.47 |
 | Steps | 425 | 466 | 715 |
 | Output tokens | 133k | 164k | 159k |
-| Thinking (output) | 61k | 86k | 63k |
+| Thinking (output) | 64k | 101k | 85k |
 | Input tokens | 5.87M | 7.92M | 16.27M |
 | - non-cached | 1k | 1k | 1k |
 | - cache read | 5.41M | 7.47M | 15.63M |
@@ -67,40 +67,38 @@
 | Wall-clock | 2.0 h | 1.5 h | 1.3 h |
 | **tokio stack — *Rust* (org tokio-rs) (20 events)** | | | |
 | **Results** | | | |
-| Resolved | 🥈 10 | 🥇 **11** | 🥇 **11** |
-| Resolved % | 🥈 50% | 🥇 **55%** | 🥇 **55%** |
+| Resolved | — | — | — |
+| Resolved % | — | — | — |
 | Total cost | 🥈 $21.64 | 🥉 $22.37 | 🥇 **$10.69** |
-| $/resolved | 🥉 $2.16 | 🥈 $2.03 | 🥇 **$0.97** |
-| — tokio | 4/10 | 4/10 | 4/10 |
-| — tracing | 6/10 | 7/10 | 7/10 |
+| $/resolved | — | — | — |
 | **Stats** | | | |
 | Empty patches | 0 | 0 | 0 |
 | $/instance | $1.08 | $1.12 | $0.53 |
 | Steps | 451 | 671 | 641 |
 | Output tokens | 166k | 308k | 168k |
-| Thinking (output) | 74k | 168k | 65k |
+| Thinking (output) | 78k | 179k | 69k |
 | Input tokens | 7.74M | 18.97M | 19.23M |
 | - non-cached | 1k | 1k | 1k |
 | - cache read | 7.25M | 18.07M | 18.54M |
 | - cache write | 486k | 901k | 695k |
 | Wall-clock | 1.1 h | 1.8 h | 0.7 h |
 | **TOTAL — controls (variation excluded)** | | | |
-| Resolved | 🥇 **38/60** | 🥉 35/60 | 🥈 36/60 |
-| Resolved % | 🥇 **63%** | 🥉 58% | 🥈 60% |
-| Total cost | 🥉 $69.57 | 🥈 $50.33 | 🥇 **$35.07** |
-| $/resolved | 🥉 $1.83 | 🥈 $1.44 | 🥇 **$0.97** |
+| Resolved | 🥇 **28/40** | 🥉 24/40 | 🥈 25/40 |
+| Resolved % | 🥇 **70%** | 🥉 60% | 🥈 62% |
+| Total cost | 🥉 $47.93 | 🥈 $27.97 | 🥇 **$24.37** |
+| $/resolved | 🥉 $1.71 | 🥈 $1.17 | 🥇 **$0.97** |
 | **Medal tally** | | | |
 | **Resolved** | | | |
-| 🥇 gold | 3 | 1 | 1 |
-| 🥈 silver | 1 | 2 | 1 |
+| 🥇 gold | 3 | 0 | 0 |
+| 🥈 silver | 0 | 2 | 1 |
 | 🥉 bronze | 0 | 1 | 2 |
 | **Total cost** | | | |
 | 🥇 gold | 0 | 0 | 4 |
 | 🥈 silver | 1 | 3 | 0 |
 | 🥉 bronze | 3 | 1 | 0 |
 | **$/resolved** | | | |
-| 🥇 gold | 0 | 0 | 4 |
-| 🥈 silver | 0 | 4 | 0 |
-| 🥉 bronze | 4 | 0 | 0 |
+| 🥇 gold | 0 | 0 | 3 |
+| 🥈 silver | 0 | 3 | 0 |
+| 🥉 bronze | 3 | 0 | 0 |
 
 Verdicts from the Multi-SWE judging panel; — means a contender has not entered or is unjudged.

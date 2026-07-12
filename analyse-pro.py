@@ -29,8 +29,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 # selections carry a -<sel> suffix — mirrors scaleOutDir in swe.mjs).
 SELECTIONS = {
     "pro": dict(label="tutanota — *TypeScript*", runs="runs/pro/{m}/pro", evals="evals/pro/{m}", repo="repo_language", equals="ts"),
-    "nodebb": dict(label="NodeBB — *JavaScript*", runs="runs/nodebb/{m}/nodebb", evals="evals/pro/{m}-nodebb", repo="repo", equals="NodeBB/NodeBB"),
-    "element": dict(label="element-web — *JavaScript*", runs="runs/element/{m}/element", evals="evals/pro/{m}-element", repo="repo", equals="element-hq/element-web"),
+    "nodebb": dict(label="NodeBB — *JavaScript*", runs="runs/pro/{m}/nodebb", evals="evals/pro/{m}-nodebb", repo="repo", equals="NodeBB/NodeBB"),
+    "element": dict(label="element-web — *JavaScript*", runs="runs/pro/{m}/element", evals="evals/pro/{m}-element", repo="repo", equals="element-hq/element-web"),
 }
 
 
@@ -79,14 +79,27 @@ def leg(model_dir, sel):
                     wall += ts - prev
             if ts:
                 prev = ts
-    # thinking: the leg dir's own wire capture (one proxy per leg)
+    # thinking: the leg dir's capture now hosts every selection the fixture
+    # covers — attribute lines to this selection by first-user-message
+    # fingerprint (the hash the proxy logs as conv)
     thinking = None
     timing = f"{ROOT}/{runs_dir.rsplit('/', 1)[0]}/api-timing.jsonl"
     if os.path.exists(timing):
+        import hashlib
+        conv2here = set()
+        for tf in trajs:
+            t = json.load(open(tf))
+            first = next((mm for mm in t["messages"] if mm.get("role") == "user"), None)
+            c = first["content"]
+            text = c if isinstance(c, str) else "\n".join(b.get("text", "") for b in c)
+            conv2here.add(hashlib.sha256(text.encode()).hexdigest()[:12])
         thinking = 0
         for line in open(timing):
-            u = json.loads(line).get("usage") or {}
-            thinking += (u.get("output_tokens_details") or {}).get("thinking_tokens") or 0
+            d = json.loads(line)
+            u = d.get("usage") or {}
+            th = (u.get("output_tokens_details") or {}).get("thinking_tokens") or 0
+            if d.get("conv") in conv2here:
+                thinking += th
     resolved = None
     results_path = f"{ROOT}/{decl['evals'].format(m=model_dir)}/eval_results.json"
     if os.path.exists(results_path):

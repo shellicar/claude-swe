@@ -2,7 +2,9 @@
   "name": "pro",
   "dataset": "pro",
   "selections": [
-    "pro"
+    "pro",
+    "nodebb",
+    "element"
   ],
   "parallel": true,
   "basePort": 19120,

@@ -49,7 +49,7 @@
         "cw": 462790,
         "intot": 5873930,
         "wall": 3899.9085681438446,
-        "thinking": 60518,
+        "thinking": 64314,
         "resolved": 14,
         "by_repo": {
           "clap": [
@@ -121,18 +121,9 @@
         "cw": 485928,
         "intot": 7736564,
         "wall": 3789.566703557968,
-        "thinking": 74122,
-        "resolved": 10,
-        "by_repo": {
-          "tokio": [
-            10,
-            4
-          ],
-          "tracing": [
-            10,
-            6
-          ]
-        }
+        "thinking": 77922,
+        "resolved": null,
+        "by_repo": null
       }
     },
     "opus-4-8": {
@@ -179,7 +170,7 @@
         "cw": 448699,
         "intot": 7921801,
         "wall": 2508.847327232361,
-        "thinking": 85625,
+        "thinking": 101460,
         "resolved": 11,
         "by_repo": {
           "clap": [
@@ -251,18 +242,9 @@
         "cw": 901378,
         "intot": 18970042,
         "wall": 6491.676012516022,
-        "thinking": 168396,
-        "resolved": 11,
-        "by_repo": {
-          "tokio": [
-            10,
-            4
-          ],
-          "tracing": [
-            10,
-            7
-          ]
-        }
+        "thinking": 178555,
+        "resolved": null,
+        "by_repo": null
       }
     },
     "sonnet-5": {
@@ -309,7 +291,7 @@
         "cw": 634007,
         "intot": 16265635,
         "wall": 2412.1074776649475,
-        "thinking": 63205,
+        "thinking": 84547,
         "resolved": 13,
         "by_repo": {
           "clap": [
@@ -381,18 +363,9 @@
         "cw": 694995,
         "intot": 19232164,
         "wall": 2572.1076278686523,
-        "thinking": 65481,
-        "resolved": 11,
-        "by_repo": {
-          "tokio": [
-            10,
-            4
-          ],
-          "tracing": [
-            10,
-            7
-          ]
-        }
+        "thinking": 69045,
+        "resolved": null,
+        "by_repo": null
       }
     }
   }
