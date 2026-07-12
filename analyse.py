@@ -119,11 +119,12 @@ def think(dirn, s):
 data = {d: {s: leg(d, n and s) for s, n in SETS} for _, d in MODELS}
 
 rows = [
-    # headline (labels match analysis_output.HEADLINE for best-cell bolding)
+    ("## Results", lambda L, n: ""),
     ("Resolved", lambda L, n: str(L["resolved"])),
     ("Resolved %", lambda L, n: f"{L['resolved']/n*100:.0f}%"),
     ("Total cost", lambda L, n: f"${L['cost']:.2f}"),
     ("$/resolved", lambda L, n: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
+    ("## Stats", lambda L, n: ""),
     ("Steps", lambda L, n: f"{L['steps']:,}"),
     ("Output tokens", lambda L, n: tok(L["out"])),
     ("Thinking (output)", None),  # special: needs dirn+set

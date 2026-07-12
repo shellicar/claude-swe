@@ -135,12 +135,12 @@ data = {m: {label: leg(m, decl) for label, decl in SECTIONS.items()} for m in mo
 
 def make_rows(expected):
     return [
-        # headline
+        ("## Results", lambda L: ""),
         ("Resolved", lambda L: str(L["resolved"]) if L["resolved"] is not None else "—"),
         ("Resolved %", lambda L: f"{L['resolved']/expected*100:.0f}%" if L["resolved"] is not None else "—"),
         ("Total cost", lambda L: f"${L['cost']:.2f}"),
         ("$/resolved", lambda L: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
-        # information
+        ("## Stats", lambda L: ""),
         ("Bug fixed (F2P clean)", lambda L: str(L["fixed"]) if L["fixed"] is not None else "—"),
         ("Near misses (fixed, P2P broke)", lambda L: str(L["near"]) if L["near"] is not None else "—"),
         ("Build-breakers (>20% P2P broke)", lambda L: str(L["wrecked"]) if L["wrecked"] is not None else "—"),

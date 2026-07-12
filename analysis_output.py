@@ -10,8 +10,11 @@ One call writes one dataset's folder — three files, no more:
 <name>.d2 is the render intermediate, regenerated every run and gitignored.
 
 HEADLINE rows — Resolved, Resolved %, Total cost, $/resolved — get their best
-cell bolded: highest wins on resolve rows, lowest on cost rows; ties all bold.
-Everything else is information, not headline.
+cell bolded and trophied (🏆 is the colour d2's md tables cannot give a cell):
+highest wins on resolve rows, lowest on cost rows; ties all get one.
+
+Rows whose label starts with "## " render as bold group dividers (Results /
+Stats) — the visual hierarchy inside a section.
 
 sections: list of (title, body) where body is a list of (row label, [cell per
 column]). All cells must be one-line strings: d2 mis-measures wrapped cells
@@ -44,7 +47,7 @@ def _bold_best(label, cells):
     if len(present) < 2:
         return cells
     best = max(present) if higher else min(present)
-    return [f"**{c}**" if v == best else c for c, v in zip(cells, values)]
+    return [f"**{c}**\u00a0🏆" if v == best else c for c, v in zip(cells, values)]
 
 
 def emit(name, heading, columns, sections, note, payload):
@@ -54,6 +57,12 @@ def emit(name, heading, columns, sections, note, payload):
     with open(f"{outdir}/data.json", "w") as f:
         json.dump(payload, f, indent=2)
 
+    def render_row(label, cells):
+        # "## X" rows are group dividers: bold label, blank cells
+        if label.startswith("## "):
+            return f"| **{label[3:]}** |" + " |" * len(columns)
+        return f"| {label} | " + " | ".join(cells) + " |"
+
     sections = [(title, [(label, _bold_best(label, cells)) for label, cells in body])
                 for title, body in sections]
 
@@ -62,7 +71,7 @@ def emit(name, heading, columns, sections, note, payload):
     for title, body in sections:
         lines.append(f"| **{title}** |" + " |" * len(columns))
         for label, cells in body:
-            lines.append(f"| {label} | " + " | ".join(cells) + " |")
+            lines.append(render_row(label, cells))
     lines += ["", note]
     with open(f"{outdir}/table.md", "w") as f:
         f.write("\n".join(lines) + "\n")
@@ -79,7 +88,7 @@ def emit(name, heading, columns, sections, note, payload):
         d2.append(f"  | {title} | " + " | ".join(columns) + " |")
         d2.append("  |" + "---|" * (len(columns) + 1))
         for label, cells in body:
-            d2.append(f"  | {label} | " + " | ".join(cells) + " |")
+            d2.append("  " + render_row(label, cells))
         d2.append("  | " + " | " * (len(columns) + 1))
         d2.append("|||")
         if prev is not None:
