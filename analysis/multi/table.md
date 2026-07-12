@@ -62,5 +62,23 @@
 | - cache read | 24.50M | 38.43M | 43.29M |
 | - cache write | 719k | 765k | 966k |
 | Wall-clock | 2.0 h | 1.5 h | 1.3 h |
+| **tokio stack (org tokio-rs) (20 instances)** | | | |
+| Instances | 20 | 20 | 20 |
+| Resolved | 10 | 11 | 11 |
+| — tokio | 4/10 | 4/10 | 4/10 |
+| — tracing | 6/10 | 7/10 | 7/10 |
+| Resolved % | 50% | 55% | 55% |
+| $/resolved | $2.16 | $2.03 | $0.97 |
+| Empty patches | 0 | 0 | 0 |
+| Total cost | $21.64 | $22.37 | $10.69 |
+| $/instance | $1.08 | $1.12 | $0.53 |
+| Steps | 451 | 671 | 641 |
+| Output tokens | 166k | 308k | 168k |
+| Thinking (output) | 74k | 168k | 65k |
+| Input tokens | 7.74M | 18.97M | 19.23M |
+| - non-cached | 1k | 1k | 1k |
+| - cache read | 7.25M | 18.07M | 18.54M |
+| - cache write | 486k | 901k | 695k |
+| Wall-clock | 1.1 h | 1.8 h | 0.7 h |
 
 Verdicts from ByteDance's Multi-SWE harness; — means a leg is not yet marked.

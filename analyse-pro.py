@@ -30,6 +30,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 SELECTIONS = {
     "pro": dict(label="tutanota ts", runs="runs/pro/{m}/pro", evals="evals/pro/{m}", repo="repo_language", equals="ts"),
     "nodebb": dict(label="NodeBB js", runs="runs/nodebb/{m}/nodebb", evals="evals/pro/{m}-nodebb", repo="repo", equals="NodeBB/NodeBB"),
+    "element": dict(label="element-web js", runs="runs/element/{m}/element", evals="evals/pro/{m}-element", repo="repo", equals="element-hq/element-web"),
 }
 
 

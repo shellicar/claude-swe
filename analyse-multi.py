@@ -30,6 +30,7 @@ SECTIONS = {
     "cpp control": dict(runs="runs/multi/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/multi-{m}-cpp"),
     "rust control": dict(runs="runs/multi/{m}/rust", ids="instances-multi-rust.txt", evals="evals/multi/multi-{m}-rust"),
     "cpp variation (verify + 900s)": dict(runs="runs/cpp-variation/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/cpp-variation-{m}-cpp"),
+    "tokio stack (org tokio-rs)": dict(runs="runs/tokio/{m}/tokio", ids="instances-tokio-stack.txt", evals="evals/multi/tokio-{m}-tokio"),
 }
 
 

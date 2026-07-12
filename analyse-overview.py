@@ -50,7 +50,7 @@ def verified_rows(d):
 
 
 def pro_rows(d):
-    for sel, label in (("pro", "tutanota ts (20)"), ("nodebb", "NodeBB js (44)")):
+    for sel, label in (("pro", "tutanota ts (20)"), ("nodebb", "NodeBB js (44)"), ("element", "element-web js (20)")):
         yield label, {m: v.get(sel) for m, v in d["models"].items()}
 
 
@@ -69,6 +69,7 @@ def multi_rows(d):
         "cpp control": "cpp control (20)",
         "rust control": "rust control (20)",
         "cpp variation (verify + 900s)": "cpp variation (20)",
+        "tokio stack (org tokio-rs)": "tokio stack (20)",
     }
     for key, label in labels.items():
         yield label, {m: v.get(key) for m, v in d["models"].items()}

@@ -104,6 +104,30 @@
             3
           ]
         }
+      },
+      "tokio stack (org tokio-rs)": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 21.639853999999996,
+        "steps": 451,
+        "out": 166140,
+        "ncc": 902,
+        "cr": 7249734,
+        "cw": 485928,
+        "intot": 7736564,
+        "wall": 3789.566703557968,
+        "thinking": 74122,
+        "resolved": 10,
+        "by_repo": {
+          "tokio": [
+            10,
+            4
+          ],
+          "tracing": [
+            10,
+            6
+          ]
+        }
       }
     },
     "opus-4-8": {
@@ -210,6 +234,30 @@
             3
           ]
         }
+      },
+      "tokio stack (org tokio-rs)": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 22.365933499999997,
+        "steps": 671,
+        "out": 307678,
+        "ncc": 1342,
+        "cr": 18067322,
+        "cw": 901378,
+        "intot": 18970042,
+        "wall": 6491.676012516022,
+        "thinking": 168396,
+        "resolved": 11,
+        "by_repo": {
+          "tokio": [
+            10,
+            4
+          ],
+          "tracing": [
+            10,
+            7
+          ]
+        }
       }
     },
     "sonnet-5": {
@@ -314,6 +362,30 @@
           "simdjson": [
             3,
             3
+          ]
+        }
+      },
+      "tokio stack (org tokio-rs)": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 10.69384335,
+        "steps": 641,
+        "out": 168200,
+        "ncc": 1282,
+        "cr": 18535887,
+        "cw": 694995,
+        "intot": 19232164,
+        "wall": 2572.1076278686523,
+        "thinking": 65481,
+        "resolved": 11,
+        "by_repo": {
+          "tokio": [
+            10,
+            4
+          ],
+          "tracing": [
+            10,
+            7
           ]
         }
       }
