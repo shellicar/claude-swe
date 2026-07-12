@@ -133,7 +133,7 @@ sections = [(title, [(l, [cells[i] for i in keep]) for l, cells in body]) for ti
 
 NOTE = "Each meet's event programs, the Results block medalled per row. — = did not enter or unjudged. Full results per meet in analysis/<dataset>/table.md."
 
-emit("overview", "claude-swe — all experiments", cols, sections, NOTE,
+emit("overview", "claude-swe — all meets", cols, sections, NOTE,
      {"columns": cols, "sections": [
          {"dataset": title, "rows": [{"label": l, "cells": cells} for l, cells in body]}
          for title, body in sections]})
