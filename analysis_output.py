@@ -9,9 +9,10 @@ One call writes one dataset's folder — three files, no more:
 
 <name>.d2 is the render intermediate, regenerated every run and gitignored.
 
-HEADLINE rows — Resolved, Resolved %, Total cost, $/resolved — get their best
-cell bolded and trophied (🏆 is the colour d2's md tables cannot give a cell):
-highest wins on resolve rows, lowest on cost rows; ties all get one.
+HEADLINE rows — Resolved, Resolved %, Total cost, $/resolved — get medals by
+rank (🥇🥈🥉 are the colour d2's md tables cannot give a cell): highest wins on
+resolve rows, lowest on cost rows; tied values share a medal. Medals sit
+BEFORE the value so the text stays aligned; gold is also bold.
 
 Rows whose label starts with "## " render as bold group dividers (Results /
 Stats) — the visual hierarchy inside a section.
@@ -38,16 +39,25 @@ def _numeric(cell):
     return float(m.group().replace(",", "")) if m else None
 
 
-def _bold_best(label, cells):
+def _medal_row(label, cells):
     higher = HEADLINE.get(label.strip())
     if higher is None:
         return cells
     values = [_numeric(c) for c in cells]
-    present = [v for v in values if v is not None]
+    present = sorted({v for v in values if v is not None}, reverse=higher)
     if len(present) < 2:
         return cells
-    best = max(present) if higher else min(present)
-    return [f"**{c}**\u00a0🏆" if v == best else c for c, v in zip(cells, values)]
+    medal_for = {v: m for v, m in zip(present, ("\U0001F947", "\U0001F948", "\U0001F949"))}
+    out = []
+    for c, v in zip(cells, values):
+        medal = medal_for.get(v)
+        if medal == "\U0001F947":
+            out.append(f"{medal}\u00a0**{c}**")
+        elif medal:
+            out.append(f"{medal}\u00a0{c}")
+        else:
+            out.append(c)
+    return out
 
 
 def emit(name, heading, columns, sections, note, payload):
@@ -63,7 +73,7 @@ def emit(name, heading, columns, sections, note, payload):
             return f"| **{label[3:]}** |" + " |" * len(columns)
         return f"| {label} | " + " | ".join(cells) + " |"
 
-    sections = [(title, [(label, _bold_best(label, cells)) for label, cells in body])
+    sections = [(title, [(label, _medal_row(label, cells)) for label, cells in body])
                 for title, body in sections]
 
     # markdown

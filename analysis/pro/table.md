@@ -2,10 +2,10 @@
 |---|---|---|---|
 | **tutanota ts (all 20 instances)** | | | |
 | **Results** | | | |
-| Resolved | **17** 🏆 | 11 | 14 |
-| Resolved % | **85%** 🏆 | 55% | 70% |
-| Total cost | $43.19 | **$23.57** 🏆 | $25.22 |
-| $/resolved | $2.54 | $2.14 | **$1.80** 🏆 |
+| Resolved | 🥇 **17** | 🥉 11 | 🥈 14 |
+| Resolved % | 🥇 **85%** | 🥉 55% | 🥈 70% |
+| Total cost | 🥉 $43.19 | 🥇 **$23.57** | 🥈 $25.22 |
+| $/resolved | 🥉 $2.54 | 🥈 $2.14 | 🥇 **$1.80** |
 | **Stats** | | | |
 | Empty patches | 0 | 0 | 1 |
 | $/instance | $2.16 | $1.18 | $1.26 |
@@ -19,10 +19,10 @@
 | Wall-clock | 1.7 h | 1.4 h | 1.4 h |
 | **NodeBB js (all 44 instances)** | | | |
 | **Results** | | | |
-| Resolved | **42** 🏆 | 35 | 32 |
-| Resolved % | **95%** 🏆 | 80% | 73% |
-| Total cost | $78.57 | **$38.59** 🏆 | $47.18 |
-| $/resolved | $1.87 | **$1.10** 🏆 | $1.47 |
+| Resolved | 🥇 **42** | 🥈 35 | 🥉 32 |
+| Resolved % | 🥇 **95%** | 🥈 80% | 🥉 73% |
+| Total cost | 🥉 $78.57 | 🥇 **$38.59** | 🥈 $47.18 |
+| $/resolved | 🥉 $1.87 | 🥇 **$1.10** | 🥈 $1.47 |
 | **Stats** | | | |
 | Empty patches | 0 | 0 | 1 |
 | $/instance | $1.79 | $0.88 | $1.07 |
@@ -36,10 +36,10 @@
 | Wall-clock | 3.3 h | 2.3 h | 2.8 h |
 | **element-web js (20 of 56 instances)** | | | |
 | **Results** | | | |
-| Resolved | 19 | 17 | **20** 🏆 |
-| Resolved % | 95% | 85% | **100%** 🏆 |
-| Total cost | $93.77 | **$25.95** 🏆 | $50.86 |
-| $/resolved | $4.94 | **$1.53** 🏆 | $2.54 |
+| Resolved | 🥈 19 | 🥉 17 | 🥇 **20** |
+| Resolved % | 🥈 95% | 🥉 85% | 🥇 **100%** |
+| Total cost | 🥉 $93.77 | 🥇 **$25.95** | 🥈 $50.86 |
+| $/resolved | 🥉 $4.94 | 🥇 **$1.53** | 🥈 $2.54 |
 | **Stats** | | | |
 | Empty patches | 1 | 0 | 0 |
 | $/instance | $4.69 | $1.30 | $2.54 |

@@ -2,10 +2,10 @@
 |---|---|---|---|
 | **rust (tokio-rs/tokio, 9 instances)** | | | |
 | **Results** | | | |
-| Resolved | **7** 🏆 | **7** 🏆 | **7** 🏆 |
-| Resolved % | **78%** 🏆 | **78%** 🏆 | **78%** 🏆 |
-| Total cost | $4.99 | **$2.90** 🏆 | **$2.90** 🏆 |
-| $/resolved | $0.71 | **$0.41** 🏆 | **$0.41** 🏆 |
+| Resolved | 7 | 7 | 7 |
+| Resolved % | 78% | 78% | 78% |
+| Total cost | 🥈 $4.99 | 🥇 **$2.90** | 🥇 **$2.90** |
+| $/resolved | 🥈 $0.71 | 🥇 **$0.41** | 🥇 **$0.41** |
 | **Stats** | | | |
 | Bug fixed (F2P clean) | 8 | 8 | 8 |
 | Near misses (fixed, P2P broke) | 1 | 1 | 1 |
@@ -22,10 +22,10 @@
 | Wall-clock | 0.3 h | 0.2 h | 0.3 h |
 | **cpp (fmtlib/fmt, 11 instances)** | | | |
 | **Results** | | | |
-| Resolved | 3 | 4 | **6** 🏆 |
-| Resolved % | 27% | 36% | **55%** 🏆 |
-| Total cost | $9.80 | **$7.60** 🏆 | $8.71 |
-| $/resolved | $3.27 | $1.90 | **$1.45** 🏆 |
+| Resolved | 🥉 3 | 🥈 4 | 🥇 **6** |
+| Resolved % | 🥉 27% | 🥈 36% | 🥇 **55%** |
+| Total cost | 🥉 $9.80 | 🥇 **$7.60** | 🥈 $8.71 |
+| $/resolved | 🥉 $3.27 | 🥈 $1.90 | 🥇 **$1.45** |
 | **Stats** | | | |
 | Bug fixed (F2P clean) | 4 | 4 | 6 |
 | Near misses (fixed, P2P broke) | 1 | 0 | 0 |
@@ -42,10 +42,10 @@
 | Wall-clock | 0.5 h | 0.6 h | 0.5 h |
 | **cpp variation (verify + 900s, same 11)** | | | |
 | **Results** | | | |
-| Resolved | 4 | 5 | **6** 🏆 |
-| Resolved % | 36% | 45% | **55%** 🏆 |
-| Total cost | $14.53 | $10.82 | **$6.07** 🏆 |
-| $/resolved | $3.63 | $2.16 | **$1.01** 🏆 |
+| Resolved | 🥉 4 | 🥈 5 | 🥇 **6** |
+| Resolved % | 🥉 36% | 🥈 45% | 🥇 **55%** |
+| Total cost | 🥉 $14.53 | 🥈 $10.82 | 🥇 **$6.07** |
+| $/resolved | 🥉 $3.63 | 🥈 $2.16 | 🥇 **$1.01** |
 | **Stats** | | | |
 | Bug fixed (F2P clean) | 4 | 5 | 6 |
 | Near misses (fixed, P2P broke) | 0 | 0 | 0 |
