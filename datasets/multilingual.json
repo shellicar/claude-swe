@@ -25,10 +25,10 @@
   "selections": {
     "rust": {
       "file": "instances-rust.txt",
-      "expected": 9,
+      "expected": 43,
       "rule": {
-        "field": "repo",
-        "equals": "tokio-rs/tokio"
+        "field": "language",
+        "equals": "rust"
       }
     },
     "cpp": {

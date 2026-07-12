@@ -27,7 +27,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # label -> (selection, runs root, run-id prefix, expected)
 SECTIONS = {
-    "tokio-rs/tokio — *Rust* (9 events)": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", expected=9),
+    "*Rust* — 7 repos (43 events)": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", expected=43, ids="instances-rust.txt"),
     "fmtlib/fmt — *C++* (11 events)": dict(sel="cpp", runs="runs/multilingual", runid="runs_multilingual", expected=11),
     "*C++* variation (verify + 900s, same 11 — exhibition)": dict(sel="cpp", runs="runs/fmt-variation", runid="runs_fmt-variation", expected=11),
 }
@@ -112,12 +112,26 @@ def leg(model_dir, decl):
             if d.get("conv") in conv2here:
                 thinking += th
     resolved = None
+    by_repo = None
     reports = glob.glob(f"{ROOT}/evals/*.{decl['runid']}_{model_dir}_{decl['sel']}.json")
     if len(reports) == 1:
-        resolved = len(json.load(open(reports[0]))["resolved_ids"])
+        rep = json.load(open(reports[0]))
+        resolved = len(rep["resolved_ids"])
+        # per-repo slice for multi-repo selections — a flat count hides which
+        # repo carried it (the fmt lesson)
+        if decl.get("ids"):
+            short = lambda iid: iid.split("__")[1].rsplit("-", 1)[0]
+            won = {}
+            for iid in rep["resolved_ids"]:
+                won[short(iid)] = won.get(short(iid), 0) + 1
+            by_repo = {}
+            for iid in sorted(l.strip() for l in open(f"{ROOT}/{decl['ids']}") if l.strip()):
+                r = short(iid)
+                t, _ = by_repo.get(r, (0, 0))
+                by_repo[r] = (t + 1, won.get(r, 0))
     return dict(instances=len(trajs), empty=empty, cost=cost, steps=steps, out=out,
                 ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, thinking=thinking,
-                resolved=resolved, **test_outcomes(decl, model_dir))
+                resolved=resolved, by_repo=by_repo, **test_outcomes(decl, model_dir))
 
 
 
@@ -186,12 +200,34 @@ def make_rows(expected):
 
 NOTE = "Verdicts from the swebench judges; — means a contender has not entered or is unjudged."
 
+def repo_rows(label):
+    repos = []
+    for m in models:
+        br = data[m][label].get("by_repo")
+        if br:
+            for r in br:
+                if r not in repos:
+                    repos.append(r)
+    out = []
+    for r in sorted(repos):
+        def fn(L, _r=r):
+            br = L.get("by_repo")
+            if not br or _r not in br:
+                return "—"
+            t, w = br[_r]
+            return f"{w}/{t}"
+        out.append((f"— {r}", fn))
+    return out
+
+
 sections = []
 for label, decl in SECTIONS.items():
-    body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in make_rows(decl["expected"])]
+    rows_all = make_rows(decl["expected"])
+    rows_all = rows_all[:5] + repo_rows(label) + rows_all[5:]
+    body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in rows_all]
     sections.append((label, body))
 
-sections.append(("TOTAL — controls (variation excluded)", total_section(["tokio-rs/tokio — *Rust* (9 events)", "fmtlib/fmt — *C++* (11 events)"])))
+sections.append(("TOTAL — controls (variation excluded)", total_section(["*Rust* — 7 repos (43 events)", "fmtlib/fmt — *C++* (11 events)"])))
 
 emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
      {"covers": ["rust", "cpp"], "models": data})

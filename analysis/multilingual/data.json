@@ -5,7 +5,7 @@
   ],
   "models": {
     "fable-5": {
-      "tokio-rs/tokio \u2014 *Rust* (9 events)": {
+      "*Rust* \u2014 7 repos (43 events)": {
         "instances": 9,
         "empty": 0,
         "cost": 4.9892385,
@@ -18,6 +18,36 @@
         "wall": 964.8514666557312,
         "thinking": 21633,
         "resolved": 7,
+        "by_repo": {
+          "ruff": [
+            7,
+            0
+          ],
+          "ripgrep": [
+            2,
+            0
+          ],
+          "nushell": [
+            5,
+            0
+          ],
+          "bat": [
+            8,
+            0
+          ],
+          "axum": [
+            7,
+            0
+          ],
+          "tokio": [
+            9,
+            7
+          ],
+          "coreutils": [
+            5,
+            0
+          ]
+        },
         "fixed": 8,
         "near": 1,
         "wrecked": 0
@@ -35,6 +65,7 @@
         "wall": 1859.1335000991821,
         "thinking": 50281,
         "resolved": 3,
+        "by_repo": null,
         "fixed": 4,
         "near": 1,
         "wrecked": 5
@@ -52,13 +83,14 @@
         "wall": 2635.895017147064,
         "thinking": 68615,
         "resolved": 4,
+        "by_repo": null,
         "fixed": 4,
         "near": 0,
         "wrecked": 5
       }
     },
     "opus-4-8": {
-      "tokio-rs/tokio \u2014 *Rust* (9 events)": {
+      "*Rust* \u2014 7 repos (43 events)": {
         "instances": 9,
         "empty": 0,
         "cost": 2.9035682499999997,
@@ -71,6 +103,36 @@
         "wall": 875.5412702560425,
         "thinking": 21541,
         "resolved": 7,
+        "by_repo": {
+          "ruff": [
+            7,
+            0
+          ],
+          "ripgrep": [
+            2,
+            0
+          ],
+          "nushell": [
+            5,
+            0
+          ],
+          "bat": [
+            8,
+            0
+          ],
+          "axum": [
+            7,
+            0
+          ],
+          "tokio": [
+            9,
+            7
+          ],
+          "coreutils": [
+            5,
+            0
+          ]
+        },
         "fixed": 8,
         "near": 1,
         "wrecked": 0
@@ -88,6 +150,7 @@
         "wall": 2219.383960008621,
         "thinking": 77110,
         "resolved": 4,
+        "by_repo": null,
         "fixed": 4,
         "near": 0,
         "wrecked": 5
@@ -105,13 +168,14 @@
         "wall": 2415.913137435913,
         "thinking": 85529,
         "resolved": 5,
+        "by_repo": null,
         "fixed": 5,
         "near": 0,
         "wrecked": 5
       }
     },
     "sonnet-5": {
-      "tokio-rs/tokio \u2014 *Rust* (9 events)": {
+      "*Rust* \u2014 7 repos (43 events)": {
         "instances": 9,
         "empty": 0,
         "cost": 2.8997981999999998,
@@ -124,6 +188,36 @@
         "wall": 931.7398989200592,
         "thinking": 36006,
         "resolved": 7,
+        "by_repo": {
+          "ruff": [
+            7,
+            0
+          ],
+          "ripgrep": [
+            2,
+            0
+          ],
+          "nushell": [
+            5,
+            0
+          ],
+          "bat": [
+            8,
+            0
+          ],
+          "axum": [
+            7,
+            0
+          ],
+          "tokio": [
+            9,
+            7
+          ],
+          "coreutils": [
+            5,
+            0
+          ]
+        },
         "fixed": 8,
         "near": 1,
         "wrecked": 0
@@ -141,6 +235,7 @@
         "wall": 1907.3367941379547,
         "thinking": 63381,
         "resolved": 6,
+        "by_repo": null,
         "fixed": 6,
         "near": 0,
         "wrecked": 5
@@ -158,9 +253,66 @@
         "wall": 1677.8709259033203,
         "thinking": 47966,
         "resolved": 6,
+        "by_repo": null,
         "fixed": 6,
         "near": 0,
         "wrecked": 5
+      }
+    },
+    "haiku-4-5": {
+      "*Rust* \u2014 7 repos (43 events)": {
+        "instances": 6,
+        "empty": 2,
+        "cost": 3.1445435999999996,
+        "steps": 744,
+        "out": 162756,
+        "ncc": 61112,
+        "cr": 19710991,
+        "cw": 238842,
+        "intot": 20010945,
+        "wall": 2858.512590408325,
+        "thinking": 0,
+        "resolved": null,
+        "by_repo": null,
+        "fixed": null,
+        "near": null,
+        "wrecked": null
+      },
+      "fmtlib/fmt \u2014 *C++* (11 events)": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": 0,
+        "resolved": null,
+        "by_repo": null,
+        "fixed": null,
+        "near": null,
+        "wrecked": null
+      },
+      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": null,
+        "resolved": null,
+        "by_repo": null,
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       }
     }
   }

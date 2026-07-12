@@ -56,7 +56,7 @@ def pro_rows(d):
 
 def multilingual_rows(d):
     labels = {
-        "tokio-rs/tokio — *Rust* (9 events)": "tokio — *Rust* (9)",
+        "*Rust* — 7 repos (43 events)": "*Rust* — 7 repos (43)",
         "fmtlib/fmt — *C++* (11 events)": "fmt — *C++* (11)",
         "*C++* variation (verify + 900s, same 11 — exhibition)": "*C++* variation (11)",
     }
