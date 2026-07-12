@@ -17,6 +17,10 @@ BEFORE the value so the text stays aligned; gold is also bold.
 Rows whose label starts with "## " render as bold group dividers (Results /
 Stats) — the visual hierarchy inside a section.
 
+A medal tally (the Olympics table: golds, silvers, bronzes per model) is
+appended automatically, counting every medalled row outside TOTAL sections —
+aggregate rows would double-weight the contests they summarise.
+
 sections: list of (title, body) where body is a list of (row label, [cell per
 column]). All cells must be one-line strings: d2 mis-measures wrapped cells
 and clips the table bottom (see docs/diagrams/model-comparison.d2).
@@ -75,6 +79,24 @@ def emit(name, heading, columns, sections, note, payload):
 
     sections = [(title, [(label, _medal_row(label, cells)) for label, cells in body])
                 for title, body in sections]
+
+    # medal tally: count each column's medals across the contests (TOTAL
+    # sections excluded — they aggregate rows already counted)
+    tally = {m: [0] * len(columns) for m in ("\U0001F947", "\U0001F948", "\U0001F949")}
+    for title, body in sections:
+        if title.startswith("TOTAL"):
+            continue
+        for label, cells in body:
+            for i, c in enumerate(cells):
+                for m in tally:
+                    if m in c:
+                        tally[m][i] += 1
+    if any(any(v) for v in tally.values()):
+        sections = sections + [("Medal tally", [
+            ("\U0001F947 gold", [str(n) for n in tally["\U0001F947"]]),
+            ("\U0001F948 silver", [str(n) for n in tally["\U0001F948"]]),
+            ("\U0001F949 bronze", [str(n) for n in tally["\U0001F949"]]),
+        ])]
 
     # markdown
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]

@@ -133,6 +133,28 @@ models = find_models()
 data = {m: {label: leg(m, decl) for label, decl in SECTIONS.items()} for m in models}
 
 
+
+def total_section(controls):
+    """Sum the control sections' headline figures into a TOTAL section —
+    the tally at the bottom of the card. Variations are excluded: they
+    revisit instances the controls already count."""
+    body = []
+    sums = {m: dict(r=0, n=0, c=0.0) for m in models}
+    for label in controls:
+        for m in models:
+            L = data[m][label]
+            if L.get("resolved") is not None and L.get("instances"):
+                sums[m]["r"] += L["resolved"]
+                sums[m]["n"] += L["instances"]
+                sums[m]["c"] += L["cost"]
+    def cells(fn):
+        return [fn(sums[m]) if sums[m]["n"] else "—" for m in models]
+    body.append(("Resolved", cells(lambda s: f"{s['r']}/{s['n']}")))
+    body.append(("Resolved %", cells(lambda s: f"{s['r']/s['n']*100:.0f}%")))
+    body.append(("Total cost", cells(lambda s: f"${s['c']:.2f}")))
+    body.append(("$/resolved", cells(lambda s: f"${s['c']/s['r']:.2f}" if s["r"] else "—")))
+    return body
+
 def make_rows(expected):
     return [
         ("## Results", lambda L: ""),
@@ -163,6 +185,8 @@ sections = []
 for label, decl in SECTIONS.items():
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in make_rows(decl["expected"])]
     sections.append((label, body))
+
+sections.append(("TOTAL — controls (variation excluded)", total_section(["rust (tokio-rs/tokio, 9 instances)", "cpp (fmtlib/fmt, 11 instances)"])))
 
 emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
      {"covers": ["rust", "cpp"], "models": data})

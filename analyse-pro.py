@@ -139,5 +139,23 @@ for sel, decl in SELECTIONS.items():
     body = [(label, [fn(data[m][sel]) for m in models]) for label, fn in rows]
     sections.append((f"{decl['label']} ({scope} instances)", body))
 
+
+total_body = []
+sums = {m: dict(r=0, n=0, c=0.0) for m in models}
+for sel in SELECTIONS:
+    for m in models:
+        L = data[m][sel]
+        if L.get("resolved") is not None and L.get("instances"):
+            sums[m]["r"] += L["resolved"]
+            sums[m]["n"] += L["instances"]
+            sums[m]["c"] += L["cost"]
+def _tc(fn):
+    return [fn(sums[m]) if sums[m]["n"] else "—" for m in models]
+total_body.append(("Resolved", _tc(lambda s: f"{s['r']}/{s['n']}")))
+total_body.append(("Resolved %", _tc(lambda s: f"{s['r']/s['n']*100:.0f}%")))
+total_body.append(("Total cost", _tc(lambda s: f"${s['c']:.2f}")))
+total_body.append(("$/resolved", _tc(lambda s: f"${s['c']/s['r']:.2f}" if s["r"] else "—")))
+sections.append(("TOTAL — all selections", total_body))
+
 emit("pro", "SWE-bench Pro", models, sections, NOTE,
      {"covers": list(SELECTIONS), "models": data})

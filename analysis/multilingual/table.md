@@ -60,5 +60,14 @@
 | - cache read | 4.69M | 10.15M | 9.74M |
 | - cache write | 277k | 323k | 385k |
 | Wall-clock | 0.7 h | 0.7 h | 0.5 h |
+| **TOTAL — controls (variation excluded)** | | | |
+| Resolved | 🥉 10/20 | 🥈 11/20 | 🥇 **13/20** |
+| Resolved % | 🥉 50% | 🥈 55% | 🥇 **65%** |
+| Total cost | 🥉 $14.79 | 🥇 **$10.51** | 🥈 $11.61 |
+| $/resolved | 🥉 $1.48 | 🥈 $0.96 | 🥇 **$0.89** |
+| **Medal tally** | | | |
+| 🥇 gold | 0 | 3 | 9 |
+| 🥈 silver | 2 | 7 | 1 |
+| 🥉 bronze | 8 | 0 | 0 |
 
 Verdicts from the swebench marker; — means a leg is not yet marked or never ran.

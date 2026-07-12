@@ -51,5 +51,14 @@
 | - cache read | 21.49M | 24.28M | 64.81M |
 | - cache write | 4.56M | 889k | 6.93M |
 | Wall-clock | 8.7 h | 1.4 h | 6.2 h |
+| **TOTAL — all selections** | | | |
+| Resolved | 🥇 **78/84** | 🥉 63/84 | 🥈 66/84 |
+| Resolved % | 🥇 **93%** | 🥉 75% | 🥈 79% |
+| Total cost | 🥉 $215.52 | 🥇 **$88.11** | 🥈 $123.27 |
+| $/resolved | 🥉 $2.76 | 🥇 **$1.40** | 🥈 $1.87 |
+| **Medal tally** | | | |
+| 🥇 gold | 4 | 5 | 3 |
+| 🥈 silver | 2 | 3 | 7 |
+| 🥉 bronze | 6 | 4 | 2 |
 
 Verdicts from the vendored Scale harness; — means a leg is not yet marked.

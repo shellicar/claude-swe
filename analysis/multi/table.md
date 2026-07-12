@@ -84,5 +84,14 @@
 | - cache read | 7.25M | 18.07M | 18.54M |
 | - cache write | 486k | 901k | 695k |
 | Wall-clock | 1.1 h | 1.8 h | 0.7 h |
+| **TOTAL — controls (variation excluded)** | | | |
+| Resolved | 🥇 **38/60** | 🥉 35/60 | 🥈 36/60 |
+| Resolved % | 🥇 **63%** | 🥉 58% | 🥈 60% |
+| Total cost | 🥉 $69.57 | 🥈 $50.33 | 🥇 **$35.07** |
+| $/resolved | 🥉 $1.83 | 🥈 $1.44 | 🥇 **$0.97** |
+| **Medal tally** | | | |
+| 🥇 gold | 6 | 2 | 10 |
+| 🥈 silver | 3 | 11 | 2 |
+| 🥉 bronze | 7 | 3 | 4 |
 
 Verdicts from ByteDance's Multi-SWE harness; — means a leg is not yet marked.

@@ -133,6 +133,29 @@ def find_models():
 models = find_models()
 data = {m: {label: leg(m, decl) for label, decl in SECTIONS.items()} for m in models}
 
+
+
+def total_section(controls):
+    """Sum the control sections' headline figures into a TOTAL section —
+    the tally at the bottom of the card. Variations are excluded: they
+    revisit instances the controls already count."""
+    body = []
+    sums = {m: dict(r=0, n=0, c=0.0) for m in models}
+    for label in controls:
+        for m in models:
+            L = data[m][label]
+            if L.get("resolved") is not None and L.get("instances"):
+                sums[m]["r"] += L["resolved"]
+                sums[m]["n"] += L["instances"]
+                sums[m]["c"] += L["cost"]
+    def cells(fn):
+        return [fn(sums[m]) if sums[m]["n"] else "—" for m in models]
+    body.append(("Resolved", cells(lambda s: f"{s['r']}/{s['n']}")))
+    body.append(("Resolved %", cells(lambda s: f"{s['r']/s['n']*100:.0f}%")))
+    body.append(("Total cost", cells(lambda s: f"${s['c']:.2f}")))
+    body.append(("$/resolved", cells(lambda s: f"${s['c']/s['r']:.2f}" if s["r"] else "—")))
+    return body
+
 def repo_rows(label_models):
     """One 'resolved n/m' row per repo appearing in a section's selections —
     the slice that survives selection changes."""
@@ -184,6 +207,8 @@ for label, decl in SECTIONS.items():
     section_rows = rows[:5] + repo_rows(per_model) + rows[5:]
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
     sections_out.append((f"{label} ({n} instances)", body))
+
+sections_out.append(("TOTAL — controls (variation excluded)", total_section(["cpp control", "rust control", "tokio stack (org tokio-rs)"])))
 
 emit("multi", "Multi-SWE-bench", models, sections_out, NOTE,
      {"covers": ["cpp", "rust", "tokio"], "models": data})

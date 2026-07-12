@@ -45,5 +45,9 @@
 | — cache read | 17.76M | 19.54M | 34.64M | 67.60M | 63.90M | 240.86M | 92.16M | 214.78M |
 | — cache write | 1.88M | 1.87M | 2.11M | 2.60M | 2.35M | 6.26M | 3.36M | 5.22M |
 | Wall-clock (12-way parallel) | 4.4 h | 4.1 h | 4.4 h | 4.7 h | 5.6 h | 15.2 h | 5.5 h | 7.0 h |
+| **Medal tally** | | | | | | | | |
+| 🥇 gold | 0 | 6 | 2 | 0 | 0 | 0 | 2 | 2 |
+| 🥈 silver | 6 | 0 | 3 | 0 | 0 | 0 | 2 | 1 |
+| 🥉 bronze | 1 | 0 | 3 | 0 | 0 | 0 | 8 | 2 |
 
 Verdicts from the pinned swebench marker. Full caveats in report.md.
