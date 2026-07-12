@@ -2,7 +2,8 @@
   "covers": [
     "pro",
     "nodebb",
-    "element"
+    "element",
+    "go"
   ],
   "models": {
     "fable-5": {
@@ -47,6 +48,20 @@
         "wall": 31316.968509674072,
         "thinking": 148650,
         "resolved": 19
+      },
+      "go": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": 0,
+        "resolved": null
       }
     },
     "opus-4-8": {
@@ -91,6 +106,20 @@
         "wall": 4972.1297652721405,
         "thinking": 159168,
         "resolved": 17
+      },
+      "go": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": 0,
+        "resolved": null
       }
     },
     "sonnet-5": {
@@ -135,6 +164,78 @@
         "wall": 22200.22031569481,
         "thinking": 154241,
         "resolved": 20
+      },
+      "go": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": 0,
+        "resolved": null
+      }
+    },
+    "haiku-4-5": {
+      "pro": {
+        "instances": 17,
+        "empty": 2,
+        "cost": 7.526448350000001,
+        "steps": 1493,
+        "out": 323534,
+        "ncc": 150651,
+        "cr": 46797211,
+        "cw": 862725,
+        "intot": 47810587,
+        "wall": 5966.784643650055,
+        "thinking": 0,
+        "resolved": 2
+      },
+      "nodebb": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": 0,
+        "resolved": null
+      },
+      "element": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": 0,
+        "resolved": null
+      },
+      "go": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": 0,
+        "resolved": null
       }
     }
   }

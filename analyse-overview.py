@@ -50,7 +50,7 @@ def verified_rows(d):
 
 
 def pro_rows(d):
-    for sel, label in (("pro", "tutanota — *TypeScript* (20)"), ("nodebb", "NodeBB — *JavaScript* (44)"), ("element", "element-web — *JavaScript* (20)")):
+    for sel, label in (("pro", "tutanota — *TypeScript* (20)"), ("nodebb", "NodeBB — *JavaScript* (44)"), ("element", "element-web — *JavaScript* (20)"), ("go", "*Go* (25 of 280)")):
         yield label, {m: v.get(sel) for m, v in d["models"].items()}
 
 
@@ -58,6 +58,7 @@ def multilingual_rows(d):
     labels = {
         "*Rust* — 7 repos (43 events)": "*Rust* — 7 repos (43)",
         "fmtlib/fmt — *C++* (11 events)": "fmt — *C++* (11)",
+        "*Go* — 5 repos (42 events)": "*Go* — 5 repos (42)",
         "*C++* variation (verify + 900s, same 11 — exhibition)": "*C++* variation (11)",
     }
     for key, label in labels.items():

@@ -52,6 +52,16 @@
         "n": 20,
         "seed": 42
       }
+    },
+    "go": {
+      "file": "instances-pro-go.txt",
+      "expected": 25,
+      "rule": {
+        "field": "repo_language",
+        "equals": "go",
+        "n": 25,
+        "seed": 42
+      }
     }
   }
 }

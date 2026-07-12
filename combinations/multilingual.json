@@ -3,7 +3,8 @@
   "dataset": "multilingual",
   "selections": [
     "rust",
-    "cpp"
+    "cpp",
+    "go"
   ],
   "parallel": true,
   "basePort": 19130,

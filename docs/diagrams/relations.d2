@@ -17,6 +17,7 @@ multilingual: "DATASET multilingual\nmarker: swebench" {
   style.fill: "#14352A"; style.stroke: "#2ECC71"; style.font-color: "#E8F8F0"
   rust: "rust — 43 instances\n(rule: all)"
   cpp: "cpp — 11 instances\n(rule: all)"
+  go: "go — 42 instances\n(rule: all)"
 }
 
 pro: "DATASET pro\nmarker: scale" {
@@ -24,6 +25,7 @@ pro: "DATASET pro\nmarker: scale" {
   pro: "pro — 20 instances\n(rule: all)"
   nodebb: "nodebb — 44 instances\n(rule: all)"
   element: "element — 20 instances\n(seeded 20)"
+  go: "go — 25 instances\n(seeded 25)"
 }
 
 verified: "DATASET verified\nmarker: swebench" {
@@ -54,11 +56,13 @@ combo_multi -> multi.tokio: "visits"
 combo_multilingual: "combination multilingual\nopus-4-8, sonnet-5, fable-5, haiku-4-5\n→ runs/multilingual/" { style.fill: "#2E1E0E"; style.stroke: "#E67E22"; style.font-color: "#FBEFE3" }
 combo_multilingual -> multilingual.rust: "visits"
 combo_multilingual -> multilingual.cpp: "visits"
+combo_multilingual -> multilingual.go: "visits"
 
 combo_pro: "combination pro\nopus-4-8, sonnet-5, fable-5, haiku-4-5\n→ runs/pro/" { style.fill: "#2E1E0E"; style.stroke: "#E67E22"; style.font-color: "#FBEFE3" }
 combo_pro -> pro.pro: "visits"
 combo_pro -> pro.nodebb: "visits"
 combo_pro -> pro.element: "visits"
+combo_pro -> pro.go: "visits"
 
 note: "Green containers are datasets with their frozen selections. Orange boxes are combinations (solid = control knobs); red dashed are variations — same selection, different prompt/timeout. Generated from datasets/*.json and combinations/*.json by generate-relations.mjs." {
   near: bottom-center; shape: text; style.font-color: "#7F8C8D"

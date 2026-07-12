@@ -29,6 +29,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 SECTIONS = {
     "*Rust* — 7 repos (43 events)": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", expected=43, ids="instances-rust.txt"),
     "fmtlib/fmt — *C++* (11 events)": dict(sel="cpp", runs="runs/multilingual", runid="runs_multilingual", expected=11),
+    "*Go* — 5 repos (42 events)": dict(sel="go", runs="runs/multilingual", runid="runs_multilingual", expected=42, ids="instances-go.txt"),
     "*C++* variation (verify + 900s, same 11 — exhibition)": dict(sel="cpp", runs="runs/fmt-variation", runid="runs_fmt-variation", expected=11),
 }
 
@@ -227,7 +228,7 @@ for label, decl in SECTIONS.items():
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in rows_all]
     sections.append((label, body))
 
-sections.append(("TOTAL — controls (variation excluded)", total_section(["*Rust* — 7 repos (43 events)", "fmtlib/fmt — *C++* (11 events)"])))
+sections.append(("TOTAL — controls (variation excluded)", total_section(["*Rust* — 7 repos (43 events)", "fmtlib/fmt — *C++* (11 events)", "*Go* — 5 repos (42 events)"])))
 
 emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
-     {"covers": ["rust", "cpp"], "models": data})
+     {"covers": ["rust", "cpp", "go"], "models": data})

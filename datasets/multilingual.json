@@ -38,6 +38,14 @@
         "field": "repo",
         "equals": "fmtlib/fmt"
       }
+    },
+    "go": {
+      "file": "instances-go.txt",
+      "expected": 42,
+      "rule": {
+        "field": "language",
+        "equals": "go"
+      }
     }
   }
 }

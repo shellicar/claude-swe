@@ -31,6 +31,7 @@ SELECTIONS = {
     "pro": dict(label="tutanota — *TypeScript*", runs="runs/pro/{m}/pro", evals="evals/pro/{m}", repo="repo_language", equals="ts"),
     "nodebb": dict(label="NodeBB — *JavaScript*", runs="runs/pro/{m}/nodebb", evals="evals/pro/{m}-nodebb", repo="repo", equals="NodeBB/NodeBB"),
     "element": dict(label="element-web — *JavaScript*", runs="runs/pro/{m}/element", evals="evals/pro/{m}-element", repo="repo", equals="element-hq/element-web"),
+    "go": dict(label="*Go*", runs="runs/pro/{m}/go", evals="evals/pro/{m}-go", repo="repo_language", equals="go"),
 }
 
 

@@ -4,7 +4,8 @@
   "selections": [
     "pro",
     "nodebb",
-    "element"
+    "element",
+    "go"
   ],
   "parallel": true,
   "basePort": 19120,
