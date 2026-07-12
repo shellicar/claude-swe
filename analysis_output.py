@@ -6,6 +6,7 @@ One call writes one dataset's folder — three files, no more:
         data.json     the raw figures (the overview joins these)
         table.md      the table as text
         <name>.svg    the rendered card
+        <name>.png    the same card for pasting into chat (SVG pastes as text)
 
 <name>.d2 is the render intermediate, regenerated every run and gitignored.
 
@@ -153,7 +154,8 @@ def emit(name, heading, columns, sections, note, payload):
 
     written = "data.json, table.md"
     if shutil.which("d2"):
-        subprocess.run(["d2", f"{outdir}/{name}.d2", f"{outdir}/{name}.svg"],
-                       check=True, capture_output=True)
-        written += f", {name}.svg"
+        for ext in ("svg", "png"):
+            subprocess.run(["d2", f"{outdir}/{name}.d2", f"{outdir}/{name}.{ext}"],
+                           check=True, capture_output=True)
+        written += f", {name}.svg, {name}.png"
     print(f"wrote analysis/{name}/: {written}")

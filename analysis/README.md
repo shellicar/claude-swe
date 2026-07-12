@@ -33,6 +33,7 @@ files:
 | `data.json`  | machines (the overview reads these)            |
 | `table.md`   | reading as text, reconciling into `report.md`  |
 | `<name>.svg` | the rendered card                              |
+| `<name>.png` | the card for pasting into chat (SVG pastes as text) |
 
 Headline rows (Resolved, Resolved %, Total cost, $/resolved) bold the best
 cell per row — highest for resolve, lowest for cost. `<name>.d2` is the
