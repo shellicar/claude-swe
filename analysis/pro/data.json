@@ -1,4 +1,9 @@
 {
+  "covers": [
+    "pro",
+    "nodebb",
+    "element"
+  ],
   "models": {
     "fable-5": {
       "pro": {

@@ -164,4 +164,4 @@ for label, decl in SECTIONS.items():
     sections.append((label, body))
 
 emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
-     {"models": data})
+     {"covers": ["rust", "cpp"], "models": data})

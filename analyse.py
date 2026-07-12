@@ -167,5 +167,5 @@ sections = [
 NOTE = "Verdicts from the pinned swebench marker. Full caveats in report.md."
 
 emit("verified", "SWE-bench Verified", [name for name, _ in MODELS], sections, NOTE,
-     {"models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
+     {"covers": ["standard", "hard"], "models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
                  for name, d in MODELS}})

@@ -183,4 +183,5 @@ for label, decl in SECTIONS.items():
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
     sections_out.append((f"{label} ({n} instances)", body))
 
-emit("multi", "Multi-SWE-bench", models, sections_out, NOTE, {"models": data})
+emit("multi", "Multi-SWE-bench", models, sections_out, NOTE,
+     {"covers": ["cpp", "rust", "tokio"], "models": data})

@@ -138,4 +138,5 @@ for sel, decl in SELECTIONS.items():
     body = [(label, [fn(data[m][sel]) for m in models]) for label, fn in rows]
     sections.append((f"{decl['label']} ({scope} instances)", body))
 
-emit("pro", "SWE-bench Pro", models, sections, NOTE, {"models": data})
+emit("pro", "SWE-bench Pro", models, sections, NOTE,
+     {"covers": list(SELECTIONS), "models": data})

@@ -602,12 +602,23 @@ async function status(target, flags) {
   }
 }
 
-async function analyse({ ds }) {
+async function analyse({ ds, selections }) {
   if (!ds.analyser) throw new Error(`dataset ${ds.name} declares no analyser yet`);
   // The audit gate: a chain places audit before analyse; running analyse alone
   // is allowed but the analyser only sees what exists — verdicts it cannot
   // find render as "—" in its output, never as invented numbers.
   await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, ds.analyser)]);
+  // Coverage check: each analyser declares which selections its sections
+  // cover. A selection missing from the list means the tables just silently
+  // omitted it (how element/tokio briefly vanished, 2026-07-12) — fail loudly.
+  const dataPath = join(repoRoot, 'analysis', ds.name, 'data.json');
+  const covers = JSON.parse(readFileSync(dataPath, 'utf8')).covers;
+  if (covers) {
+    const missing = selections.filter((s) => !covers.includes(s));
+    if (missing.length > 0) {
+      throw new Error(`${ds.analyser} does not cover selection(s) ${missing.join(', ')} — extend its sections`);
+    }
+  }
   // The overview joins every dataset's json into one card; regenerating it
   // here means it can never be staler than the analysis it summarises.
   await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, 'analyse-overview.py')]);
