@@ -26,19 +26,19 @@ def load(name):
     return json.load(open(path)) if os.path.exists(path) else None
 
 
-def cellpair(leg):
-    """(resolved cell, $/resolved cell) from a leg dict; dashes when unknown."""
-    if leg is None:
-        return "—", "—"
-    resolved = leg.get("resolved")
-    n = leg.get("instances") or 0
-    if resolved is None or not n:
-        return "—", "—"
-    # non-breaking space: a wrapped cell makes d2 under-measure the table and
-    # clip its bottom (the Pro section lost rows to exactly this)
-    res = f"{resolved}\u00a0({resolved / n * 100:.0f}%)"
-    cost = leg.get("cost") or 0
-    return res, (f"${cost / resolved:.2f}" if resolved else "—")
+def four_rows(per_column):
+    """The standard Results block — Resolved, Resolved %, Total cost,
+    $/resolved — from {column: (resolved, instances, cost) | None}. The
+    labels match analysis_output.HEADLINE, so the emitter medals them."""
+    def cell(col, fn):
+        v = per_column.get(col)
+        return fn(*v) if v else "—"
+    return [
+        ("Resolved", [cell(c, lambda r, n, _: f"{r}/{n}") for c in COLUMNS]),
+        ("Resolved %", [cell(c, lambda r, n, _: f"{r / n * 100:.0f}%") for c in COLUMNS]),
+        ("Total cost", [cell(c, lambda r, n, x: f"${x:.2f}") for c in COLUMNS]),
+        ("$/resolved", [cell(c, lambda r, n, x: f"${x / r:.2f}" if r else "—") for c in COLUMNS]),
+    ]
 
 
 # Each dataset adapter yields (selection label, {model short name: leg dict}).
@@ -89,19 +89,12 @@ sections = []
 seen = set()
 # per-column running totals over CONTROLS (variations revisit the same
 # instances and would double-count them)
-totals = {col: dict(resolved=0, instances=0, cost=0.0) for col in COLUMNS}
-def total_cells(tot):
-    res_cells = []
-    cost_cells = []
-    for col in COLUMNS:
-        t = tot[col]
-        if t["instances"]:
-            res_cells.append(f"{t['resolved']}/{t['instances']}\u00a0({t['resolved'] / t['instances'] * 100:.0f}%)")
-            cost_cells.append(f"${t['cost'] / t['resolved']:.2f}" if t["resolved"] else "—")
-        else:
-            res_cells.append("—")
-            cost_cells.append("—")
-    return res_cells, cost_cells
+totals = {col: None for col in COLUMNS}
+
+
+def accumulate(tot, col, r, n, x):
+    cur = tot.get(col)
+    tot[col] = (r, n, x) if cur is None else (cur[0] + r, cur[1] + n, cur[2] + x)
 
 
 for title, name, rows_fn in DATASETS:
@@ -109,49 +102,37 @@ for title, name, rows_fn in DATASETS:
     if d is None:
         continue
     body = []
-    ds_totals = {col: dict(resolved=0, instances=0, cost=0.0) for col in COLUMNS}
+    ds_totals = {col: None for col in COLUMNS}
     for label, per_model in rows_fn(d):
-        res_cells = []
-        cost_cells = []
+        per_column = {}
         for col in COLUMNS:
             leg = per_model.get(col)
-            res, cost = cellpair(leg)
-            res_cells.append(res)
-            cost_cells.append(cost)
-            if leg is not None:
-                seen.add(col)
-                if "variation" not in label and leg.get("resolved") is not None and leg.get("instances"):
-                    for t in (totals[col], ds_totals[col]):
-                        t["resolved"] += leg["resolved"]
-                        t["instances"] += leg["instances"]
-                        t["cost"] += leg.get("cost") or 0
-        body.append((label, res_cells, cost_cells))
-    # per-dataset total row (controls only, same rule as the grand total)
-    res_cells, cost_cells = total_cells(ds_totals)
-    body.append(("total", res_cells, cost_cells))
+            if leg is None:
+                continue
+            seen.add(col)
+            r, n, x = leg.get("resolved"), leg.get("instances") or 0, leg.get("cost") or 0
+            if r is None or not n:
+                continue
+            per_column[col] = (r, n, x)
+            if "variation" not in label:
+                accumulate(ds_totals, col, r, n, x)
+                accumulate(totals, col, r, n, x)
+        body.append((f"## {label}", [""] * len(COLUMNS)))
+        body.extend(four_rows(per_column))
+    body.append(("## total (controls)", [""] * len(COLUMNS)))
+    body.extend(four_rows(ds_totals))
     sections.append((title, body))
 
-total_res, total_cost = total_cells(totals)
-sections.append(("TOTAL — all controls (variations excluded)", [("resolved / attempted", total_res, total_cost)]))
+sections.append(("TOTAL — all controls (variations excluded)", four_rows(totals)))
 
 # Drop columns no dataset ever populated.
 keep = [i for i, c in enumerate(COLUMNS) if c in seen]
 cols = [COLUMNS[i] for i in keep]
-for si, (title, body) in enumerate(sections):
-    sections[si] = (title, [(l, [r[i] for i in keep], [c[i] for i in keep]) for l, r, c in body])
+sections = [(title, [(l, [cells[i] for i in keep]) for l, cells in body]) for title, body in sections]
 
-NOTE = "Resolved n (%) and cost per resolved, per selection. — = not run or not yet marked. Details per dataset in analysis/<dataset>/table.md."
+NOTE = "Per selection: the Results block, medalled per row. — = not run or not yet marked. Details per dataset in analysis/<dataset>/table.md."
 
-# Flatten the (label, res, cost) triples into the emitter's (label, cells) rows.
-emit_sections = []
-for title, body in sections:
-    flat = []
-    for label, res, cost in body:
-        flat.append((label.replace(" ", "\u00a0"), res))
-        flat.append(("—\u00a0cost/resolved", cost))
-    emit_sections.append((title, flat))
-
-emit("overview", "claude-swe — all experiments", cols, emit_sections, NOTE,
+emit("overview", "claude-swe — all experiments", cols, sections, NOTE,
      {"columns": cols, "sections": [
-         {"dataset": title, "rows": [{"selection": l, "resolved": r, "cost_per_resolved": c} for l, r, c in body]}
+         {"dataset": title, "rows": [{"label": l, "cells": cells} for l, cells in body]}
          for title, body in sections]})

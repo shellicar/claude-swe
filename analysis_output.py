@@ -80,13 +80,20 @@ def emit(name, heading, columns, sections, note, payload):
     sections = [(title, [(label, _medal_row(label, cells)) for label, cells in body])
                 for title, body in sections]
 
-    # medal tally: count each column's medals across the contests (TOTAL
-    # sections excluded — they aggregate rows already counted)
+    # medal tally: count each column's medals across the contests. Aggregates
+    # are excluded — TOTAL sections and rows under a '## …total…' divider
+    # summarise contests already counted.
     tally = {m: [0] * len(columns) for m in ("\U0001F947", "\U0001F948", "\U0001F949")}
     for title, body in sections:
         if title.startswith("TOTAL"):
             continue
+        in_total_group = False
         for label, cells in body:
+            if label.startswith("## "):
+                in_total_group = "total" in label.lower()
+                continue
+            if in_total_group:
+                continue
             for i, c in enumerate(cells):
                 for m in tally:
                     if m in c:
