@@ -46,8 +46,17 @@
 | — cache write | 1.88M | 1.87M | 2.11M | 2.60M | 2.35M | 6.26M | 3.36M | 5.22M |
 | Wall-clock (12-way parallel) | 4.4 h | 4.1 h | 4.4 h | 4.7 h | 5.6 h | 15.2 h | 5.5 h | 7.0 h |
 | **Medal tally** | | | | | | | | |
-| 🥇 gold | 0 | 6 | 2 | 0 | 0 | 0 | 2 | 2 |
-| 🥈 silver | 6 | 0 | 3 | 0 | 0 | 0 | 2 | 1 |
-| 🥉 bronze | 1 | 0 | 3 | 0 | 0 | 0 | 8 | 2 |
+| **Resolved** | | | | | | | | |
+| 🥇 gold | 0 | 3 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 🥈 silver | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 🥉 bronze | 0 | 0 | 1 | 0 | 0 | 0 | 3 | 0 |
+| **Total cost** | | | | | | | | |
+| 🥇 gold | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 2 |
+| 🥈 silver | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 1 |
+| 🥉 bronze | 0 | 0 | 1 | 0 | 0 | 0 | 2 | 0 |
+| **$/resolved** | | | | | | | | |
+| 🥇 gold | 0 | 0 | 2 | 0 | 0 | 0 | 1 | 0 |
+| 🥈 silver | 0 | 0 | 1 | 0 | 0 | 0 | 2 | 0 |
+| 🥉 bronze | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 
 Verdicts from the pinned swebench marker. Full caveats in report.md.

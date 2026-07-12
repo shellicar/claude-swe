@@ -66,8 +66,17 @@
 | Total cost | 🥉 $14.79 | 🥇 **$10.51** | 🥈 $11.61 |
 | $/resolved | 🥉 $1.48 | 🥈 $0.96 | 🥇 **$0.89** |
 | **Medal tally** | | | |
-| 🥇 gold | 0 | 3 | 9 |
-| 🥈 silver | 2 | 7 | 1 |
-| 🥉 bronze | 8 | 0 | 0 |
+| **Resolved** | | | |
+| 🥇 gold | 0 | 0 | 2 |
+| 🥈 silver | 0 | 2 | 0 |
+| 🥉 bronze | 2 | 0 | 0 |
+| **Total cost** | | | |
+| 🥇 gold | 0 | 2 | 2 |
+| 🥈 silver | 1 | 1 | 1 |
+| 🥉 bronze | 2 | 0 | 0 |
+| **$/resolved** | | | |
+| 🥇 gold | 0 | 1 | 3 |
+| 🥈 silver | 1 | 2 | 0 |
+| 🥉 bronze | 2 | 0 | 0 |
 
 Verdicts from the swebench marker; — means a leg is not yet marked or never ran.

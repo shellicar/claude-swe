@@ -18,8 +18,11 @@ Rows whose label starts with "## " render as bold group dividers (Results /
 Stats) — the visual hierarchy inside a section.
 
 A medal tally (the Olympics table: golds, silvers, bronzes per model) is
-appended automatically, counting every medalled row outside TOTAL sections —
-aggregate rows would double-weight the contests they summarise.
+appended automatically, split per discipline — Resolved, Total cost,
+$/resolved — counting every medalled row outside TOTAL sections and
+'## …total…' groups (aggregates would double-weight the contests they
+summarise). Resolved % is excluded: within a group it always medals
+identically to Resolved.
 
 sections: list of (title, body) where body is a list of (row label, [cell per
 column]). All cells must be one-line strings: d2 mis-measures wrapped cells
@@ -80,10 +83,13 @@ def emit(name, heading, columns, sections, note, payload):
     sections = [(title, [(label, _medal_row(label, cells)) for label, cells in body])
                 for title, body in sections]
 
-    # medal tally: count each column's medals across the contests. Aggregates
-    # are excluded — TOTAL sections and rows under a '## …total…' divider
-    # summarise contests already counted.
-    tally = {m: [0] * len(columns) for m in ("\U0001F947", "\U0001F948", "\U0001F949")}
+    # medal tally, split per discipline. Aggregates are excluded — TOTAL
+    # sections and rows under a '## …total…' divider summarise contests
+    # already counted. Resolved % is skipped: it medals identically to
+    # Resolved within every group.
+    MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
+    DISCIPLINES = ("Resolved", "Total cost", "$/resolved")
+    tally = {d: {m: [0] * len(columns) for m in MEDALS} for d in DISCIPLINES}
     for title, body in sections:
         if title.startswith("TOTAL"):
             continue
@@ -92,18 +98,19 @@ def emit(name, heading, columns, sections, note, payload):
             if label.startswith("## "):
                 in_total_group = "total" in label.lower()
                 continue
-            if in_total_group:
+            if in_total_group or label.strip() not in tally:
                 continue
             for i, c in enumerate(cells):
-                for m in tally:
+                for m in MEDALS:
                     if m in c:
-                        tally[m][i] += 1
-    if any(any(v) for v in tally.values()):
-        sections = sections + [("Medal tally", [
-            ("\U0001F947 gold", [str(n) for n in tally["\U0001F947"]]),
-            ("\U0001F948 silver", [str(n) for n in tally["\U0001F948"]]),
-            ("\U0001F949 bronze", [str(n) for n in tally["\U0001F949"]]),
-        ])]
+                        tally[label.strip()][m][i] += 1
+    if any(any(v) for d in tally.values() for v in d.values()):
+        body = []
+        for d in DISCIPLINES:
+            body.append((f"## {d}", [""] * len(columns)))
+            for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
+                body.append((f"{m} {word}", [str(n) for n in tally[d][m]]))
+        sections = sections + [("Medal tally", body)]
 
     # markdown
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]

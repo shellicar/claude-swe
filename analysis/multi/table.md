@@ -90,8 +90,17 @@
 | Total cost | 🥉 $69.57 | 🥈 $50.33 | 🥇 **$35.07** |
 | $/resolved | 🥉 $1.83 | 🥈 $1.44 | 🥇 **$0.97** |
 | **Medal tally** | | | |
-| 🥇 gold | 6 | 2 | 10 |
-| 🥈 silver | 3 | 11 | 2 |
-| 🥉 bronze | 7 | 3 | 4 |
+| **Resolved** | | | |
+| 🥇 gold | 3 | 1 | 1 |
+| 🥈 silver | 1 | 2 | 1 |
+| 🥉 bronze | 0 | 1 | 2 |
+| **Total cost** | | | |
+| 🥇 gold | 0 | 0 | 4 |
+| 🥈 silver | 1 | 3 | 0 |
+| 🥉 bronze | 3 | 1 | 0 |
+| **$/resolved** | | | |
+| 🥇 gold | 0 | 0 | 4 |
+| 🥈 silver | 0 | 4 | 0 |
+| 🥉 bronze | 4 | 0 | 0 |
 
 Verdicts from ByteDance's Multi-SWE harness; — means a leg is not yet marked.

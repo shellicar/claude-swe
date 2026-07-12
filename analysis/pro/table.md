@@ -57,8 +57,17 @@
 | Total cost | 🥉 $215.52 | 🥇 **$88.11** | 🥈 $123.27 |
 | $/resolved | 🥉 $2.76 | 🥇 **$1.40** | 🥈 $1.87 |
 | **Medal tally** | | | |
-| 🥇 gold | 4 | 5 | 3 |
-| 🥈 silver | 2 | 3 | 7 |
-| 🥉 bronze | 6 | 4 | 2 |
+| **Resolved** | | | |
+| 🥇 gold | 2 | 0 | 1 |
+| 🥈 silver | 1 | 1 | 1 |
+| 🥉 bronze | 0 | 2 | 1 |
+| **Total cost** | | | |
+| 🥇 gold | 0 | 3 | 0 |
+| 🥈 silver | 0 | 0 | 3 |
+| 🥉 bronze | 3 | 0 | 0 |
+| **$/resolved** | | | |
+| 🥇 gold | 0 | 2 | 1 |
+| 🥈 silver | 0 | 1 | 2 |
+| 🥉 bronze | 3 | 0 | 0 |
 
 Verdicts from the vendored Scale harness; — means a leg is not yet marked.

@@ -90,8 +90,17 @@
 | Total cost | $383.41 | $203.92 | 🥉 $77.82 | 🥈 $76.61 | $141.03 | $226.91 | 🥇 **$39.32** |
 | $/resolved | $1.74 | 🥉 $1.06 | 🥈 $1.04 | $1.20 | $2.17 | $1.13 | 🥇 **$0.77** |
 | **Medal tally** | | | | | | | |
-| 🥇 gold | 14 | 11 | 0 | 0 | 0 | 24 | 1 |
-| 🥈 silver | 7 | 25 | 0 | 0 | 0 | 15 | 1 |
-| 🥉 bronze | 22 | 10 | 2 | 0 | 0 | 7 | 1 |
+| **Resolved** | | | | | | | |
+| 🥇 gold | 7 | 1 | 0 | 0 | 0 | 4 | 0 |
+| 🥈 silver | 2 | 6 | 0 | 0 | 0 | 4 | 0 |
+| 🥉 bronze | 2 | 4 | 1 | 0 | 0 | 3 | 0 |
+| **Total cost** | | | | | | | |
+| 🥇 gold | 0 | 5 | 0 | 0 | 0 | 7 | 1 |
+| 🥈 silver | 2 | 5 | 0 | 0 | 0 | 4 | 1 |
+| 🥉 bronze | 8 | 2 | 0 | 0 | 0 | 1 | 0 |
+| **$/resolved** | | | | | | | |
+| 🥇 gold | 0 | 4 | 0 | 0 | 0 | 9 | 0 |
+| 🥈 silver | 1 | 8 | 0 | 0 | 0 | 3 | 0 |
+| 🥉 bronze | 10 | 0 | 0 | 0 | 0 | 0 | 1 |
 
 Per selection: the Results block, medalled per row. — = not run or not yet marked. Details per dataset in analysis/<dataset>/table.md.
