@@ -1,6 +1,6 @@
-| Opus models — the lineage (SWE-bench Verified) | Claude Opus 4.6 | Claude Opus 4.7 | Claude Opus 4.8 |
+| Opus division — the lineage (SWE-bench Verified) | Claude Opus 4.6 | Claude Opus 4.7 | Claude Opus 4.8 |
 |---|---|---|---|
-| **Standard — 60 problems (<1 h human effort)** | | | |
+| **Standard — 60 events (<1 h human effort)** | | | |
 | **Results** | | | |
 | Resolved | 🥉 46 | 🥈 50 | 🥇 **51** |
 | Resolved % | 🥉 77% | 🥈 83% | 🥇 **85%** |
@@ -15,7 +15,7 @@
 | — cache read | 15.51M | 18.68M | 11.21M |
 | — cache write | 831k | 1.01M | 862k |
 | Wall-clock (12-way parallel) | 1.8 h | 1.7 h | 2.1 h |
-| **Hard — 45 problems (1+ h human effort)** | | | |
+| **Hard — 45 events (1+ h human effort)** | | | |
 | **Results** | | | |
 | Resolved | 🥉 18 | 🥈 25 | 🥇 **32** |
 | Resolved % | 🥉 40% | 🥈 56% | 🥇 **71%** |
@@ -30,7 +30,7 @@
 | — cache read | 48.39M | 48.92M | 23.42M |
 | — cache write | 1.52M | 1.58M | 1.25M |
 | Wall-clock (12-way parallel) | 3.7 h | 2.9 h | 2.3 h |
-| **Combined — 105 problems** | | | |
+| **Combined — 105 events** | | | |
 | **Results** | | | |
 | Resolved | 🥉 64 | 🥈 75 | 🥇 **83** |
 | Resolved % | 🥉 61% | 🥈 71% | 🥇 **79%** |
@@ -59,4 +59,4 @@
 | 🥈 silver | 0 | 3 | 0 |
 | 🥉 bronze | 3 | 0 | 0 |
 
-Verdicts from the pinned swebench marker. Full caveats in report.md.
+Verdicts from the pinned swebench judges. Full caveats in report.md.

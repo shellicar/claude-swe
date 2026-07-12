@@ -133,16 +133,16 @@ rows = [
     ("Wall-clock", lambda L: f"{L['wall']/3600:.1f} h"),
 ]
 
-NOTE = "Verdicts from the vendored Scale harness; — means a leg is not yet marked."
+NOTE = "Verdicts from the Scale judging panel; — means a contender has not entered or is unjudged."
 
 # One (label, cells-per-model) matrix per section, rendered into each format.
 sections = []
 for sel, decl in SELECTIONS.items():
     n = max((data[m][sel]["instances"] for m in models), default=0)
     pop = population(decl)
-    scope = f"all {pop}" if n == pop else f"{n} of {pop}"
+    scope = f"all {pop}" if n == pop else f"{n} of {pop}"  # events entered of the qualifying pool
     body = [(label, [fn(data[m][sel]) for m in models]) for label, fn in rows]
-    sections.append((f"{decl['label']} ({scope} instances)", body))
+    sections.append((f"{decl['label']} ({scope} events)", body))
 
 
 total_body = []

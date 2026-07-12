@@ -1,6 +1,6 @@
 | Multi-SWE-bench | fable-5 | opus-4-8 | sonnet-5 |
 |---|---|---|---|
-| **cpp control (20 instances)** | | | |
+| **cpp control (20 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥇 **14** | 🥈 13 | 🥉 12 |
 | Resolved % | 🥇 **70%** | 🥈 65% | 🥉 60% |
@@ -21,7 +21,7 @@
 | - cache read | 10.20M | 13.68M | 26.89M |
 | - cache write | 613k | 637k | 848k |
 | Wall-clock | 1.4 h | 1.0 h | 0.9 h |
-| **rust control (20 instances)** | | | |
+| **rust control (20 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥇 **14** | 🥉 11 | 🥈 13 |
 | Resolved % | 🥇 **70%** | 🥉 55% | 🥈 65% |
@@ -44,7 +44,7 @@
 | - cache read | 5.41M | 7.47M | 15.63M |
 | - cache write | 463k | 449k | 634k |
 | Wall-clock | 1.1 h | 0.7 h | 0.7 h |
-| **cpp variation (verify + 900s) (20 instances)** | | | |
+| **cpp variation (verify + 900s — exhibition) (20 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥇 **14** | 🥈 13 | 🥉 12 |
 | Resolved % | 🥇 **70%** | 🥈 65% | 🥉 60% |
@@ -65,7 +65,7 @@
 | - cache read | 24.50M | 38.43M | 43.29M |
 | - cache write | 719k | 765k | 966k |
 | Wall-clock | 2.0 h | 1.5 h | 1.3 h |
-| **tokio stack (org tokio-rs) (20 instances)** | | | |
+| **tokio stack (org tokio-rs) (20 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥈 10 | 🥇 **11** | 🥇 **11** |
 | Resolved % | 🥈 50% | 🥇 **55%** | 🥇 **55%** |
@@ -103,4 +103,4 @@
 | 🥈 silver | 0 | 4 | 0 |
 | 🥉 bronze | 4 | 0 | 0 |
 
-Verdicts from ByteDance's Multi-SWE harness; — means a leg is not yet marked.
+Verdicts from the Multi-SWE judging panel; — means a contender has not entered or is unjudged.

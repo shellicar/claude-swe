@@ -103,4 +103,4 @@
 | 🥈 silver | 1 | 8 | 3 | 0 |
 | 🥉 bronze | 10 | 0 | 0 | 1 |
 
-Per selection: the Results block, medalled per row. — = not run or not yet marked. Details per dataset in analysis/<dataset>/table.md.
+Each meet's event programs, the Results block medalled per row. — = did not enter or unjudged. Full results per meet in analysis/<dataset>/table.md.

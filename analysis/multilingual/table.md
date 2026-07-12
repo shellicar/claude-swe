@@ -1,6 +1,6 @@
 | SWE-bench Multilingual | fable-5 | opus-4-8 | sonnet-5 |
 |---|---|---|---|
-| **rust (tokio-rs/tokio, 9 instances)** | | | |
+| **rust (tokio-rs/tokio, 9 events)** | | | |
 | **Results** | | | |
 | Resolved | 7 | 7 | 7 |
 | Resolved % | 78% | 78% | 78% |
@@ -20,7 +20,7 @@
 | - cache read | 1.08M | 1.64M | 3.46M |
 | - cache write | 122k | 131k | 215k |
 | Wall-clock | 0.3 h | 0.2 h | 0.3 h |
-| **cpp (fmtlib/fmt, 11 instances)** | | | |
+| **cpp (fmtlib/fmt, 11 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥉 3 | 🥈 4 | 🥇 **6** |
 | Resolved % | 🥉 27% | 🥈 36% | 🥇 **55%** |
@@ -40,7 +40,7 @@
 | - cache read | 2.36M | 5.35M | 17.63M |
 | - cache write | 217k | 269k | 411k |
 | Wall-clock | 0.5 h | 0.6 h | 0.5 h |
-| **cpp variation (verify + 900s, same 11)** | | | |
+| **cpp variation (verify + 900s, same 11 — exhibition)** | | | |
 | **Results** | | | |
 | Resolved | 🥉 4 | 🥈 5 | 🥇 **6** |
 | Resolved % | 🥉 36% | 🥈 45% | 🥇 **55%** |
@@ -79,4 +79,4 @@
 | 🥈 silver | 1 | 2 | 0 |
 | 🥉 bronze | 2 | 0 | 0 |
 
-Verdicts from the swebench marker; — means a leg is not yet marked or never ran.
+Verdicts from the swebench judges; — means a contender has not entered or is unjudged.

@@ -29,7 +29,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 SECTIONS = {
     "cpp control": dict(runs="runs/multi/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/multi-{m}-cpp"),
     "rust control": dict(runs="runs/multi/{m}/rust", ids="instances-multi-rust.txt", evals="evals/multi/multi-{m}-rust"),
-    "cpp variation (verify + 900s)": dict(runs="runs/cpp-variation/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/cpp-variation-{m}-cpp"),
+    "cpp variation (verify + 900s — exhibition)": dict(runs="runs/cpp-variation/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/cpp-variation-{m}-cpp"),
     "tokio stack (org tokio-rs)": dict(runs="runs/tokio/{m}/tokio", ids="instances-tokio-stack.txt", evals="evals/multi/tokio-{m}-tokio"),
 }
 
@@ -202,7 +202,7 @@ rows = [
     ("Wall-clock", lambda L: f"{L['wall']/3600:.1f} h"),
 ]
 
-NOTE = "Verdicts from ByteDance's Multi-SWE harness; — means a leg is not yet marked."
+NOTE = "Verdicts from the Multi-SWE judging panel; — means a contender has not entered or is unjudged."
 
 sections_out = []
 for label, decl in SECTIONS.items():
@@ -211,7 +211,7 @@ for label, decl in SECTIONS.items():
     # headline block, then the per-repo slice, then the information rows
     section_rows = rows[:5] + repo_rows(per_model) + rows[5:]
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
-    sections_out.append((f"{label} ({n} instances)", body))
+    sections_out.append((f"{label} ({n} events)", body))
 
 sections_out.append(("TOTAL — controls (variation excluded)", total_section(["cpp control", "rust control", "tokio stack (org tokio-rs)"])))
 

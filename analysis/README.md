@@ -7,9 +7,20 @@ hand. Raw verdicts live in `evals/`; run data in `runs/`.
 cost per resolved) on one card, grouped by dataset. Regenerated after every
 `analyse`, so it is never staler than the analyses it summarises.
 
-Three competing groups, never mixed in one table: the **latest generation**
-(Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5) fills the overview and every dataset
-card; the **Opus lineage** (`opus-models/`) and **Sonnet lineage**
+The cards speak competition vocabulary — a naming aid, not a model:
+
+| word | construct |
+|---|---|
+| contender | model |
+| division | group (latest gen · Opus models · Sonnet models) — same events, separate podiums |
+| event | instance (one result per contender) |
+| event group | repo · **sport** — language |
+| meet | dataset, with its own **judges** (marker) and **program** (selection) |
+| fixture | combination; a **variation** is an exhibition — same program, altered rules, off the medal table |
+
+Three divisions, never mixed in one table: the **latest generation**
+(Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5) fills the overview and every meet's
+card; the **Opus division** (`opus-models/`) and **Sonnet division**
 (`sonnet-models/`) compete on their own cards, generations as columns, read
 left-to-right as the improvement curve (Verified data).
 

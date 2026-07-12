@@ -1,6 +1,6 @@
 | SWE-bench Pro | fable-5 | opus-4-8 | sonnet-5 |
 |---|---|---|---|
-| **tutanota ts (all 20 instances)** | | | |
+| **tutanota ts (all 20 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥇 **17** | 🥉 11 | 🥈 14 |
 | Resolved % | 🥇 **85%** | 🥉 55% | 🥈 70% |
@@ -17,7 +17,7 @@
 | - cache read | 18.84M | 21.23M | 50.40M |
 | - cache write | 855k | 819k | 1.21M |
 | Wall-clock | 1.7 h | 1.4 h | 1.4 h |
-| **NodeBB js (all 44 instances)** | | | |
+| **NodeBB js (all 44 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥇 **42** | 🥈 35 | 🥉 32 |
 | Resolved % | 🥇 **95%** | 🥈 80% | 🥉 73% |
@@ -34,7 +34,7 @@
 | - cache read | 29.96M | 32.80M | 95.25M |
 | - cache write | 1.58M | 1.47M | 2.34M |
 | Wall-clock | 3.3 h | 2.3 h | 2.8 h |
-| **element-web js (20 of 56 instances)** | | | |
+| **element-web js (20 of 56 events)** | | | |
 | **Results** | | | |
 | Resolved | 🥈 19 | 🥉 17 | 🥇 **20** |
 | Resolved % | 🥈 95% | 🥉 85% | 🥇 **100%** |
@@ -70,4 +70,4 @@
 | 🥈 silver | 0 | 1 | 2 |
 | 🥉 bronze | 3 | 0 | 0 |
 
-Verdicts from the vendored Scale harness; — means a leg is not yet marked.
+Verdicts from the Scale judging panel; — means a contender has not entered or is unjudged.

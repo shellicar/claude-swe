@@ -27,9 +27,9 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # label -> (selection, runs root, run-id prefix, expected)
 SECTIONS = {
-    "rust (tokio-rs/tokio, 9 instances)": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", expected=9),
-    "cpp (fmtlib/fmt, 11 instances)": dict(sel="cpp", runs="runs/multilingual", runid="runs_multilingual", expected=11),
-    "cpp variation (verify + 900s, same 11)": dict(sel="cpp", runs="runs/fmt-variation", runid="runs_fmt-variation", expected=11),
+    "rust (tokio-rs/tokio, 9 events)": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", expected=9),
+    "cpp (fmtlib/fmt, 11 events)": dict(sel="cpp", runs="runs/multilingual", runid="runs_multilingual", expected=11),
+    "cpp variation (verify + 900s, same 11 — exhibition)": dict(sel="cpp", runs="runs/fmt-variation", runid="runs_fmt-variation", expected=11),
 }
 
 
@@ -184,14 +184,14 @@ def make_rows(expected):
     ]
 
 
-NOTE = "Verdicts from the swebench marker; — means a leg is not yet marked or never ran."
+NOTE = "Verdicts from the swebench judges; — means a contender has not entered or is unjudged."
 
 sections = []
 for label, decl in SECTIONS.items():
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in make_rows(decl["expected"])]
     sections.append((label, body))
 
-sections.append(("TOTAL — controls (variation excluded)", total_section(["rust (tokio-rs/tokio, 9 instances)", "cpp (fmtlib/fmt, 11 instances)"])))
+sections.append(("TOTAL — controls (variation excluded)", total_section(["rust (tokio-rs/tokio, 9 events)", "cpp (fmtlib/fmt, 11 events)"])))
 
 emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
      {"covers": ["rust", "cpp"], "models": data})

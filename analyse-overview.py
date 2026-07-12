@@ -56,9 +56,9 @@ def pro_rows(d):
 
 def multilingual_rows(d):
     labels = {
-        "rust (tokio-rs/tokio, 9 instances)": "rust: tokio (9)",
-        "cpp (fmtlib/fmt, 11 instances)": "cpp: fmt (11)",
-        "cpp variation (verify + 900s, same 11)": "cpp variation (11)",
+        "rust (tokio-rs/tokio, 9 events)": "rust: tokio (9)",
+        "cpp (fmtlib/fmt, 11 events)": "cpp: fmt (11)",
+        "cpp variation (verify + 900s, same 11 — exhibition)": "cpp variation (11)",
     }
     for key, label in labels.items():
         yield label, {m: v.get(key) for m, v in d["models"].items()}
@@ -68,7 +68,7 @@ def multi_rows(d):
     labels = {
         "cpp control": "cpp control (20)",
         "rust control": "rust control (20)",
-        "cpp variation (verify + 900s)": "cpp variation (20)",
+        "cpp variation (verify + 900s — exhibition)": "cpp variation (20)",
         "tokio stack (org tokio-rs)": "tokio stack (20)",
     }
     for key, label in labels.items():
@@ -131,7 +131,7 @@ keep = [i for i, c in enumerate(COLUMNS) if c in seen]
 cols = [COLUMNS[i] for i in keep]
 sections = [(title, [(l, [cells[i] for i in keep]) for l, cells in body]) for title, body in sections]
 
-NOTE = "Per selection: the Results block, medalled per row. — = not run or not yet marked. Details per dataset in analysis/<dataset>/table.md."
+NOTE = "Each meet's event programs, the Results block medalled per row. — = did not enter or unjudged. Full results per meet in analysis/<dataset>/table.md."
 
 emit("overview", "claude-swe — all experiments", cols, sections, NOTE,
      {"columns": cols, "sections": [

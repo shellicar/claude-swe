@@ -78,7 +78,7 @@
           ]
         }
       },
-      "cpp variation (verify + 900s)": {
+      "cpp variation (verify + 900s \u2014 exhibition)": {
         "instances": 20,
         "empty": 2,
         "cost": 47.71436200000002,
@@ -208,7 +208,7 @@
           ]
         }
       },
-      "cpp variation (verify + 900s)": {
+      "cpp variation (verify + 900s \u2014 exhibition)": {
         "instances": 20,
         "empty": 2,
         "cost": 32.21404075,
@@ -338,7 +338,7 @@
           ]
         }
       },
-      "cpp variation (verify + 900s)": {
+      "cpp variation (verify + 900s \u2014 exhibition)": {
         "instances": 20,
         "empty": 2,
         "cost": 20.6062914,

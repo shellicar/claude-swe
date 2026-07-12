@@ -162,25 +162,25 @@ def section(dirs, getter, n, thinking_set):
 
 def sections_for(dirs):
     return [
-        ("Standard — 60 problems (<1 h human effort)", section(dirs, lambda d: data[d]["standard"], 60, "standard")),
-        ("Hard — 45 problems (1+ h human effort)", section(dirs, lambda d: data[d]["hard"], 45, "hard")),
-        ("Combined — 105 problems", section(dirs, lambda d: combined(d), 105, None)),
+        ("Standard — 60 events (<1 h human effort)", section(dirs, lambda d: data[d]["standard"], 60, "standard")),
+        ("Hard — 45 events (1+ h human effort)", section(dirs, lambda d: data[d]["hard"], 45, "hard")),
+        ("Combined — 105 events", section(dirs, lambda d: combined(d), 105, None)),
     ]
 
 
 NAME = dict((d, name) for name, d in MODELS)
-NOTE = "Verdicts from the pinned swebench marker. Full caveats in report.md."
+NOTE = "Verdicts from the pinned swebench judges. Full caveats in report.md."
 
 # Three competing groups, never mixed in one table (a model may enter two
 # groups, like an athlete in two events): the latest generation of each tier,
 # and the two lineages read left-to-right as improvement curves. The verified
 # data.json keeps EVERY model — grouping is presentation, not data loss.
 GROUPS = [
-    ("verified", "SWE-bench Verified — latest generation",
+    ("verified", "SWE-bench Verified — latest-generation division",
      ["fable-5", "opus-4-8", "sonnet-5", "haiku-4-5"]),
-    ("opus-models", "Opus models — the lineage (SWE-bench Verified)",
+    ("opus-models", "Opus division — the lineage (SWE-bench Verified)",
      ["opus-4-6", "opus-4-7", "opus-4-8"]),
-    ("sonnet-models", "Sonnet models — the lineage (SWE-bench Verified)",
+    ("sonnet-models", "Sonnet division — the lineage (SWE-bench Verified)",
      ["sonnet-4-6", "sonnet-5"]),
 ]
 
