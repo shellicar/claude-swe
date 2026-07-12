@@ -13,12 +13,45 @@
   },
   "analyser": "analyse-pro.py",
   "run": {
-    "configs": ["swebench-local.yaml", "swebench-pro.yaml", "thinking-adaptive.yaml"],
-    "subset": "datasets/swe-bench-pro.jsonl"
+    "configs": [
+      "swebench-local.yaml",
+      "swebench-pro.yaml",
+      "thinking-adaptive.yaml"
+    ],
+    "subset": "datasets/swe-bench-pro.jsonl",
+    "configExceptions": {
+      "haiku": [
+        "swebench-local.yaml",
+        "swebench-pro.yaml"
+      ]
+    }
   },
   "selections": {
-    "pro": { "file": "instances-pro.txt", "expected": 20, "rule": { "field": "repo_language", "equals": "ts" } },
-    "nodebb": { "file": "instances-nodebb.txt", "expected": 44, "rule": { "field": "repo", "equals": "NodeBB/NodeBB" } },
-    "element": { "file": "instances-element.txt", "expected": 20, "rule": { "field": "repo", "equals": "element-hq/element-web", "n": 20, "seed": 42 } }
+    "pro": {
+      "file": "instances-pro.txt",
+      "expected": 20,
+      "rule": {
+        "field": "repo_language",
+        "equals": "ts"
+      }
+    },
+    "nodebb": {
+      "file": "instances-nodebb.txt",
+      "expected": 44,
+      "rule": {
+        "field": "repo",
+        "equals": "NodeBB/NodeBB"
+      }
+    },
+    "element": {
+      "file": "instances-element.txt",
+      "expected": 20,
+      "rule": {
+        "field": "repo",
+        "equals": "element-hq/element-web",
+        "n": 20,
+        "seed": 42
+      }
+    }
   }
 }

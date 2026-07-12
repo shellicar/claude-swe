@@ -1,13 +1,28 @@
 {
   "name": "element",
   "dataset": "pro",
-  "selections": ["element"],
+  "selections": [
+    "element"
+  ],
   "parallel": true,
   "basePort": 19190,
   "workers": 2,
   "legs": [
-    { "model": "anthropic/claude-opus-4-8", "out": "runs/element/opus-4-8" },
-    { "model": "anthropic/claude-sonnet-5", "out": "runs/element/sonnet-5" },
-    { "model": "anthropic/claude-fable-5", "out": "runs/element/fable-5" }
+    {
+      "model": "anthropic/claude-opus-4-8",
+      "out": "runs/element/opus-4-8"
+    },
+    {
+      "model": "anthropic/claude-sonnet-5",
+      "out": "runs/element/sonnet-5"
+    },
+    {
+      "model": "anthropic/claude-fable-5",
+      "out": "runs/element/fable-5"
+    },
+    {
+      "model": "anthropic/claude-haiku-4-5",
+      "out": "runs/element/haiku-4-5"
+    }
   ]
 }

@@ -11,11 +11,33 @@
   },
   "analyser": "analyse-multilingual.py",
   "run": {
-    "configs": ["swebench-local.yaml", "thinking-adaptive.yaml"],
-    "subset": "datasets/swe-bench-multilingual.jsonl"
+    "configs": [
+      "swebench-local.yaml",
+      "thinking-adaptive.yaml"
+    ],
+    "subset": "datasets/swe-bench-multilingual.jsonl",
+    "configExceptions": {
+      "haiku": [
+        "swebench-local.yaml"
+      ]
+    }
   },
   "selections": {
-    "rust": { "file": "instances-rust.txt", "expected": 9, "rule": { "field": "repo", "equals": "tokio-rs/tokio" } },
-    "cpp": { "file": "instances-cpp.txt", "expected": 11, "rule": { "field": "repo", "equals": "fmtlib/fmt" } }
+    "rust": {
+      "file": "instances-rust.txt",
+      "expected": 9,
+      "rule": {
+        "field": "repo",
+        "equals": "tokio-rs/tokio"
+      }
+    },
+    "cpp": {
+      "file": "instances-cpp.txt",
+      "expected": 11,
+      "rule": {
+        "field": "repo",
+        "equals": "fmtlib/fmt"
+      }
+    }
   }
 }
