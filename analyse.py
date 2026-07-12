@@ -142,32 +142,51 @@ def combined(d):
     return c
 
 
-def section(getter, n, thinking_set):
+def section(dirs, getter, n, thinking_set):
     body = []
     for label, fn in rows:
         if fn is None:  # thinking row
             if thinking_set is None:  # combined
                 cells = []
-                for _, d in MODELS:
+                for d in dirs:
                     v = THINKING.get(d)
                     cells.append(tok(v["standard"] + v["hard"]) if v else "—")
             else:
-                cells = [think(d, thinking_set) for _, d in MODELS]
+                cells = [think(d, thinking_set) for d in dirs]
             body.append((label, cells))
             continue
         lab = label.format(n=n) if "{n}" in label else label
-        body.append((lab, [fn(getter(d), n) for _, d in MODELS]))
+        body.append((lab, [fn(getter(d), n) for d in dirs]))
     return body
 
 
-sections = [
-    ("Standard — 60 problems (<1 h human effort)", section(lambda d: data[d]["standard"], 60, "standard")),
-    ("Hard — 45 problems (1+ h human effort)", section(lambda d: data[d]["hard"], 45, "hard")),
-    ("Combined — 105 problems", section(lambda d: combined(d), 105, None)),
-]
+def sections_for(dirs):
+    return [
+        ("Standard — 60 problems (<1 h human effort)", section(dirs, lambda d: data[d]["standard"], 60, "standard")),
+        ("Hard — 45 problems (1+ h human effort)", section(dirs, lambda d: data[d]["hard"], 45, "hard")),
+        ("Combined — 105 problems", section(dirs, lambda d: combined(d), 105, None)),
+    ]
 
+
+NAME = dict((d, name) for name, d in MODELS)
 NOTE = "Verdicts from the pinned swebench marker. Full caveats in report.md."
 
-emit("verified", "SWE-bench Verified", [name for name, _ in MODELS], sections, NOTE,
-     {"covers": ["standard", "hard"], "models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
-                 for name, d in MODELS}})
+# Three competing groups, never mixed in one table (a model may enter two
+# groups, like an athlete in two events): the latest generation of each tier,
+# and the two lineages read left-to-right as improvement curves. The verified
+# data.json keeps EVERY model — grouping is presentation, not data loss.
+GROUPS = [
+    ("verified", "SWE-bench Verified — latest generation",
+     ["fable-5", "opus-4-8", "sonnet-5", "haiku-4-5"]),
+    ("opus-models", "Opus models — the lineage (SWE-bench Verified)",
+     ["opus-4-6", "opus-4-7", "opus-4-8"]),
+    ("sonnet-models", "Sonnet models — the lineage (SWE-bench Verified)",
+     ["sonnet-4-6", "sonnet-5"]),
+]
+
+for card, heading, dirs in GROUPS:
+    payload = {"models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
+                          for name, d in MODELS}}
+    if card == "verified":
+        payload["covers"] = ["standard", "hard"]
+    emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload)

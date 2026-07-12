@@ -121,13 +121,18 @@ def leg(model_dir, decl):
                 resolved=resolved, by_repo=by_repo)
 
 
+
+# Latest-generation column order; a model appears when its runs exist (Haiku
+# joins automatically once it competes here).
+LATEST = ["fable-5", "opus-4-8", "sonnet-5", "haiku-4-5"]
+
 def find_models():
     models = set()
     for decl in SECTIONS.values():
         root = f"{ROOT}/{decl['runs'].split('/{m}')[0]}"
         if os.path.isdir(root):
             models.update(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)))
-    return sorted(models)
+    return [m for m in LATEST if m in models]
 
 
 models = find_models()

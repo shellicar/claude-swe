@@ -83,7 +83,8 @@ DATASETS = [
 ]
 
 # Column order: the main-experiment models first, in the report's order.
-COLUMNS = ["fable-5", "opus-4-8", "opus-4-7", "opus-4-6", "sonnet-4-6", "sonnet-5", "haiku-4-5"]
+# Latest generation only — the lineages compete on their own cards
+COLUMNS = ["fable-5", "opus-4-8", "sonnet-5", "haiku-4-5"]
 
 sections = []
 seen = set()
