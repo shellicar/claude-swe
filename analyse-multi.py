@@ -156,12 +156,13 @@ def repo_rows(label_models):
 
 
 rows = [
-    ("Instances", lambda L: str(L["instances"])),
+    # headline
     ("Resolved", lambda L: str(L["resolved"]) if L["resolved"] is not None else "—"),
     ("Resolved %", lambda L: f"{L['resolved']/L['instances']*100:.0f}%" if L["resolved"] is not None and L["instances"] else "—"),
-    ("$/resolved", lambda L: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
-    ("Empty patches", lambda L: str(L["empty"])),
     ("Total cost", lambda L: f"${L['cost']:.2f}"),
+    ("$/resolved", lambda L: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
+    # information
+    ("Empty patches", lambda L: str(L["empty"])),
     ("$/instance", lambda L: f"${L['cost']/L['instances']:.2f}" if L["instances"] else "—"),
     ("Steps", lambda L: f"{L['steps']:,}"),
     ("Output tokens", lambda L: tok(L["out"])),
@@ -179,7 +180,8 @@ sections_out = []
 for label, decl in SECTIONS.items():
     n = max((data[m][label]["instances"] for m in models), default=0)
     per_model = {m: data[m][label] for m in models}
-    section_rows = rows[:2] + repo_rows(per_model) + rows[2:]
+    # headline block, then the per-repo slice, then the information rows
+    section_rows = rows[:4] + repo_rows(per_model) + rows[4:]
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
     sections_out.append((f"{label} ({n} instances)", body))
 

@@ -1,4 +1,9 @@
 {
+  "covers": [
+    "cpp",
+    "rust",
+    "tokio"
+  ],
   "models": {
     "fable-5": {
       "cpp control": {

@@ -1,30 +1,50 @@
 """Shared output writer for every analyser.
 
-One call writes one dataset's folder:
+One call writes one dataset's folder — three files, no more:
 
     analysis/<name>/
-        data.json    the raw figures (the overview joins these)
-        table.md     the table as text
-        table.html   the table in a browser
-        table.png    the table as an image (the paste-into-chat form)
+        data.json     the raw figures (the overview joins these)
+        table.md      the table as text
+        <name>.svg    the rendered card
 
-table.d2 / table.svg are render intermediates, regenerated every run and
-gitignored. Every analyser produces the same four files with the same names —
-that uniformity is the point (the flat six-format soup this replaces was
-unreadable).
+<name>.d2 is the render intermediate, regenerated every run and gitignored.
+
+HEADLINE rows — Resolved, Resolved %, Total cost, $/resolved — get their best
+cell bolded: highest wins on resolve rows, lowest on cost rows; ties all bold.
+Everything else is information, not headline.
 
 sections: list of (title, body) where body is a list of (row label, [cell per
 column]). All cells must be one-line strings: d2 mis-measures wrapped cells
 and clips the table bottom (see docs/diagrams/model-comparison.d2).
 """
 
-import html as html_mod
 import json
 import os
+import re
 import shutil
 import subprocess
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# headline rows get best-cell bolding; True = higher is better
+HEADLINE = {"Resolved": True, "Resolved %": True, "Total cost": False, "$/resolved": False}
+
+
+def _numeric(cell):
+    m = re.search(r"-?\d[\d,]*\.?\d*", cell.replace("\u00a0", " "))
+    return float(m.group().replace(",", "")) if m else None
+
+
+def _bold_best(label, cells):
+    higher = HEADLINE.get(label.strip())
+    if higher is None:
+        return cells
+    values = [_numeric(c) for c in cells]
+    present = [v for v in values if v is not None]
+    if len(present) < 2:
+        return cells
+    best = max(present) if higher else min(present)
+    return [f"**{c}**" if v == best else c for c, v in zip(cells, values)]
 
 
 def emit(name, heading, columns, sections, note, payload):
@@ -33,6 +53,9 @@ def emit(name, heading, columns, sections, note, payload):
 
     with open(f"{outdir}/data.json", "w") as f:
         json.dump(payload, f, indent=2)
+
+    sections = [(title, [(label, _bold_best(label, cells)) for label, cells in body])
+                for title, body in sections]
 
     # markdown
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
@@ -44,21 +67,7 @@ def emit(name, heading, columns, sections, note, payload):
     with open(f"{outdir}/table.md", "w") as f:
         f.write("\n".join(lines) + "\n")
 
-    # html
-    h = [f"<!doctype html><meta charset='utf-8'><title>{html_mod.escape(heading)}</title>",
-         "<style>body{background:#1b1b2b;color:#e8e8f0;font:14px -apple-system,sans-serif;padding:2em}",
-         "table{border-collapse:collapse}td,th{border:1px solid #555;padding:.35em .8em;text-align:left}",
-         "th{background:#2a2a3f}td.sec{background:#2a2a3f;font-weight:bold}</style>",
-         f"<table><tr><th>{html_mod.escape(heading)}</th>" + "".join(f"<th>{html_mod.escape(c)}</th>" for c in columns) + "</tr>"]
-    for title, body in sections:
-        h.append(f"<tr><td class='sec' colspan='{len(columns) + 1}'>{html_mod.escape(title)}</td></tr>")
-        for label, cells in body:
-            h.append("<tr><td>" + html_mod.escape(label) + "</td>" + "".join(f"<td>{html_mod.escape(c)}</td>" for c in cells) + "</tr>")
-    h.append(f"</table><p>{html_mod.escape(note)}</p>")
-    with open(f"{outdir}/table.html", "w") as f:
-        f.write("\n".join(h) + "\n")
-
-    # d2 (intermediate) -> png/svg. One md table per section: a single long
+    # d2 (intermediate) -> <name>.svg. One md table per section: a single long
     # table gets mis-measured and clipped; the blank last row is sacrificial.
     # No '$' in the note: d2 parses $ in quoted labels as a substitution.
     d2 = ["vars: { d2-config: { theme-id: 200 } }", "",
@@ -78,13 +87,18 @@ def emit(name, heading, columns, sections, note, payload):
         prev = node
     safe_note = note.replace("$", "")
     d2.append(f'note: "{safe_note}" {{ near: bottom-center; shape: text; style.font-color: "#7F8C8D" }}')
-    with open(f"{outdir}/table.d2", "w") as f:
+    with open(f"{outdir}/{name}.d2", "w") as f:
         f.write("\n".join(d2) + "\n")
 
-    written = "data.json, table.md, table.html"
+    # tidy the superseded forms so each folder holds exactly the three files
+    for stale in ("table.html", "table.png", "table.d2", "table.svg"):
+        p = f"{outdir}/{stale}"
+        if os.path.exists(p):
+            os.remove(p)
+
+    written = "data.json, table.md"
     if shutil.which("d2"):
-        for ext in ("png", "svg"):
-            subprocess.run(["d2", f"{outdir}/table.d2", f"{outdir}/table.{ext}"],
-                           check=True, capture_output=True)
-        written += ", table.png"
+        subprocess.run(["d2", f"{outdir}/{name}.d2", f"{outdir}/{name}.svg"],
+                       check=True, capture_output=True)
+        written += f", {name}.svg"
     print(f"wrote analysis/{name}/: {written}")

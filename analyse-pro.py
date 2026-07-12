@@ -110,12 +110,13 @@ models = find_models()
 data = {m: {sel: leg(m, sel) for sel in SELECTIONS} for m in models}
 
 rows = [
-    ("Instances", lambda L: str(L["instances"])),
+    # headline
     ("Resolved", lambda L: str(L["resolved"]) if L["resolved"] is not None else "—"),
     ("Resolved %", lambda L: f"{L['resolved']/L['instances']*100:.0f}%" if L["resolved"] is not None and L["instances"] else "—"),
-    ("$/resolved", lambda L: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
-    ("Empty patches", lambda L: str(L["empty"])),
     ("Total cost", lambda L: f"${L['cost']:.2f}"),
+    ("$/resolved", lambda L: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
+    # information
+    ("Empty patches", lambda L: str(L["empty"])),
     ("$/instance", lambda L: f"${L['cost']/L['instances']:.2f}" if L["instances"] else "—"),
     ("Steps", lambda L: f"{L['steps']:,}"),
     ("Output tokens", lambda L: tok(L["out"])),

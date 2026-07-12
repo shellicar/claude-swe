@@ -1,4 +1,8 @@
 {
+  "covers": [
+    "standard",
+    "hard"
+  ],
   "models": {
     "fable-5": {
       "name": "Claude Fable 5",

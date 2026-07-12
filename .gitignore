@@ -31,10 +31,9 @@ evals/logs/
 evals/pro/*/instance_*/
 
 # Render intermediates: every analyser regenerates these on each run; the
-# committed forms are data.json/table.md/table.html/table.png per dataset
-# folder (see analysis/README.md).
-analysis/**/table.d2
-analysis/**/table.svg
+# committed forms are data.json, table.md and <name>.svg per dataset folder
+# (see analysis/README.md).
+analysis/**/*.d2
 
 # Local evaluation reports — promote into a committed results file deliberately
 *.local-*.json

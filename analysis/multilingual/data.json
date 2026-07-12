@@ -1,4 +1,8 @@
 {
+  "covers": [
+    "rust",
+    "cpp"
+  ],
   "models": {
     "fable-5": {
       "rust (tokio-rs/tokio, 9 instances)": {

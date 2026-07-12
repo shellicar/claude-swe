@@ -1,14 +1,13 @@
 | SWE-bench Multilingual | fable-5 | opus-4-8 | sonnet-5 |
 |---|---|---|---|
 | **rust (tokio-rs/tokio, 9 instances)** | | | |
-| Instances | 9 | 9 | 9 |
-| Resolved | 7 | 7 | 7 |
-| Resolved % | 78% | 78% | 78% |
+| Resolved | **7** | **7** | **7** |
+| Resolved % | **78%** | **78%** | **78%** |
+| Total cost | $4.99 | **$2.90** | **$2.90** |
+| $/resolved | $0.71 | **$0.41** | **$0.41** |
 | Bug fixed (F2P clean) | 8 | 8 | 8 |
 | Near misses (fixed, P2P broke) | 1 | 1 | 1 |
 | Build-breakers (>20% P2P broke) | 0 | 0 | 0 |
-| Total cost | $4.99 | $2.90 | $2.90 |
-| $/resolved | $0.71 | $0.41 | $0.41 |
 | $/instance | $0.55 | $0.32 | $0.32 |
 | Empty patches | 0 | 0 | 0 |
 | Steps | 110 | 138 | 197 |
@@ -20,14 +19,13 @@
 | - cache write | 122k | 131k | 215k |
 | Wall-clock | 0.3 h | 0.2 h | 0.3 h |
 | **cpp (fmtlib/fmt, 11 instances)** | | | |
-| Instances | 11 | 11 | 11 |
-| Resolved | 3 | 4 | 6 |
-| Resolved % | 27% | 36% | 55% |
+| Resolved | 3 | 4 | **6** |
+| Resolved % | 27% | 36% | **55%** |
+| Total cost | $9.80 | **$7.60** | $8.71 |
+| $/resolved | $3.27 | $1.90 | **$1.45** |
 | Bug fixed (F2P clean) | 4 | 4 | 6 |
 | Near misses (fixed, P2P broke) | 1 | 0 | 0 |
 | Build-breakers (>20% P2P broke) | 5 | 5 | 5 |
-| Total cost | $9.80 | $7.60 | $8.71 |
-| $/resolved | $3.27 | $1.90 | $1.45 |
 | $/instance | $0.89 | $0.69 | $0.79 |
 | Empty patches | 0 | 0 | 0 |
 | Steps | 187 | 274 | 437 |
@@ -39,14 +37,13 @@
 | - cache write | 217k | 269k | 411k |
 | Wall-clock | 0.5 h | 0.6 h | 0.5 h |
 | **cpp variation (verify + 900s, same 11)** | | | |
-| Instances | 11 | 11 | 11 |
-| Resolved | 4 | 5 | 6 |
-| Resolved % | 36% | 45% | 55% |
+| Resolved | 4 | 5 | **6** |
+| Resolved % | 36% | 45% | **55%** |
+| Total cost | $14.53 | $10.82 | **$6.07** |
+| $/resolved | $3.63 | $2.16 | **$1.01** |
 | Bug fixed (F2P clean) | 4 | 5 | 6 |
 | Near misses (fixed, P2P broke) | 0 | 0 | 0 |
 | Build-breakers (>20% P2P broke) | 5 | 5 | 5 |
-| Total cost | $14.53 | $10.82 | $6.07 |
-| $/resolved | $3.63 | $2.16 | $1.01 |
 | $/instance | $1.32 | $0.98 | $0.55 |
 | Empty patches | 0 | 0 | 0 |
 | Steps | 272 | 361 | 436 |
