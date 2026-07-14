@@ -45,7 +45,7 @@
 | — cache read | 63.90M | 67.60M | 34.64M |
 | — cache write | 2.35M | 2.60M | 2.11M |
 | Wall-clock (12-way parallel) | 5.6 h | 4.7 h | 4.4 h |
-| **Medal tally — event-weighted** | | | |
+| **Medal tally — counted in events** | | | |
 | **Resolved** | | | |
 | 🥇 gold | 0 | 0 | 3 |
 | 🥈 silver | 0 | 3 | 0 |

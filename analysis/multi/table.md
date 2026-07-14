@@ -89,7 +89,7 @@
 | Resolved % | 🥇 **63%** | 🥉 58% | 🥈 60% | 48% |
 | Total cost | $69.57 | 🥉 $50.33 | 🥈 $35.07 | 🥇 **$20.91** |
 | $/resolved | $1.83 | 🥉 $1.44 | 🥈 $0.97 | 🥇 **$0.72** |
-| **Medal tally — event-weighted** | | | | |
+| **Medal tally — counted in events** | | | | |
 | **Resolved** | | | | |
 | 🥇 gold | 3 | 1 | 1 | 0 |
 | 🥈 silver | 1 | 2 | 1 | 0 |

@@ -125,7 +125,7 @@ def emit(name, heading, columns, sections, note, payload):
             body.append((f"## {d}", [""] * len(columns)))
             for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
                 body.append((f"{m} {word}", [str(n) for n in tally[d][m]]))
-        sections = sections + [("Medal tally — event-weighted", body)]
+        sections = sections + [("Medal tally — counted in events", body)]
 
     # markdown
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
