@@ -122,8 +122,17 @@
         "intot": 7736564,
         "wall": 3789.566703557968,
         "thinking": 77922,
-        "resolved": null,
-        "by_repo": null
+        "resolved": 10,
+        "by_repo": {
+          "tokio": [
+            10,
+            4
+          ],
+          "tracing": [
+            10,
+            6
+          ]
+        }
       }
     },
     "opus-4-8": {
@@ -243,8 +252,17 @@
         "intot": 18970042,
         "wall": 6491.676012516022,
         "thinking": 178555,
-        "resolved": null,
-        "by_repo": null
+        "resolved": 11,
+        "by_repo": {
+          "tokio": [
+            10,
+            4
+          ],
+          "tracing": [
+            10,
+            7
+          ]
+        }
       }
     },
     "sonnet-5": {
@@ -364,8 +382,130 @@
         "intot": 19232164,
         "wall": 2572.1076278686523,
         "thinking": 69045,
+        "resolved": 11,
+        "by_repo": {
+          "tokio": [
+            10,
+            4
+          ],
+          "tracing": [
+            10,
+            7
+          ]
+        }
+      }
+    },
+    "haiku-4-5": {
+      "*C++* control": {
+        "instances": 20,
+        "empty": 2,
+        "cost": 7.638169899999999,
+        "steps": 1724,
+        "out": 342471,
+        "ncc": 289003,
+        "cr": 45547519,
+        "cw": 865648,
+        "intot": 46702170,
+        "wall": 6121.100434780121,
+        "thinking": 0,
+        "resolved": 9,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            6
+          ],
+          "simdjson": [
+            3,
+            2
+          ]
+        }
+      },
+      "*Rust* control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 5.491663149999999,
+        "steps": 1257,
+        "out": 260106,
+        "ncc": 264122,
+        "cr": 29653949,
+        "cw": 769293,
+        "intot": 30687364,
+        "wall": 4189.415558815002,
+        "thinking": 0,
+        "resolved": 11,
+        "by_repo": {
+          "clap": [
+            12,
+            7
+          ],
+          "nushell": [
+            2,
+            1
+          ],
+          "rayon": [
+            1,
+            1
+          ],
+          "bat": [
+            1,
+            0
+          ],
+          "fd": [
+            1,
+            1
+          ],
+          "tokio": [
+            3,
+            1
+          ]
+        }
+      },
+      "*C++* variation (verify + 900s \u2014 exhibition)": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": null,
         "resolved": null,
         "by_repo": null
+      },
+      "tokio stack \u2014 *Rust* (org tokio-rs)": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 7.7848726500000005,
+        "steps": 1473,
+        "out": 327499,
+        "ncc": 254380,
+        "cr": 46511039,
+        "cw": 993515,
+        "intot": 47758934,
+        "wall": 5143.767456531525,
+        "thinking": 0,
+        "resolved": 9,
+        "by_repo": {
+          "tokio": [
+            10,
+            4
+          ],
+          "tracing": [
+            10,
+            5
+          ]
+        }
       }
     }
   }

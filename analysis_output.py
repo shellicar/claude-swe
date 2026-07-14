@@ -84,34 +84,48 @@ def emit(name, heading, columns, sections, note, payload):
     sections = [(title, [(label, _medal_row(label, cells)) for label, cells in body])
                 for title, body in sections]
 
-    # medal tally, split per discipline. Aggregates are excluded — TOTAL
-    # sections and rows under a '## …total…' divider summarise contests
+    # medal tally, split per discipline and WEIGHTED BY EVENTS: a gold on a
+    # 44-event program outweighs a gold on an 11-event one. The weight is the
+    # event count parsed from the program's header. Aggregates are excluded —
+    # TOTAL sections and rows under a '## …total…' divider summarise contests
     # already counted. Resolved % is skipped: it medals identically to
-    # Resolved within every group.
+    # Resolved within every group. Divisions never share a tally: each card
+    # tallies only its own columns.
+    import re as _re
+
+    def _events_in(text):
+        m = _re.search(r"\((?:all\s+)?(\d+)(?:\s+of\s+\d+)?(?:\s+events)?\)", text)
+        if not m:
+            m = _re.search(r"(\d+)\s+(?:\*\w+\*\s+)?events", text)
+        return int(m.group(1)) if m else 1
+
     MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
     DISCIPLINES = ("Resolved", "Total cost", "$/resolved")
     tally = {d: {m: [0] * len(columns) for m in MEDALS} for d in DISCIPLINES}
     for title, body in sections:
         if title.startswith("TOTAL"):
             continue
+        weight = _events_in(title)
         in_total_group = False
         for label, cells in body:
             if label.startswith("## "):
                 in_total_group = "total" in label.lower()
+                if not in_total_group:
+                    weight = _events_in(label)
                 continue
             if in_total_group or label.strip() not in tally:
                 continue
             for i, c in enumerate(cells):
                 for m in MEDALS:
                     if m in c:
-                        tally[label.strip()][m][i] += 1
+                        tally[label.strip()][m][i] += weight
     if any(any(v) for d in tally.values() for v in d.values()):
         body = []
         for d in DISCIPLINES:
             body.append((f"## {d}", [""] * len(columns)))
             for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
                 body.append((f"{m} {word}", [str(n) for n in tally[d][m]]))
-        sections = sections + [("Medal tally", body)]
+        sections = sections + [("Medal tally — event-weighted", body)]
 
     # markdown
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]

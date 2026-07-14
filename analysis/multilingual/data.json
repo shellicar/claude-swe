@@ -7,38 +7,38 @@
   "models": {
     "fable-5": {
       "*Rust* \u2014 7 repos (43 events)": {
-        "instances": 10,
+        "instances": 42,
         "empty": 0,
-        "cost": 7.5294004999999995,
-        "steps": 167,
-        "out": 61067,
-        "ncc": 334,
-        "cr": 2468173,
-        "cw": 160363,
-        "intot": 2628870,
-        "wall": 1359.4812965393066,
-        "thinking": 28412,
-        "resolved": 7,
+        "cost": 46.298342500000004,
+        "steps": 1064,
+        "out": 364672,
+        "ncc": 2128,
+        "cr": 16482450,
+        "cw": 924881,
+        "intot": 17409459,
+        "wall": 8164.90194272995,
+        "thinking": 168094,
+        "resolved": 35,
         "by_repo": {
           "ruff": [
             7,
-            0
+            6
           ],
           "ripgrep": [
             2,
-            0
+            2
           ],
           "nushell": [
             5,
-            0
+            4
           ],
           "bat": [
             8,
-            0
+            6
           ],
           "axum": [
             7,
-            0
+            7
           ],
           "tokio": [
             9,
@@ -46,12 +46,12 @@
           ],
           "coreutils": [
             5,
-            0
+            3
           ]
         },
-        "fixed": 8,
-        "near": 1,
-        "wrecked": 0
+        "fixed": 39,
+        "near": 4,
+        "wrecked": 1
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -72,22 +72,43 @@
         "wrecked": 5
       },
       "*Go* \u2014 5 repos (42 events)": {
-        "instances": 0,
+        "instances": 42,
         "empty": 0,
-        "cost": 0,
-        "steps": 0,
-        "out": 0,
-        "ncc": 0,
-        "cr": 0,
-        "cw": 0,
-        "intot": 0,
-        "wall": 0.0,
-        "thinking": 0,
-        "resolved": null,
-        "by_repo": null,
-        "fixed": null,
-        "near": null,
-        "wrecked": null
+        "cost": 49.13781,
+        "steps": 1027,
+        "out": 367087,
+        "ncc": 2054,
+        "cr": 18473720,
+        "cw": 983136,
+        "intot": 19458910,
+        "wall": 7934.841631889343,
+        "thinking": 152469,
+        "resolved": 37,
+        "by_repo": {
+          "caddy": [
+            14,
+            12
+          ],
+          "gin": [
+            8,
+            8
+          ],
+          "hugo": [
+            7,
+            7
+          ],
+          "terraform": [
+            5,
+            4
+          ],
+          "prometheus": [
+            8,
+            6
+          ]
+        },
+        "fixed": 38,
+        "near": 1,
+        "wrecked": 1
       },
       "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
         "instances": 11,
@@ -110,38 +131,38 @@
     },
     "opus-4-8": {
       "*Rust* \u2014 7 repos (43 events)": {
-        "instances": 10,
+        "instances": 38,
         "empty": 0,
-        "cost": 4.05644775,
-        "steps": 187,
-        "out": 66025,
-        "ncc": 374,
-        "cr": 2765068,
-        "cw": 163427,
-        "intot": 2928869,
-        "wall": 1161.7105090618134,
-        "thinking": 30032,
-        "resolved": 7,
+        "cost": 25.929686000000004,
+        "steps": 1075,
+        "out": 373029,
+        "ncc": 2148,
+        "cr": 21601217,
+        "cw": 926818,
+        "intot": 22530183,
+        "wall": 6756.64283657074,
+        "thinking": 196237,
+        "resolved": 27,
         "by_repo": {
           "ruff": [
             7,
-            0
+            2
           ],
           "ripgrep": [
             2,
-            0
+            2
           ],
           "nushell": [
             5,
-            0
+            2
           ],
           "bat": [
             8,
-            0
+            5
           ],
           "axum": [
             7,
-            0
+            7
           ],
           "tokio": [
             9,
@@ -149,12 +170,12 @@
           ],
           "coreutils": [
             5,
-            0
+            2
           ]
         },
-        "fixed": 8,
-        "near": 1,
-        "wrecked": 0
+        "fixed": 32,
+        "near": 5,
+        "wrecked": 2
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -175,22 +196,43 @@
         "wrecked": 5
       },
       "*Go* \u2014 5 repos (42 events)": {
-        "instances": 0,
+        "instances": 41,
         "empty": 0,
-        "cost": 0,
-        "steps": 0,
-        "out": 0,
-        "ncc": 0,
-        "cr": 0,
-        "cw": 0,
-        "intot": 0,
-        "wall": 0.0,
-        "thinking": 0,
-        "resolved": null,
-        "by_repo": null,
-        "fixed": null,
-        "near": null,
-        "wrecked": null
+        "cost": 33.073269249999996,
+        "steps": 1155,
+        "out": 426508,
+        "ncc": 2310,
+        "cr": 31738601,
+        "cw": 1044755,
+        "intot": 32785666,
+        "wall": 7501.413802146912,
+        "thinking": 226519,
+        "resolved": 29,
+        "by_repo": {
+          "caddy": [
+            14,
+            10
+          ],
+          "gin": [
+            8,
+            5
+          ],
+          "hugo": [
+            7,
+            6
+          ],
+          "terraform": [
+            5,
+            2
+          ],
+          "prometheus": [
+            8,
+            6
+          ]
+        },
+        "fixed": 29,
+        "near": 0,
+        "wrecked": 2
       },
       "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
         "instances": 11,
@@ -213,38 +255,38 @@
     },
     "sonnet-5": {
       "*Rust* \u2014 7 repos (43 events)": {
-        "instances": 10,
+        "instances": 43,
         "empty": 0,
-        "cost": 4.44716535,
-        "steps": 278,
-        "out": 94320,
-        "ncc": 556,
-        "cr": 6579712,
-        "cw": 281809,
-        "intot": 6862077,
-        "wall": 1285.7803361415863,
-        "thinking": 49598,
-        "resolved": 7,
+        "cost": 28.3582854,
+        "steps": 1860,
+        "out": 483300,
+        "ncc": 3720,
+        "cr": 50148893,
+        "cw": 1614122,
+        "intot": 51766735,
+        "wall": 7171.552544116974,
+        "thinking": 216026,
+        "resolved": 33,
         "by_repo": {
           "ruff": [
             7,
-            0
+            6
           ],
           "ripgrep": [
             2,
-            0
+            2
           ],
           "nushell": [
             5,
-            0
+            5
           ],
           "bat": [
             8,
-            0
+            5
           ],
           "axum": [
             7,
-            0
+            6
           ],
           "tokio": [
             9,
@@ -252,12 +294,12 @@
           ],
           "coreutils": [
             5,
-            0
+            2
           ]
         },
-        "fixed": 8,
-        "near": 1,
-        "wrecked": 0
+        "fixed": 37,
+        "near": 4,
+        "wrecked": 1
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -278,22 +320,43 @@
         "wrecked": 5
       },
       "*Go* \u2014 5 repos (42 events)": {
-        "instances": 0,
+        "instances": 42,
         "empty": 0,
-        "cost": 0,
-        "steps": 0,
-        "out": 0,
-        "ncc": 0,
-        "cr": 0,
-        "cw": 0,
-        "intot": 0,
-        "wall": 0.0,
-        "thinking": 0,
-        "resolved": null,
-        "by_repo": null,
-        "fixed": null,
-        "near": null,
-        "wrecked": null
+        "cost": 30.76999034999999,
+        "steps": 1909,
+        "out": 472058,
+        "ncc": 3818,
+        "cr": 60148492,
+        "cw": 1502165,
+        "intot": 61654475,
+        "wall": 6936.515870809555,
+        "thinking": 201805,
+        "resolved": 31,
+        "by_repo": {
+          "caddy": [
+            14,
+            8
+          ],
+          "gin": [
+            8,
+            5
+          ],
+          "hugo": [
+            7,
+            7
+          ],
+          "terraform": [
+            5,
+            4
+          ],
+          "prometheus": [
+            8,
+            7
+          ]
+        },
+        "fixed": 32,
+        "near": 1,
+        "wrecked": 1
       },
       "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
         "instances": 11,
@@ -316,22 +379,51 @@
     },
     "haiku-4-5": {
       "*Rust* \u2014 7 repos (43 events)": {
-        "instances": 9,
+        "instances": 43,
         "empty": 2,
-        "cost": 3.7648526499999995,
-        "steps": 905,
-        "out": 193430,
-        "ncc": 87536,
-        "cr": 22852129,
-        "cw": 339963,
-        "intot": 23279628,
-        "wall": 3355.219195127487,
+        "cost": 14.210193600000002,
+        "steps": 3235,
+        "out": 687005,
+        "ncc": 491627,
+        "cr": 80711591,
+        "cw": 1769906,
+        "intot": 82973124,
+        "wall": 10977.99909043312,
         "thinking": 0,
-        "resolved": null,
-        "by_repo": null,
-        "fixed": null,
-        "near": null,
-        "wrecked": null
+        "resolved": 21,
+        "by_repo": {
+          "ruff": [
+            7,
+            2
+          ],
+          "ripgrep": [
+            2,
+            2
+          ],
+          "nushell": [
+            5,
+            5
+          ],
+          "bat": [
+            8,
+            2
+          ],
+          "axum": [
+            7,
+            3
+          ],
+          "tokio": [
+            9,
+            5
+          ],
+          "coreutils": [
+            5,
+            2
+          ]
+        },
+        "fixed": 26,
+        "near": 5,
+        "wrecked": 6
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -345,29 +437,50 @@
         "intot": 28152807,
         "wall": 3235.6055223941803,
         "thinking": 0,
-        "resolved": null,
+        "resolved": 5,
         "by_repo": null,
-        "fixed": null,
-        "near": null,
-        "wrecked": null
+        "fixed": 5,
+        "near": 0,
+        "wrecked": 5
       },
       "*Go* \u2014 5 repos (42 events)": {
-        "instances": 0,
-        "empty": 0,
-        "cost": 0,
-        "steps": 0,
-        "out": 0,
-        "ncc": 0,
-        "cr": 0,
-        "cw": 0,
-        "intot": 0,
-        "wall": 0.0,
+        "instances": 42,
+        "empty": 1,
+        "cost": 19.207052500000003,
+        "steps": 3513,
+        "out": 777211,
+        "ncc": 355735,
+        "cr": 115960450,
+        "cw": 2695374,
+        "intot": 119011559,
+        "wall": 29514.942056894302,
         "thinking": 0,
-        "resolved": null,
-        "by_repo": null,
-        "fixed": null,
-        "near": null,
-        "wrecked": null
+        "resolved": 25,
+        "by_repo": {
+          "caddy": [
+            14,
+            8
+          ],
+          "gin": [
+            8,
+            4
+          ],
+          "hugo": [
+            7,
+            5
+          ],
+          "terraform": [
+            5,
+            3
+          ],
+          "prometheus": [
+            8,
+            5
+          ]
+        },
+        "fixed": 26,
+        "near": 1,
+        "wrecked": 1
       },
       "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
         "instances": 0,
