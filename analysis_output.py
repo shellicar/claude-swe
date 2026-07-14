@@ -55,11 +55,23 @@ def _medal_row(label, cells):
     key = label.strip()
     values = [_numeric(c) for c in cells]
     if key in BOLD_BEST:
-        present = [v for v in values if v is not None]
+        # cost rows rank 1/2/3 like contests but wear rounds, not medals —
+        # Unicode has exactly one trophy and no silver/bronze variants, so
+        # 🟡⚪🟤 stand in for gold/silver/bronze. Lowest wins; first is bold.
+        present = sorted({v for v in values if v is not None})
         if len(present) < 2:
             return cells
-        best = min(present)
-        return [f"**{c}**" if v == best else c for c, v in zip(cells, values)]
+        mark_for = {v: m for v, m in zip(present, ("🟡", "⚪", "🟤"))}
+        out = []
+        for c, v in zip(cells, values):
+            mark = mark_for.get(v)
+            if mark == "🟡":
+                out.append(f"{mark} **{c}**")
+            elif mark:
+                out.append(f"{mark} {c}")
+            else:
+                out.append(c)
+        return out
     higher = MEDALLED.get(key)
     if higher is None:
         return cells
