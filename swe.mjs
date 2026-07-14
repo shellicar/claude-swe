@@ -243,6 +243,26 @@ async function ensure({ ds, selections }) {
 async function run(target, flags) {
   const { combo, ds, selections } = target;
   const theLegs = legs(target, flags);
+  // Preflight: refuse to start when declared images are not local. Without
+  // this, docker run's implicit pull races mini's 120s container-start
+  // timeout and every instance dies as an empty preds entry (pro/go,
+  // 2026-07-14). ensure is the pull path — pinned by digest, no races.
+  const manifest = readManifest();
+  const missingImages = [];
+  for (const sel of selections) {
+    for (const iid of selectionIds(ds, sel)) {
+      const ref = manifest.get(iid);
+      if (!ref) { missingImages.push(`${sel}/${iid} (unresolved)`); continue; }
+      try {
+        execFileSync('docker', ['image', 'inspect', ref], { stdio: 'ignore' });
+      } catch {
+        missingImages.push(`${sel}/${iid}`);
+      }
+    }
+  }
+  if (missingImages.length > 0) {
+    throw new Error(`run refused: ${missingImages.length} declared images not local (e.g. ${missingImages[0]}) — run ensure first`);
+  }
   const basePort = combo?.basePort ?? 19180;
   const workers = combo?.workers ?? Number(flags.workers ?? 2);
   const results = [];
