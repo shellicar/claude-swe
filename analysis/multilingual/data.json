@@ -7,18 +7,18 @@
   "models": {
     "fable-5": {
       "*Rust* \u2014 7 repos (43 events)": {
-        "instances": 42,
+        "instances": 43,
         "empty": 0,
-        "cost": 46.298342500000004,
-        "steps": 1064,
-        "out": 364672,
-        "ncc": 2128,
-        "cr": 16482450,
-        "cw": 924881,
-        "intot": 17409459,
-        "wall": 8164.90194272995,
-        "thinking": 168094,
-        "resolved": 35,
+        "cost": 47.61907500000001,
+        "steps": 1101,
+        "out": 374522,
+        "ncc": 2202,
+        "cr": 17018605,
+        "cw": 948188,
+        "intot": 17968995,
+        "wall": 8416.842422485352,
+        "thinking": 171303,
+        "resolved": 36,
         "by_repo": {
           "ruff": [
             7,
@@ -30,7 +30,7 @@
           ],
           "nushell": [
             5,
-            4
+            5
           ],
           "bat": [
             8,
@@ -49,7 +49,7 @@
             3
           ]
         },
-        "fixed": 39,
+        "fixed": 40,
         "near": 4,
         "wrecked": 1
       },
@@ -131,22 +131,22 @@
     },
     "opus-4-8": {
       "*Rust* \u2014 7 repos (43 events)": {
-        "instances": 38,
+        "instances": 43,
         "empty": 0,
-        "cost": 25.929686000000004,
-        "steps": 1075,
-        "out": 373029,
-        "ncc": 2148,
-        "cr": 21601217,
-        "cw": 926818,
-        "intot": 22530183,
-        "wall": 6756.64283657074,
-        "thinking": 196237,
-        "resolved": 27,
+        "cost": 28.215016000000006,
+        "steps": 1215,
+        "out": 402634,
+        "ncc": 2428,
+        "cr": 23575677,
+        "cw": 1015870,
+        "intot": 24593975,
+        "wall": 7374.420578956604,
+        "thinking": 202064,
+        "resolved": 33,
         "by_repo": {
           "ruff": [
             7,
-            2
+            5
           ],
           "ripgrep": [
             2,
@@ -154,7 +154,7 @@
           ],
           "nushell": [
             5,
-            2
+            5
           ],
           "bat": [
             8,
@@ -173,7 +173,7 @@
             2
           ]
         },
-        "fixed": 32,
+        "fixed": 38,
         "near": 5,
         "wrecked": 2
       },
@@ -196,18 +196,18 @@
         "wrecked": 5
       },
       "*Go* \u2014 5 repos (42 events)": {
-        "instances": 41,
+        "instances": 42,
         "empty": 0,
-        "cost": 33.073269249999996,
-        "steps": 1155,
-        "out": 426508,
-        "ncc": 2310,
-        "cr": 31738601,
-        "cw": 1044755,
-        "intot": 32785666,
-        "wall": 7501.413802146912,
-        "thinking": 226519,
-        "resolved": 29,
+        "cost": 33.2236775,
+        "steps": 1169,
+        "out": 429121,
+        "ncc": 2338,
+        "cr": 31801450,
+        "cw": 1053318,
+        "intot": 32857106,
+        "wall": 7543.843411445618,
+        "thinking": 226697,
+        "resolved": 30,
         "by_repo": {
           "caddy": [
             14,
@@ -223,14 +223,14 @@
           ],
           "terraform": [
             5,
-            2
+            3
           ],
           "prometheus": [
             8,
             6
           ]
         },
-        "fixed": 29,
+        "fixed": 30,
         "near": 0,
         "wrecked": 2
       },

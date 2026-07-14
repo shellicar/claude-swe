@@ -38,8 +38,12 @@ import subprocess
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# headline rows get best-cell bolding; True = higher is better
-HEADLINE = {"Resolved": True, "Resolved %": True, "Total cost": False, "$/resolved": False}
+# Medals mark contest outcomes: only Resolved (and its % twin) medal. Cost
+# rows are statistics, not contests — best figure bolded, never medalled:
+# cheapness is a property of the price list, and $/resolved is a ratio a
+# contender can top while losing nearly every event.
+MEDALLED = {"Resolved": True, "Resolved %": True}
+BOLD_BEST = {"Total cost": False, "$/resolved": False}
 
 
 def _numeric(cell):
@@ -48,10 +52,17 @@ def _numeric(cell):
 
 
 def _medal_row(label, cells):
-    higher = HEADLINE.get(label.strip())
+    key = label.strip()
+    values = [_numeric(c) for c in cells]
+    if key in BOLD_BEST:
+        present = [v for v in values if v is not None]
+        if len(present) < 2:
+            return cells
+        best = min(present)
+        return [f"**{c}**" if v == best else c for c, v in zip(cells, values)]
+    higher = MEDALLED.get(key)
     if higher is None:
         return cells
-    values = [_numeric(c) for c in cells]
     present = sorted({v for v in values if v is not None}, reverse=higher)
     if len(present) < 2:
         return cells
@@ -100,7 +111,7 @@ def emit(name, heading, columns, sections, note, payload):
         return int(m.group(1)) if m else 1
 
     MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
-    DISCIPLINES = ("Resolved", "Total cost", "$/resolved")
+    DISCIPLINES = ("Resolved",)
     tally = {d: {m: [0] * len(columns) for m in MEDALS} for d in DISCIPLINES}
     for title, body in sections:
         if title.startswith("TOTAL"):
@@ -121,10 +132,8 @@ def emit(name, heading, columns, sections, note, payload):
                         tally[label.strip()][m][i] += weight
     if any(any(v) for d in tally.values() for v in d.values()):
         body = []
-        for d in DISCIPLINES:
-            body.append((f"## {d}", [""] * len(columns)))
-            for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
-                body.append((f"{m} {word}", [str(n) for n in tally[d][m]]))
+        for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
+            body.append((f"{m} {word}", [str(n) for n in tally["Resolved"][m]]))
         sections = sections + [("Medal tally — counted in events", body)]
 
     # markdown
