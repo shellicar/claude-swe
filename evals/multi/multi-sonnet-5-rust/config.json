@@ -2,13 +2,13 @@
   "mode": "evaluation",
   "workdir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/sonnet-5-rust/workdir",
   "patch_files": [
-    "/Users/stephen/repos/shellicar/claude-swe/evals/multi/sonnet-5-rust/patches.jsonl"
+    "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-sonnet-5-rust/patches.jsonl"
   ],
   "dataset_files": [
-    "/Users/stephen/repos/shellicar/claude-swe/evals/multi/sonnet-5-rust/dataset.jsonl"
+    "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-sonnet-5-rust/dataset.jsonl"
   ],
   "force_build": false,
-  "output_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/multi/sonnet-5-rust",
+  "output_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-sonnet-5-rust",
   "specifics": [],
   "skips": [],
   "repo_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/sonnet-5-rust/repos",
