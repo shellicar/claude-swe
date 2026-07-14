@@ -39,10 +39,11 @@ Coding benchmarks report how many issues a model resolves, but not what it cost 
 
 ## Usage
 
-Everything runs through one entry point: `./swe.mjs <target> [verb...]`. Targets are declared combination sets (`combinations/*.json`) or `dataset[/selection]`; verbs chain in order and every verb resumes where it left off. A bare target shows status.
+Everything runs through one entry point: `./swe.mjs [verb...] [target...]` — verbs × targets, either axis omitted meaning all of it. Targets are declared combination sets (`combinations/*.json`) or `dataset[/selection]`; verbs chain in order per target and every verb resumes where it left off.
 
 ```sh
-./swe.mjs                                # list targets and verbs
+./swe.mjs                                # the dashboard: status of every meet
+./swe.mjs analyse                        # analyse everything
 ./swe.mjs main                           # where the main experiment stands, verb by verb
 ./swe.mjs main run                       # generate patches (uses the API)
 ./swe.mjs main mark audit analyse        # mark locally (free), audit completeness, write analysis/

@@ -55,7 +55,7 @@ All scripts assume cwd = this directory and call `.venv/bin/` binaries directly 
 
 ## Workflow
 
-One entry point: `./swe.mjs <target> [verb...]` — verbs `draw resolve ensure run mark status audit analyse` chain in order against a declared target (`combinations/*.json` or `dataset[/selection]`); every verb resumes, a bare target shows status, `audit` blocks `analyse` on incomplete records. Conceptual model: `docs/diagrams/operations.d2`. Superseded per-experiment scripts live in `archive/` for reference.
+One entry point: `./swe.mjs [verb...] [target...]` — verbs × targets, either axis omitted meaning all of it. Verbs `draw resolve ensure run mark status audit analyse` chain in order per target; targets are `combinations/*.json` names or `dataset[/selection]`. Bare `./swe.mjs` is the whole dashboard; `./swe.mjs analyse` analyses everything. Every verb resumes; `audit` blocks `analyse` on incomplete records. Conceptual model: `docs/diagrams/operations.d2`. Superseded per-experiment scripts live in `archive/` for reference.
 
 Two decoupled halves underneath, connected only by `preds.json`:
 

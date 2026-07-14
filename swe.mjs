@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 // The system: one entry point, operations as verbs, worlds as declarations.
 //
-//   ./swe.mjs <target> [verb...] [flags]
+//   ./swe.mjs [verb...] [target...] [flags]   (any order — verbs × targets)
 //
-//   target  a combination set (combinations/<name>.json) or dataset[/selection]
-//   verbs   draw resolve ensure run mark status audit analyse — any subset, in
-//           the given order, stopping at the first failure. Every verb is
-//           idempotent/resumable, so rerunning a chain picks up where it died.
-//           No verbs means status.
-//   flags   --model <m> [--effort <e>] for an ad-hoc run without a combination
+//   verbs    draw resolve ensure run mark status audit analyse — any subset,
+//            chained in the given order per target, stopping at the first
+//            failure. Every verb is idempotent/resumable. No verbs = status.
+//   targets  combination names (combinations/*.json) or dataset[/selection].
+//            No targets = every combination: bare `./swe.mjs` is the whole
+//            dashboard; `./swe.mjs analyse` analyses everything.
+//   flags    --model <m> [--effort <e>] for an ad-hoc run without a combination
 //
 // Declarations (the authority; see docs/diagrams/operations.d2):
 //   datasets/<name>.json      facts about a world: snapshot, image rule,
@@ -627,44 +628,59 @@ async function analyse({ ds, selections }) {
 // ---- main ----------------------------------------------------------------------
 const VERBS = { draw, resolve, ensure, run, mark, status, audit, analyse };
 
+const { readdirSync: readdir } = await import('node:fs');
+const listJson = (dir) => {
+  try {
+    return readdir(join(repoRoot, dir)).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, ''));
+  } catch {
+    return [];
+  }
+};
+
 const args = process.argv.slice(2);
-const targetName = args.shift();
 const verbs = [];
-while (args.length > 0 && VERBS[args[0]]) verbs.push(args.shift());
-if (verbs.length === 0) verbs.push('status');
+const targetNames = [];
 const flags = {};
 while (args.length > 0) {
   const a = args.shift();
-  if (a.startsWith('--')) flags[a.slice(2)] = args.shift();
+  if (a.startsWith('--')) {
+    flags[a.slice(2)] = args.shift();
+  } else if (VERBS[a]) {
+    verbs.push(a);
+  } else {
+    targetNames.push(a);
+  }
 }
 
-if (!targetName) {
-  const { readdirSync } = await import('node:fs');
-  const list = (dir) => {
-    try {
-      return readdirSync(join(repoRoot, dir)).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, ''));
-    } catch {
-      return [];
-    }
-  };
-  const datasets = list('datasets');
-  console.error('usage: ./swe.mjs <target> [verb...] [--model m] [--effort e] [--workers n]');
-  console.error('verbs:        draw resolve ensure run mark status audit analyse (none = status)');
-  console.error(`combinations: ${list('combinations').join(', ')}`);
-  console.error(`datasets:     ${datasets.map((d) => {
-    try {
-      return `${d} (${Object.keys(loadDataset(d).selections).map((s) => `${d}/${s}`).join(', ')})`;
-    } catch {
-      return d;
-    }
-  }).join('; ')}`);
-  process.exit(2);
+// verbs × targets: either axis omitted means all of it
+if (verbs.length === 0) verbs.push('status');
+if (targetNames.length === 0) targetNames.push(...listJson('combinations').sort());
+
+// validate every target up front — a typo should name the choices, not half-run
+const targets = [];
+for (const name of targetNames) {
+  try {
+    targets.push([name, loadTarget(name)]);
+  } catch {
+    console.error(`unknown target '${name}'`);
+    console.error(`combinations: ${listJson('combinations').join(', ')}`);
+    console.error(`datasets:     ${listJson('datasets').map((d) => {
+      try {
+        return `${d} (${Object.keys(loadDataset(d).selections).map((s) => `${d}/${s}`).join(', ')})`;
+      } catch {
+        return d;
+      }
+    }).join('; ')}`);
+    process.exit(2);
+  }
 }
 
 try {
-  const target = loadTarget(targetName);
-  for (const verb of verbs) {
-    await VERBS[verb](target, flags);
+  for (const [name, target] of targets) {
+    if (targets.length > 1) console.log(`\n=== ${name} ===`);
+    for (const verb of verbs) {
+      await VERBS[verb](target, flags);
+    }
   }
 } catch (err) {
   console.error(`[swe] failed: ${err.message}`);
