@@ -637,13 +637,52 @@ const listJson = (dir) => {
   }
 };
 
+const VERB_HELP = {
+  draw: 'pick a selection\u2019s instances by its declared rule and freeze the list',
+  resolve: 'look up each instance\u2019s image digest at the registry, record it in the manifest',
+  ensure: 'make local Docker match the manifest \u2014 pull missing, refuse on mismatch',
+  run: 'run the agents against each instance; the only verb that spends money',
+  mark: 'grade the saved patches with the dataset\u2019s judges',
+  status: 'where every verb stands for the target \u2014 read-only',
+  audit: 'prove the record is complete; incomplete records block analysis',
+  analyse: 'write the target\u2019s figures to analysis/ and refresh the overview',
+};
+
+const printHelp = () => {
+  console.log('usage: ./swe.mjs [verb...] [target...] [flags]   (any order \u2014 verbs \u00d7 targets)');
+  console.log('');
+  console.log('verbs (omit for status):');
+  for (const [v, h] of Object.entries(VERB_HELP)) console.log(`  ${v.padEnd(8)} ${h}`);
+  console.log('');
+  console.log(`targets (omit for all combinations):`);
+  console.log(`  combinations: ${listJson('combinations').join(', ')}`);
+  console.log(`  datasets:     ${listJson('datasets').map((d) => {
+    try {
+      return `${d} (${Object.keys(loadDataset(d).selections).map((s) => `${d}/${s}`).join(', ')})`;
+    } catch {
+      return d;
+    }
+  }).join('; ')}`);
+  console.log('');
+  console.log('flags: --model <m> --effort <e> --workers <n>   (ad-hoc runs without a combination)');
+  console.log('');
+  console.log('examples:');
+  console.log('  ./swe.mjs                        the dashboard: status of every meet');
+  console.log('  ./swe.mjs analyse                analyse everything');
+  console.log('  ./swe.mjs analyse multilingual   just multilingual');
+  console.log('  ./swe.mjs run mark audit pro     chain per target, in order');
+};
+
 const args = process.argv.slice(2);
 const verbs = [];
 const targetNames = [];
 const flags = {};
 while (args.length > 0) {
   const a = args.shift();
-  if (a.startsWith('--')) {
+  if (a === '--help' || a === '-h' || a === 'help') {
+    printHelp();
+    process.exit(0);
+  } else if (a.startsWith('--')) {
     flags[a.slice(2)] = args.shift();
   } else if (VERBS[a]) {
     verbs.push(a);
@@ -662,7 +701,7 @@ for (const name of targetNames) {
   try {
     targets.push([name, loadTarget(name)]);
   } catch {
-    console.error(`unknown target '${name}'`);
+    console.error(`unknown target '${name}' \u2014 not a verb (${Object.keys(VERBS).join(' ')}) and not a target:`);
     console.error(`combinations: ${listJson('combinations').join(', ')}`);
     console.error(`datasets:     ${listJson('datasets').map((d) => {
       try {
@@ -671,6 +710,7 @@ for (const name of targetNames) {
         return d;
       }
     }).join('; ')}`);
+    console.error(`run './swe.mjs --help' for the full grammar`);
     process.exit(2);
   }
 }
