@@ -4,8 +4,8 @@
 | **Results** | | |
 | Resolved | 🥈 44 | 🥇 **51** |
 | Resolved % | 🥈 73% | 🥇 **85%** |
-| Total cost | ⚪ $35.58 | 🟡 **$17.34** |
-| $/resolved | ⚪ $0.81 | 🟡 **$0.34** |
+| Total cost | 🥈 $35.58 | 🥇 **$17.34** |
+| $/resolved | 🥈 $0.81 | 🥇 **$0.34** |
 | **Stats** | | |
 | Steps | 1,953 | 1,383 |
 | Output tokens | 954k | 388k |
@@ -19,8 +19,8 @@
 | **Results** | | |
 | Resolved | 🥈 21 | 🥇 **34** |
 | Resolved % | 🥈 47% | 🥇 **76%** |
-| Total cost | ⚪ $105.45 | 🟡 **$39.63** |
-| $/resolved | ⚪ $5.02 | 🟡 **$1.17** |
+| Total cost | 🥈 $105.45 | 🥇 **$39.63** |
+| $/resolved | 🥈 $5.02 | 🥇 **$1.17** |
 | **Stats** | | |
 | Steps | 3,025 | 2,206 |
 | Output tokens | 2.06M | 725k |
@@ -34,8 +34,8 @@
 | **Results** | | |
 | Resolved | 🥈 65 | 🥇 **85** |
 | Resolved % | 🥈 62% | 🥇 **81%** |
-| Total cost | ⚪ $141.03 | 🟡 **$56.97** |
-| $/resolved | ⚪ $2.17 | 🟡 **$0.67** |
+| Total cost | 🥈 $141.03 | 🥇 **$56.97** |
+| $/resolved | 🥈 $2.17 | 🥇 **$0.67** |
 | **Stats** | | |
 | Steps | 4,978 | 3,589 |
 | Output tokens | 3.02M | 1.11M |
