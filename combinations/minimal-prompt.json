@@ -1,0 +1,12 @@
+{
+  "name": "minimal-prompt",
+  "dataset": "verified",
+  "selections": ["hard"],
+  "parallel": false,
+  "basePort": 19230,
+  "workers": 2,
+  "configs": ["swebench-local.yaml", "swebench-minimal-prompt.yaml", "thinking-adaptive.yaml"],
+  "legs": [
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/minimal-prompt/sonnet-5" }
+  ]
+}
