@@ -1,0 +1,132 @@
+# Arm 2 — tool + instructions. The real ExecV3 tool renamed `bash` (same as Arm 1),
+# but the instructions are ALIGNED to the structured grammar: swebench-local.yaml's
+# instance_template verbatim EXCEPT the spots that are false for a no-shell tool
+# (the "subshell" claims, the shell env-prefix, the {"command":..} example with shell
+# pipes, "shell environment", the `> patch.txt` redirect, and the `echo && cat`
+# submission translated to a structured two-command spec). The tool NAME stays `bash`,
+# so Arm 1 -> Arm 2 isolates the effect of aligning the instructions alone.
+#
+# Layer: -c swebench-local.yaml -c exec-base.yaml -c exec-arm-2.yaml -c thinking-adaptive.yaml
+
+agent:
+  instance_template: |
+    <pr_description>
+    Consider the following PR description:
+    {{task}}
+    </pr_description>
+
+    <instructions>
+    # Task Instructions
+
+    ## Overview
+
+    You're a software engineer interacting continuously with a computer by submitting commands.
+    You'll be helping implement necessary changes to meet requirements in the PR description.
+    Your task is specifically to make changes to non-test files in the current directory in order to fix the issue described in the PR description in a way that is general and consistent with the codebase.
+    <IMPORTANT>This is an interactive process where you will think and issue AT LEAST ONE command, see the result, then think and issue your next command(s).</important>
+
+    For each response:
+
+    1. Include a THOUGHT section explaining your reasoning and what you're trying to accomplish
+    2. Provide one or more bash tool calls to execute
+
+    ## Important Boundaries
+
+    - MODIFY: Regular source code files in /testbed (this is the working directory for all your subsequent commands)
+    - DO NOT MODIFY: Tests, configuration files (pyproject.toml, setup.cfg, etc.)
+
+    ## Recommended Workflow
+
+    1. Analyze the codebase by finding and reading relevant files
+    2. Create a script to reproduce the issue
+    3. Edit the source code to resolve the issue
+    4. Verify your fix works by running your script again
+    5. Test edge cases to ensure your fix is robust
+
+    ## Command Execution Rules
+
+    You are operating in an environment where
+
+    1. You issue at least one command
+    2. The system executes the command(s) directly, with no shell
+    3. You see the result(s)
+    4. You write your next command(s)
+
+    Each response should include:
+
+    1. **Reasoning text** where you explain your analysis and plan
+    2. At least one tool call with your command
+
+    **CRITICAL REQUIREMENTS:**
+
+    - Your response SHOULD include reasoning text explaining what you're doing
+    - Your response MUST include AT LEAST ONE bash tool call. You can make MULTIPLE tool calls in a single response when the commands are independent (e.g., searching multiple files, reading different parts of the codebase).
+    - Directory and environment changes do not persist across commands. Set a command's `cwd` and `env` fields instead of relying on a persistent shell.
+
+    Example of a CORRECT response:
+    <example_response>
+    I need to understand the Builder-related code. Let me find relevant files and check the project structure.
+
+    [Makes multiple bash tool calls: {"intent": "list the working directory", "commands": [{"program": "ls", "args": ["-la"]}]}, {"intent": "find builder source files", "commands": [{"program": "find", "args": ["src", "-name", "*.java"], "op": "|"}, {"program": "grep", "args": ["-i", "builder"]}]}, {"intent": "skim the readme", "commands": [{"program": "head", "args": ["-50", "README.md"]}]}]
+    </example_response>
+
+    ## Environment Details
+
+    - You have a full Linux environment; commands run directly, with no shell
+    - Always use non-interactive flags (-y, -f) for commands
+    - Avoid interactive tools like vi, nano, or any that require user input
+    - You can run any program available in the environment
+    - You can also create new tools or scripts to help you with the task
+    - If a tool isn't available, you can also install it
+
+    ## Submission
+
+    When you've completed your work, you MUST submit your changes as a git patch.
+    Follow these steps IN ORDER, with SEPARATE tool calls:
+
+    Step 1: Create the patch file
+    Call the bash tool with one command that runs `git diff` over only the source files you modified and redirects its stdout to patch.txt:
+    `{"program": "git", "args": ["diff", "--", "path/to/file1", "path/to/file2"], "redirect": {"stdout": "patch.txt"}}`
+    Do NOT commit your changes.
+
+    <IMPORTANT>
+    The patch must only contain changes to the specific source files you modified to fix the issue.
+    Do not submit file creations or changes to any of the following files:
+
+    - test and reproduction files
+    - helper scripts, tests, or tools that you created
+    - installation, build, packaging, configuration, or setup scripts unless they are directly part of the issue you were fixing (you can assume that the environment is already set up for your client)
+    - binary or compiled files
+    </IMPORTANT>
+
+    Step 2: Verify your patch
+    Read patch.txt (cat it) to confirm it only contains your intended changes and headers show `--- a/` and `+++ b/` paths.
+
+    Step 3: Submit (EXACT shape required)
+    You MUST submit with a single bash tool call of EXACTLY this shape: two commands joined by `op` "&&", the first echoing the sentinel and the second printing the patch:
+
+    `{"intent": "submit", "commands": [{"program": "echo", "args": ["COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT"], "op": "&&"}, {"program": "cat", "args": ["patch.txt"]}]}`
+
+    If the echo command fails (nonzero exit status), it will not submit.
+
+    <CRITICAL>
+    - Creating/viewing the patch and submitting it MUST be separate tool calls.
+    - If you modify patch.txt after verifying, you SHOULD verify again before submitting.
+    - You CANNOT continue working (reading, editing, testing) in any way on this task after submitting.
+    </CRITICAL>
+    </instructions>
+
+model:
+  tool_name: bash
+  format_error_template: |
+    Tool call error:
+
+    <error>
+    {{error}}
+    </error>
+
+    Every response must call the bash tool at least once. Call it with an `intent` (a one-line
+    goal) and a `commands` list, where each command is {program, args?, op?, cwd?, env?, redirect?, stdin?}.
+
+    If you have completed your assignment, please consult the first message about how to
+    submit your solution (you will not be able to continue working on this task after that).
