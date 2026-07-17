@@ -68,16 +68,15 @@ def wire_thinking(dirn):
     return totals
 
 
-def leg(dirn, s):
-    # Report is named <model>.<run_id>.json; the run_id (runs_main_<dir>_<set>) is
-    # unique per leg, so glob on it rather than assume model name == dir name (a
-    # repeat run keeps the model slug 'fable-5' but a distinct dir).
-    # Verdicts live under evals/ since the eval operations rework.
-    rep = glob.glob(f"{ROOT}/evals/*.runs_main_{dirn}_{s}.json")[0]
+def leg(base, s):
+    # base is the run out path, e.g. "main/opus-4-8" or "exec-arm-1/sonnet-5".
+    # Report is <model>.<run_id>.json; run_id = runs_<base-with-underscores>_<set>.
+    rid = base.replace("/", "_")
+    rep = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")[0]
     resolved = len(json.load(open(rep))["resolved_ids"])
     cost = steps = out = cr = cw = ncc = 0
     wall = 0.0
-    for tf in glob.glob(f"{ROOT}/runs/main/{dirn}/{s}/*/*.traj.json"):
+    for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
         t = json.load(open(tf))
         st = t["info"]["model_stats"]
         cost += st["instance_cost"]
@@ -116,7 +115,7 @@ def think(dirn, s):
 
 
 # gather: data[dirn][set] = leg dict
-data = {d: {s: leg(d, n and s) for s, n in SETS} for _, d in MODELS}
+data = {d: {s: leg(f"main/{d}", s) for s, n in SETS} for _, d in MODELS}
 
 rows = [
     ("## Results", lambda L, n: ""),
@@ -190,3 +189,31 @@ for card, heading, dirs in GROUPS:
     if card == "verified":
         payload["covers"] = ["standard", "hard"]
     emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload)
+
+
+# Structured-execution division: bash control vs the exec arms, verified/hard,
+# Sonnet 5. Hard-only — the frozen set the exec experiment ran on.
+EXEC = [
+    ("Sonnet 5 — bash (control)", "main/sonnet-5"),
+    ("Sonnet 5 — exec, bash instructions", "exec-arm-1/sonnet-5"),
+    ("Sonnet 5 — exec, aligned instructions", "exec-arm-2/sonnet-5"),
+]
+exec_data = {base: leg(base, "hard") for _, base in EXEC}
+
+
+def exec_section(bases):
+    body = []
+    for label, fn in rows:
+        if fn is None:  # thinking not attributed for the exec arms
+            body.append((label, ["—" for _ in bases]))
+            continue
+        body.append((label, [fn(exec_data[b], 45) for b in bases]))
+    return body
+
+
+_bases = [b for _, b in EXEC]
+emit("exec", "Structured-execution division — SWE-bench Verified hard, Sonnet 5",
+     [n for n, _ in EXEC],
+     [("Hard — 45 *Python* events (1+ h human effort)", exec_section(_bases))],
+     NOTE,
+     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": exec_data[b]}} for n, b in EXEC}})

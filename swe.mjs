@@ -20,7 +20,7 @@
 // Records: runs/ (patches, trajectories, wire captures), evals/ (verdicts),
 // analysis/ (derived figures). Paths come from the declarations.
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { runExperiment } from './orchestration/experiment.mjs';
 import { spawnAwait, onShutdown, repoRoot } from './orchestration/harness.mjs';
@@ -330,6 +330,22 @@ async function mark(target, flags) {
       }
       if (ds.marker.type === 'swebench') {
         const runId = `${leg.out.replaceAll('/', '_')}_${sel}`;
+        // Content-aware resume. swebench skips any instance whose log dir exists,
+        // blind to whether the prediction changed — so a re-mark after fixing a
+        // patch silently served the stale verdict (the recurring "re-mark did
+        // nothing" trap). Drop the log for any instance whose stored patch no
+        // longer matches what was marked, forcing swebench to re-evaluate it.
+        const norm = (s) => (s ?? '').replace(/\n+$/, '');
+        const logRoot = join(EVALS_DIR, 'logs', 'run_evaluation', runId);
+        let stale = 0;
+        for (const [iid, p] of Object.entries(JSON.parse(readFileSync(preds, 'utf8')))) {
+          const dir = join(logRoot, (p.model_name_or_path ?? '').replaceAll('/', '__'), iid);
+          if (existsSync(join(dir, 'patch.diff')) && norm(readFileSync(join(dir, 'patch.diff'), 'utf8')) !== norm(p.model_patch)) {
+            rmSync(dir, { recursive: true, force: true });
+            stale++;
+          }
+        }
+        if (stale) console.log(`[mark] re-evaluating ${stale} instance(s) whose patch changed since last mark`);
         console.log(`[mark] === ${runId} ===`);
         await spawnAwait(join(repoRoot, '.venv/bin/python'), [
           '-m', 'swebench.harness.run_evaluation',
