@@ -11,3 +11,7 @@
 [submodule "vendor/multi-swe-bench"]
 	path = vendor/multi-swe-bench
 	url = https://github.com/shellicar/multi-swe-bench
+[submodule "vendor/claude-cli"]
+	path = vendor/claude-cli
+	url = https://github.com/Hellicar-Solutions/claude-cli-tool-sea.git
+	branch = feature/tool-sea-harness

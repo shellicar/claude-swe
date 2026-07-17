@@ -1,0 +1,11 @@
+# Arm 1 — tool only. The real ExecV3 tool, renamed `bash`, handed to the model
+# with swebench-local.yaml's instructions and format_error_template LEFT ENTIRELY
+# UNCHANGED — the bash/shell wording, the `echo … && cat` submission, all of it.
+#
+# This is the maximum tool/instruction mismatch on purpose: the tool's grammar is
+# structured, but everything the model is TOLD still describes bash. It isolates
+# the raw grammar swap against the bash control and tests the assumption that a
+# capable model just adapts (same problems solved, more steps, fumbled args).
+# Only the tool changed; the name is held at `bash` so "use the bash tool" resolves.
+model:
+  tool_name: bash

@@ -1,0 +1,17 @@
+# Shared overlay for every structured-execution arm. Layer on swebench-local.yaml
+# (-c swebench-local.yaml -c exec-base.yaml -c exec-arm-N.yaml -c thinking-adaptive.yaml).
+#
+# Hands the model the REAL ExecV3 tool — loaded verbatim from the tool's own wire
+# spec (tool-sea --tool-spec, i.e. toWireTool over defineTool) — through a docker
+# environment that ships each structured spec to the injected linux-x64 SEA (the
+# real ExecV3 handler, minus the CLI permission layer). The per-arm overlays set
+# the tool_name dial and, from arm 2 on, align the instructions.
+environment:
+  environment_class: exec_docker
+  # linux-x64 Exec single-executable (real ExecV3 engine). Built by the tool-sea app.
+  exec_sea_path: vendor/claude-cli/apps/tool-sea/dist/execv3-linux-x64
+
+model:
+  model_class: minisweagent.models.litellm_exec_model.LitellmExecModel
+  # The tool's own wire spec — name/description/input_schema straight from the tool.
+  exec_tool_spec_path: vendor/claude-cli/apps/tool-sea/tool-spec.json
