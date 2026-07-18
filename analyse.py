@@ -236,6 +236,7 @@ emit("exec", "Structured-execution division — SWE-bench Verified hard, Sonnet 
 SCAFFOLD = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
     ("Sonnet 5 — minimal prompt (pen-down fallback)", "minimal-prompt/sonnet-5"),
+    ("Sonnet 5 — no ritual (pen-down only)", "no-ritual/sonnet-5"),
 ]
 scaffold_data = {base: leg(base, "hard") for _, base in SCAFFOLD}
 
