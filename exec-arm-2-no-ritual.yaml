@@ -1,0 +1,124 @@
+# Arm 2 + no-ritual. The real ExecV3 tool renamed `bash`, aligned instructions
+# (same as exec-arm-2.yaml), but the submission ritual is stripped entirely and
+# pen-down is wired in — the same treatment bash's no-ritual got, applied to the
+# best exec design. Tests whether exec, not just bash, benefits from the model
+# just stopping instead of performing echo-sentinel-and-cat.
+#
+# Layer: -c swebench-local.yaml -c exec-base.yaml -c exec-arm-2-no-ritual.yaml -c thinking-adaptive.yaml
+
+agent:
+  agent_class: minisweagent.agents.pen_down.PenDownAgent
+  instance_template: |
+    <pr_description>
+    Consider the following PR description:
+    {{task}}
+    </pr_description>
+
+    <instructions>
+    # Task Instructions
+
+    ## Overview
+
+    You're a software engineer interacting continuously with a computer by submitting commands.
+    You'll be helping implement necessary changes to meet requirements in the PR description.
+    Your task is specifically to make changes to non-test files in the current directory in order to fix the issue described in the PR description in a way that is general and consistent with the codebase.
+    <IMPORTANT>This is an interactive process where you will think and issue AT LEAST ONE command, see the result, then think and issue your next command(s).</important>
+
+    For each response:
+
+    1. Include a THOUGHT section explaining your reasoning and what you're trying to accomplish
+    2. Provide one or more bash tool calls to execute
+
+    ## Important Boundaries
+
+    - MODIFY: Regular source code files in /testbed (this is the working directory for all your subsequent commands)
+    - DO NOT MODIFY: Tests, configuration files (pyproject.toml, setup.cfg, etc.)
+
+    ## Recommended Workflow
+
+    1. Analyze the codebase by finding and reading relevant files
+    2. Create a script to reproduce the issue
+    3. Edit the source code to resolve the issue
+    4. Verify your fix works by running your script again
+    5. Test edge cases to ensure your fix is robust
+
+    ## Command Execution Rules
+
+    You are operating in an environment where
+
+    1. You issue at least one command
+    2. The system executes the command(s) directly, with no shell
+    3. You see the result(s)
+    4. You write your next command(s)
+
+    Each response should include:
+
+    1. **Reasoning text** where you explain your analysis and plan
+    2. At least one tool call with your command
+
+    **CRITICAL REQUIREMENTS:**
+
+    - Your response SHOULD include reasoning text explaining what you're doing
+    - You can make MULTIPLE tool calls in a single response when the commands are independent (e.g., searching multiple files, reading different parts of the codebase).
+    - Directory and environment changes do not persist across commands. Set a command's `cwd` and `env` fields instead of relying on a persistent shell.
+
+    Example of a CORRECT response:
+    <example_response>
+    I need to understand the Builder-related code. Let me find relevant files and check the project structure.
+
+    [Makes multiple bash tool calls: {"intent": "list the working directory", "commands": [{"program": "ls", "args": ["-la"]}]}, {"intent": "find builder source files", "commands": [{"program": "find", "args": ["src", "-name", "*.java"], "op": "|"}, {"program": "grep", "args": ["-i", "builder"]}]}, {"intent": "skim the readme", "commands": [{"program": "head", "args": ["-50", "README.md"]}]}]
+    </example_response>
+
+    ## Environment Details
+
+    - You have a full Linux environment; commands run directly, with no shell
+    - Always use non-interactive flags (-y, -f) for commands
+    - Avoid interactive tools like vi, nano, or any that require user input
+    - You can run any program available in the environment
+    - You can also create new tools or scripts to help you with the task
+    - If a tool isn't available, you can also install it
+
+    ## Submission
+
+    When you've completed your work, create your changes as a git patch, verify it, and then you are done.
+
+    Step 1: Create the patch file
+    Call the bash tool with one command that runs `git diff` over only the source files you modified and redirects its stdout to patch.txt:
+    `{"program": "git", "args": ["diff", "--", "path/to/file1", "path/to/file2"], "redirect": {"stdout": "patch.txt"}}`
+    Do NOT commit your changes.
+
+    <IMPORTANT>
+    The patch must only contain changes to the specific source files you modified to fix the issue.
+    Do not submit file creations or changes to any of the following files:
+
+    - test and reproduction files
+    - helper scripts, tests, or tools that you created
+    - installation, build, packaging, configuration, or setup scripts unless they are directly part of the issue you were fixing (you can assume that the environment is already set up for your client)
+    - binary or compiled files
+    </IMPORTANT>
+
+    Step 2: Verify your patch
+    Read patch.txt (cat it) to confirm it only contains your intended changes and headers show `--- a/` and `+++ b/` paths.
+
+    Once you have verified the patch, your task is complete. Stop here — do not make any further tool calls.
+
+    <CRITICAL>
+    - Once you stop, you CANNOT continue working (reading, editing, testing) in any way on this task.
+    - If you modify patch.txt after verifying, you SHOULD verify it again before stopping.
+    </CRITICAL>
+    </instructions>
+
+model:
+  tool_name: bash
+  format_error_template: |
+    Tool call error:
+
+    <error>
+    {{error}}
+    </error>
+
+    Every response must call the bash tool at least once. Call it with an `intent` (a one-line
+    goal) and a `commands` list, where each command is {program, args?, op?, cwd?, env?, redirect?, stdin?}.
+
+    If you have completed your assignment, please consult the first message about how to
+    submit your solution (you will not be able to continue working on this task after that).
