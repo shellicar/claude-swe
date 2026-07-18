@@ -1,0 +1,12 @@
+{
+  "name": "no-ritual",
+  "dataset": "verified",
+  "selections": ["hard"],
+  "parallel": false,
+  "basePort": 19240,
+  "workers": 2,
+  "configs": ["swebench-local.yaml", "swebench-no-ritual.yaml", "thinking-adaptive.yaml"],
+  "legs": [
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/no-ritual/sonnet-5" }
+  ]
+}
