@@ -201,13 +201,16 @@ for card, heading, dirs in GROUPS:
     emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload)
 
 
-# Structured-execution division: bash control vs the exec arms, verified/hard,
-# Sonnet 5. Hard-only — the frozen set the exec experiment ran on.
+# One division, everything: bash control, the ExecV3 tool-grammar ladder, and
+# the prompt-scaffolding variants — all on the same frozen verified/hard set,
+# same model, so every leg is directly comparable in one table.
 EXEC = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
-    ("Sonnet 5 — exec, bash instructions", "exec-arm-1/sonnet-5"),
-    ("Sonnet 5 — exec, aligned instructions (bash-named)", "exec-arm-2/sonnet-5"),
-    ("Sonnet 5 — exec, aligned instructions (exec-named)", "exec-arm-3/sonnet-5"),
+    ("Sonnet 5 — Arm 1: exec, bash instructions", "exec-arm-1/sonnet-5"),
+    ("Sonnet 5 — Arm 2: exec, aligned instructions (bash-named)", "exec-arm-2/sonnet-5"),
+    ("Sonnet 5 — Arm 3: exec, aligned instructions (exec-named)", "exec-arm-3/sonnet-5"),
+    ("Sonnet 5 — minimal prompt (pen-down fallback)", "minimal-prompt/sonnet-5"),
+    ("Sonnet 5 — no ritual (pen-down only)", "no-ritual/sonnet-5"),
 ]
 exec_data = {base: leg(base, "hard") for _, base in EXEC}
 
@@ -229,31 +232,3 @@ emit("exec", "Structured-execution division — SWE-bench Verified hard, Sonnet 
      NOTE,
      {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": exec_data[b]}} for n, b in EXEC}})
 
-
-# Prompt-scaffolding division: does the imperative "MUST" scaffolding earn its
-# keep, and does the submission ritual itself matter? Bash only, verified/hard,
-# Sonnet 5. no-ritual added once it finishes marking.
-SCAFFOLD = [
-    ("Sonnet 5 — bash (control)", "main/sonnet-5"),
-    ("Sonnet 5 — minimal prompt (pen-down fallback)", "minimal-prompt/sonnet-5"),
-    ("Sonnet 5 — no ritual (pen-down only)", "no-ritual/sonnet-5"),
-]
-scaffold_data = {base: leg(base, "hard") for _, base in SCAFFOLD}
-
-
-def scaffold_section(bases):
-    body = []
-    for label, fn in rows:
-        if fn is None:
-            body.append((label, ["—" for _ in bases]))
-            continue
-        body.append((label, [fn(scaffold_data[b], 45) for b in bases]))
-    return body
-
-
-_sbases = [b for _, b in SCAFFOLD]
-emit("scaffold", "Prompt-scaffolding division — SWE-bench Verified hard, Sonnet 5",
-     [n for n, _ in SCAFFOLD],
-     [("Hard — 45 *Python* events (1+ h human effort)", scaffold_section(_sbases))],
-     NOTE,
-     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": scaffold_data[b]}} for n, b in SCAFFOLD}})
