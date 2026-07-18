@@ -1,0 +1,12 @@
+{
+  "name": "execv1-arm2",
+  "dataset": "verified",
+  "selections": ["hard"],
+  "parallel": false,
+  "basePort": 19250,
+  "workers": 2,
+  "configs": ["swebench-local.yaml", "exec-base-v1.yaml", "exec-arm-2.yaml", "thinking-adaptive.yaml"],
+  "legs": [
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/execv1-arm2/sonnet-5" }
+  ]
+}

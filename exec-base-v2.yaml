@@ -1,0 +1,10 @@
+# Shared overlay for the ExecV2 arm. Layer on swebench-local.yaml, exec-arm-2.yaml
+# (aligned instructions, tool_name: bash) and thinking-adaptive.yaml. Mirrors
+# exec-base.yaml exactly, pointed at the ExecV2 binary/spec instead of ExecV3.
+environment:
+  environment_class: exec_docker
+  exec_sea_path: vendor/claude-cli/apps/tool-sea/dist/execv2-linux-x64
+
+model:
+  model_class: minisweagent.models.litellm_exec_model.LitellmExecModel
+  exec_tool_spec_path: vendor/claude-cli/apps/tool-sea/tool-spec-v2.json
