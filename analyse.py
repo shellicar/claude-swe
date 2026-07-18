@@ -76,6 +76,7 @@ def leg(base, s):
     resolved = len(json.load(open(rep))["resolved_ids"])
     cost = steps = out = cr = cw = ncc = 0
     wall = 0.0
+    peak_ctx = 0  # largest single-turn context (prompt_tokens) seen, any instance
     for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
         t = json.load(open(tf))
         st = t["info"]["model_stats"]
@@ -93,12 +94,13 @@ def leg(base, s):
                 cr += r
                 cw += w
                 ncc += max(p - r - w, 0)
+                peak_ctx = max(peak_ctx, p)
                 if ts and prev:
                     wall += ts - prev
             if ts:
                 prev = ts
     return dict(resolved=resolved, cost=cost, steps=steps, out=out,
-               ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall)
+               ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, peak_ctx=peak_ctx)
 
 
 def tok(x):
@@ -124,20 +126,28 @@ rows = [
     ("Total cost", lambda L, n: f"${L['cost']:.2f}"),
     ("$/resolved", lambda L, n: f"${L['cost']/L['resolved']:.2f}" if L["resolved"] else "—"),
     ("## Stats", lambda L, n: ""),
-    ("Steps", lambda L, n: f"{L['steps']:,}"),
+    ("Steps (total)", lambda L, n: f"{L['steps']:,}"),
+    ("Turns/instance (avg)", lambda L, n: f"{L['steps']/n:.1f}"),
+    ("Cost/turn (avg)", lambda L, n: f"${L['cost']/L['steps']:.3f}"),
     ("Output tokens", lambda L, n: tok(L["out"])),
     ("Thinking (output)", None),  # special: needs dirn+set
     ("Input tokens", lambda L, n: tok(L["intot"])),
     ("\u2014 non-cached", lambda L, n: tok(L["ncc"])),
     ("\u2014 cache read", lambda L, n: tok(L["cr"])),
     ("\u2014 cache write", lambda L, n: tok(L["cw"])),
+    ("Input tokens/turn (avg)", lambda L, n: f"{L['intot']/L['steps']:,.0f}"),
+    ("Output tokens/turn (avg)", lambda L, n: f"{L['out']/L['steps']:,.0f}"),
+    ("Context window (peak, single turn)", lambda L, n: tok(L["peak_ctx"])),
     ("Wall-clock (12-way parallel)", lambda L, n: f"{L['wall']/3600:.1f} h"),
 ]
 
 def combined(d):
     c = {}
     for k in data[d]["standard"]:
-        c[k] = data[d]["standard"][k] + data[d]["hard"][k]
+        if k == "peak_ctx":  # a max, not a sum — combining two legs takes the larger
+            c[k] = max(data[d]["standard"][k], data[d]["hard"][k])
+        else:
+            c[k] = data[d]["standard"][k] + data[d]["hard"][k]
     return c
 
 
@@ -196,7 +206,8 @@ for card, heading, dirs in GROUPS:
 EXEC = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
     ("Sonnet 5 — exec, bash instructions", "exec-arm-1/sonnet-5"),
-    ("Sonnet 5 — exec, aligned instructions", "exec-arm-2/sonnet-5"),
+    ("Sonnet 5 — exec, aligned instructions (bash-named)", "exec-arm-2/sonnet-5"),
+    ("Sonnet 5 — exec, aligned instructions (exec-named)", "exec-arm-3/sonnet-5"),
 ]
 exec_data = {base: leg(base, "hard") for _, base in EXEC}
 
@@ -217,3 +228,31 @@ emit("exec", "Structured-execution division — SWE-bench Verified hard, Sonnet 
      [("Hard — 45 *Python* events (1+ h human effort)", exec_section(_bases))],
      NOTE,
      {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": exec_data[b]}} for n, b in EXEC}})
+
+
+# Prompt-scaffolding division: does the imperative "MUST" scaffolding earn its
+# keep, and does the submission ritual itself matter? Bash only, verified/hard,
+# Sonnet 5. no-ritual added once it finishes marking.
+SCAFFOLD = [
+    ("Sonnet 5 — bash (control)", "main/sonnet-5"),
+    ("Sonnet 5 — minimal prompt (pen-down fallback)", "minimal-prompt/sonnet-5"),
+]
+scaffold_data = {base: leg(base, "hard") for _, base in SCAFFOLD}
+
+
+def scaffold_section(bases):
+    body = []
+    for label, fn in rows:
+        if fn is None:
+            body.append((label, ["—" for _ in bases]))
+            continue
+        body.append((label, [fn(scaffold_data[b], 45) for b in bases]))
+    return body
+
+
+_sbases = [b for _, b in SCAFFOLD]
+emit("scaffold", "Prompt-scaffolding division — SWE-bench Verified hard, Sonnet 5",
+     [n for n, _ in SCAFFOLD],
+     [("Hard — 45 *Python* events (1+ h human effort)", scaffold_section(_sbases))],
+     NOTE,
+     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": scaffold_data[b]}} for n, b in SCAFFOLD}})
