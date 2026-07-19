@@ -266,3 +266,46 @@ emit("scaffold", "Prompt-scaffolding division (bash only) — SWE-bench Verified
      [("Hard — 45 *Python* events (1+ h human effort)", scaffold_section(_sbases))],
      NOTE,
      {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": scaffold_data[b]}} for n, b in SCAFFOLD}})
+
+
+# Tool-alternatives division: does the SCHEMA alone move the needle? Arm 1 is
+# pure bloat (bash + 90 decorative Azure DevOps tool schemas, never usable, to
+# isolate the cost of a wider tools= list). Arms 2/3 hand the model bash +
+# Claude Code's real Edit/Write/Read (exact tools.json schemas) — 2 neutral
+# (available, unmentioned), 3 with bash's own real "prefer the dedicated tool"
+# description added. Legs render as — until run+marked (leg() would otherwise
+# crash the whole analyser on a missing eval report).
+TOOLS = [
+    ("Sonnet 5 — bash (control)", "main/sonnet-5"),
+    ("Sonnet 5 — Arm 1: schema bloat (bash + 90 unusable tools)", "tools-arm-1/sonnet-5"),
+    ("Sonnet 5 — Arm 2: +Edit/Write/Read, neutral", "tools-arm-2/sonnet-5"),
+    ("Sonnet 5 — Arm 3: +Edit/Write/Read, preferred", "tools-arm-3/sonnet-5"),
+]
+
+
+def safe_leg(base, s):
+    try:
+        return leg(base, s)
+    except IndexError:
+        return None
+
+
+tools_data = {base: safe_leg(base, "hard") for _, base in TOOLS}
+
+
+def tools_section(bases):
+    body = []
+    for label, fn in rows:
+        if fn is None:
+            body.append((label, ["—" for _ in bases]))
+            continue
+        body.append((label, [fn(tools_data[b], 45) if tools_data[b] else "—" for b in bases]))
+    return body
+
+
+_tbases = [b for _, b in TOOLS]
+emit("tools", "Tool-alternatives division — SWE-bench Verified hard, Sonnet 5",
+     [n for n, _ in TOOLS],
+     [("Hard — 45 *Python* events (1+ h human effort)", tools_section(_tbases))],
+     NOTE,
+     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": tools_data[b]}} for n, b in TOOLS if tools_data[b]}})

@@ -1,0 +1,41 @@
+{
+  "covers": [
+    "hard"
+  ],
+  "models": {
+    "main/sonnet-5": {
+      "name": "Sonnet 5 \u2014 bash (control)",
+      "sets": {
+        "hard": {
+          "resolved": 34,
+          "cost": 39.629120700000016,
+          "steps": 2206,
+          "out": 725351,
+          "ncc": 4412,
+          "cr": 69775124,
+          "cw": 2080822,
+          "intot": 71860358,
+          "wall": 12420.108799934387,
+          "peak_ctx": 133796
+        }
+      }
+    },
+    "tools-arm-1/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 1: schema bloat (bash + 90 unusable tools)",
+      "sets": {
+        "hard": {
+          "resolved": 35,
+          "cost": 56.72469660000001,
+          "steps": 2052,
+          "out": 669438,
+          "ncc": 4102,
+          "cr": 130461252,
+          "cw": 2008652,
+          "intot": 132474006,
+          "wall": 8579.722920179367,
+          "peak_ctx": 141185
+        }
+      }
+    }
+  }
+}
