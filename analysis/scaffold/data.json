@@ -1,0 +1,75 @@
+{
+  "covers": [
+    "hard"
+  ],
+  "models": {
+    "main/sonnet-5": {
+      "name": "Sonnet 5 \u2014 bash (control)",
+      "sets": {
+        "hard": {
+          "resolved": 34,
+          "cost": 39.629120700000016,
+          "steps": 2206,
+          "out": 725351,
+          "ncc": 4412,
+          "cr": 69775124,
+          "cw": 2080822,
+          "intot": 71860358,
+          "wall": 12420.108799934387,
+          "peak_ctx": 133796
+        }
+      }
+    },
+    "minimal-prompt/sonnet-5": {
+      "name": "Sonnet 5 \u2014 minimal prompt (pen-down fallback)",
+      "sets": {
+        "hard": {
+          "resolved": 34,
+          "cost": 33.844484400000006,
+          "steps": 2111,
+          "out": 627683,
+          "ncc": 4222,
+          "cr": 57231878,
+          "cw": 1932536,
+          "intot": 59168636,
+          "wall": 8654.920497894287,
+          "peak_ctx": 93272
+        }
+      }
+    },
+    "no-ritual/sonnet-5": {
+      "name": "Sonnet 5 \u2014 no ritual (pen-down only)",
+      "sets": {
+        "hard": {
+          "resolved": 38,
+          "cost": 33.22105110000001,
+          "steps": 2045,
+          "out": 631470,
+          "ncc": 4000,
+          "cr": 55187537,
+          "cw": 1914864,
+          "intot": 57106401,
+          "wall": 8563.137173891068,
+          "peak_ctx": 116916
+        }
+      }
+    },
+    "exec-arm-2-no-ritual/sonnet-5": {
+      "name": "Sonnet 5 \u2014 exec tool, no ritual (pen-down only)",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 40.51043070000001,
+          "steps": 2067,
+          "out": 803731,
+          "ncc": 4044,
+          "cr": 66887204,
+          "cw": 2233646,
+          "intot": 69124894,
+          "wall": 9760.663885593414,
+          "peak_ctx": 127122
+        }
+      }
+    }
+  }
+}

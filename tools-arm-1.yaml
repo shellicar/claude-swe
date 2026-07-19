@@ -1,0 +1,13 @@
+# Arm 1 — pure tool-schema bloat. Identical to swebench-local.yaml (bash only,
+# unchanged instructions, control's exact prompt) except the model is also handed
+# 90 real Azure DevOps MCP tool schemas (azure-devops-tools.json, pulled live from
+# the actual @azure-devops/mcp server via scripts/mcp-list-tools.mjs) that this
+# task can never legitimately call. Never mentioned in the prompt. Isolates the
+# cost of a wider tools= list alone: any FormatError from an accidental call to one
+# of these is itself signal (parse_toolcall_actions only understands 'bash'), but
+# the schemas add zero real capability.
+#
+# Layer: -c swebench-local.yaml -c tools-arm-1.yaml -c thinking-adaptive.yaml
+
+model:
+  extra_tools_path: azure-devops-tools.json

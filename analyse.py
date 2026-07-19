@@ -209,7 +209,10 @@ for card, heading, dirs in GROUPS:
 EXEC = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
     ("Sonnet 5 — Arm 1: exec, bash instructions", "exec-arm-1/sonnet-5"),
-    ("Sonnet 5 — Arm 2: exec, aligned instructions (bash-named)", "exec-arm-2/sonnet-5"),
+    ("Sonnet 5 — Arm 2: ExecV1, aligned instructions", "execv1-arm2/sonnet-5"),
+    ("Sonnet 5 — Arm 2: ExecV2, aligned instructions", "execv2-arm2/sonnet-5"),
+    ("Sonnet 5 — Arm 2: ExecV3, aligned instructions (bash-named)", "exec-arm-2/sonnet-5"),
+    ("Sonnet 5 — Arm 2: ExecV3, no ritual (pen-down only)", "exec-arm-2-no-ritual/sonnet-5"),
     ("Sonnet 5 — Arm 3: exec, aligned instructions (exec-named)", "exec-arm-3/sonnet-5"),
 ]
 exec_data = {base: leg(base, "hard") for _, base in EXEC}
@@ -242,6 +245,7 @@ SCAFFOLD = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
     ("Sonnet 5 — minimal prompt (pen-down fallback)", "minimal-prompt/sonnet-5"),
     ("Sonnet 5 — no ritual (pen-down only)", "no-ritual/sonnet-5"),
+    ("Sonnet 5 — exec tool, no ritual (pen-down only)", "exec-arm-2-no-ritual/sonnet-5"),
 ]
 scaffold_data = {base: leg(base, "hard") for _, base in SCAFFOLD}
 

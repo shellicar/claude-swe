@@ -10,8 +10,8 @@
     "submitted_ids": [
         "sharkdp/fd:pr-558",
         "rayon-rs/rayon:pr-986",
-        "nushell/nushell:pr-11169",
         "nushell/nushell:pr-11292",
+        "nushell/nushell:pr-11169",
         "clap-rs/clap:pr-5527",
         "clap-rs/clap:pr-4635",
         "clap-rs/clap:pr-4101",
@@ -32,8 +32,8 @@
     "completed_ids": [
         "sharkdp/fd:pr-558",
         "rayon-rs/rayon:pr-986",
-        "nushell/nushell:pr-11169",
         "nushell/nushell:pr-11292",
+        "nushell/nushell:pr-11169",
         "clap-rs/clap:pr-5527",
         "clap-rs/clap:pr-4635",
         "clap-rs/clap:pr-4101",
@@ -55,8 +55,8 @@
     "resolved_ids": [
         "sharkdp/fd:pr-558",
         "rayon-rs/rayon:pr-986",
-        "nushell/nushell:pr-11169",
         "nushell/nushell:pr-11292",
+        "nushell/nushell:pr-11169",
         "clap-rs/clap:pr-5527",
         "clap-rs/clap:pr-4635",
         "clap-rs/clap:pr-4101",

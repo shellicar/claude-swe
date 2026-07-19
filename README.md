@@ -3,7 +3,7 @@
 > A rig for benchmarking Claude models on SWE-bench Verified, by resolve rate and by cost per resolved task.
 
 *Developed with assistance from Claude.*
-ww
+
 ## Features
 
 - 📊 **Two-axis scoring** - Reports resolve rate alongside cost, tokens, and time, not resolve rate alone.
@@ -63,6 +63,8 @@ Everything runs through one entry point: `./swe.mjs [verb...] [target...]` — v
 
 - `report.md` - model comparison (Fable 5, Opus 4.8 / 4.7 / 4.6, Sonnet 4.6, Haiku 4.5) over 105 problems.
 - `report-effort.md` - Opus 4.8 across effort levels over the same set.
+- `analysis/exec/table.md` - structured-execution division (Sonnet 5, hard set): bash vs the ExecV1/V2/V3 tool-grammar ladder. Tool structure never beats bash control - it plateaus at parity, since Sonnet 5 rarely hits the failure modes structure would prevent.
+- `analysis/scaffold/table.md` - prompt-scaffolding division (Sonnet 5, hard set, bash only): dropping mini's forced submission ritual for a "pen-down" agent (stops when done, harness reads the patch off disk) beats the ritual-bound control outright - 38/45 resolved vs 34/45, and cheaper per resolve. Layering the exec tool on top of pen-down does not add to this win.
 
 SWE-bench Verified is Python only: mature, well-tested repositories with clearly-specified issues. It measures diagnosis-style bug fixing, not feature building or other languages, so the numbers bound well-specified problems on well-tested code. Figures are estimates, single-pass unless noted.
 

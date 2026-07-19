@@ -1,0 +1,126 @@
+{
+  "covers": [
+    "hard"
+  ],
+  "models": {
+    "main/sonnet-5": {
+      "name": "Sonnet 5 \u2014 bash (control)",
+      "sets": {
+        "hard": {
+          "resolved": 34,
+          "cost": 39.629120700000016,
+          "steps": 2206,
+          "out": 725351,
+          "ncc": 4412,
+          "cr": 69775124,
+          "cw": 2080822,
+          "intot": 71860358,
+          "wall": 12420.108799934387,
+          "peak_ctx": 133796
+        }
+      }
+    },
+    "exec-arm-1/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 1: exec, bash instructions",
+      "sets": {
+        "hard": {
+          "resolved": 32,
+          "cost": 51.7436292,
+          "steps": 2395,
+          "out": 937887,
+          "ncc": 4788,
+          "cr": 93679509,
+          "cw": 2548562,
+          "intot": 96232859,
+          "wall": 12717.843539953232,
+          "peak_ctx": 165939
+        }
+      }
+    },
+    "execv1-arm2/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 2: ExecV1, aligned instructions",
+      "sets": {
+        "hard": {
+          "resolved": 32,
+          "cost": 50.69241405,
+          "steps": 2345,
+          "out": 920226,
+          "ncc": 4690,
+          "cr": 90373401,
+          "cw": 2603449,
+          "intot": 92981540,
+          "wall": 11508.106388568878,
+          "peak_ctx": 148551
+        }
+      }
+    },
+    "execv2-arm2/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 2: ExecV2, aligned instructions",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 43.62334890000002,
+          "steps": 2184,
+          "out": 796449,
+          "ncc": 4368,
+          "cr": 75622508,
+          "cw": 2393802,
+          "intot": 78020678,
+          "wall": 10035.93442440033,
+          "peak_ctx": 118823
+        }
+      }
+    },
+    "exec-arm-2/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 2: ExecV3, aligned instructions (bash-named)",
+      "sets": {
+        "hard": {
+          "resolved": 34,
+          "cost": 42.11240085000001,
+          "steps": 2118,
+          "out": 799082,
+          "ncc": 4236,
+          "cr": 69724697,
+          "cw": 2452281,
+          "intot": 72181214,
+          "wall": 11999.251038312912,
+          "peak_ctx": 111282
+        }
+      }
+    },
+    "exec-arm-2-no-ritual/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 2: ExecV3, no ritual (pen-down only)",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 40.51043070000001,
+          "steps": 2067,
+          "out": 803731,
+          "ncc": 4044,
+          "cr": 66887204,
+          "cw": 2233646,
+          "intot": 69124894,
+          "wall": 9760.663885593414,
+          "peak_ctx": 127122
+        }
+      }
+    },
+    "exec-arm-3/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 3: exec, aligned instructions (exec-named)",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 40.838980049999996,
+          "steps": 2063,
+          "out": 771096,
+          "ncc": 4126,
+          "cr": 68748036,
+          "cw": 2302867,
+          "intot": 71055029,
+          "wall": 10117.64091014862,
+          "peak_ctx": 118449
+        }
+      }
+    }
+  }
+}
