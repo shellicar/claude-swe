@@ -1,0 +1,11 @@
+# Arm 2 — real alternatives (Edit/Write/Read), neutral. bash keeps its plain
+# "Execute a bash command" description; Edit/Write/Read carry their own real
+# tools.json descriptions (which already contain some self-referential
+# preference text, e.g. Edit says "ALWAYS prefer editing existing files"), but
+# nothing in the outer task prompt or bash's own description points the model
+# at them. Isolates: does mere availability change tool usage / outcome?
+#
+# Layer: -c swebench-local.yaml -c tools-base.yaml -c tools-arm-2.yaml -c thinking-adaptive.yaml
+
+model:
+  prefer_dedicated_tools: false

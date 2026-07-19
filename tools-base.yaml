@@ -1,0 +1,14 @@
+# Shared overlay for the tool-alternatives arms. Layer on swebench-local.yaml
+# (-c swebench-local.yaml -c tools-base.yaml -c tools-arm-N.yaml -c thinking-adaptive.yaml).
+#
+# Hands the model bash PLUS Edit/Write/Read, whose schemas are copied verbatim
+# from Claude Code's own tools.json (see models/utils/actions_filetools.py) —
+# same tool API, not a reimplementation of Claude Code's harness-side
+# enforcement (no Read-before-Edit gate; see 2026-07-19 discussion). Edit/Write/
+# Read execute via an injected fileops.py script over `docker exec -i python3`,
+# no shell involved for those three; bash still runs as normal.
+environment:
+  environment_class: filetools_docker
+
+model:
+  model_class: litellm_filetools
