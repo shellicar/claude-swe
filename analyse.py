@@ -275,17 +275,19 @@ emit("scaffold", "Prompt-scaffolding division (bash only) — SWE-bench Verified
 # (available, unmentioned), 3 with bash's own real "prefer the dedicated tool"
 # description added. Legs render as — until run+marked (leg() would otherwise
 # crash the whole analyser on a missing eval report).
-# Arm 3 (preference-language) was deleted 2026-07-20: the instruction it tested
-# was never "prefer the dedicated tools" as specified — it was a hand-trimmed
-# excerpt of Claude Code's real bash description that led with "Avoid... NOT
-# sed... NOT cat", a restriction framing, not the preference framing asked for.
-# The 30/45 result was measuring that corruption, not the intended question.
-# Redo properly (full untrimmed text, or an honest "prefer" framing) before
-# adding a real Arm 3 back.
+# Arm 3 rebuilt 2026-07-20: the original was deleted because it tested a
+# hand-trimmed, self-edited excerpt of a tool's schema description ("Avoid...
+# NOT sed... NOT cat") instead of the actual instruction asked for. The real
+# Claude Code system prompt's "# Using your tools" section carries this as a
+# PROMPT line, not a tool schema edit: "Prefer dedicated tools over Bash when
+# one fits (Read, Edit, Write) — reserve Bash for shell-only operations," plus
+# the parallel-tool-calls sentence. Arm 3 now uses IDENTICAL tool schemas to
+# Arm 2 (see tools-arm-3.yaml) — only the prompt differs.
 TOOLS = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
     ("Sonnet 5 — Arm 1: schema bloat (bash + 90 unusable tools)", "tools-arm-1/sonnet-5"),
     ("Sonnet 5 — Arm 2: +Edit/Write/Read, neutral", "tools-arm-2/sonnet-5"),
+    ("Sonnet 5 — Arm 3: +Edit/Write/Read, prompted to prefer them", "tools-arm-3/sonnet-5"),
 ]
 
 

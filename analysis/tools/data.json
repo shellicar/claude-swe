@@ -53,6 +53,23 @@
           "peak_ctx": 114654
         }
       }
+    },
+    "tools-arm-3/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 3: +Edit/Write/Read, prompted to prefer them",
+      "sets": {
+        "hard": {
+          "resolved": 36,
+          "cost": 34.35581160000001,
+          "steps": 2129,
+          "out": 580231,
+          "ncc": 4258,
+          "cr": 62210317,
+          "cw": 1860394,
+          "intot": 64074969,
+          "wall": 9785.634981870651,
+          "peak_ctx": 130333
+        }
+      }
     }
   }
 }
