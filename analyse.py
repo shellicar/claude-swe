@@ -275,11 +275,17 @@ emit("scaffold", "Prompt-scaffolding division (bash only) — SWE-bench Verified
 # (available, unmentioned), 3 with bash's own real "prefer the dedicated tool"
 # description added. Legs render as — until run+marked (leg() would otherwise
 # crash the whole analyser on a missing eval report).
+# Arm 3 (preference-language) was deleted 2026-07-20: the instruction it tested
+# was never "prefer the dedicated tools" as specified — it was a hand-trimmed
+# excerpt of Claude Code's real bash description that led with "Avoid... NOT
+# sed... NOT cat", a restriction framing, not the preference framing asked for.
+# The 30/45 result was measuring that corruption, not the intended question.
+# Redo properly (full untrimmed text, or an honest "prefer" framing) before
+# adding a real Arm 3 back.
 TOOLS = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
     ("Sonnet 5 — Arm 1: schema bloat (bash + 90 unusable tools)", "tools-arm-1/sonnet-5"),
     ("Sonnet 5 — Arm 2: +Edit/Write/Read, neutral", "tools-arm-2/sonnet-5"),
-    ("Sonnet 5 — Arm 3: +Edit/Write/Read, preferred", "tools-arm-3/sonnet-5"),
 ]
 
 
