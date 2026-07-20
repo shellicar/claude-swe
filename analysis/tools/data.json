@@ -36,6 +36,40 @@
           "peak_ctx": 141185
         }
       }
+    },
+    "tools-arm-2/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 2: +Edit/Write/Read, neutral",
+      "sets": {
+        "hard": {
+          "resolved": 34,
+          "cost": 40.01167965000001,
+          "steps": 2250,
+          "out": 662270,
+          "ncc": 4498,
+          "cr": 73600098,
+          "cw": 2129095,
+          "intot": 75733691,
+          "wall": 10013.111176013947,
+          "peak_ctx": 114654
+        }
+      }
+    },
+    "tools-arm-3/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 3: +Edit/Write/Read, preferred",
+      "sets": {
+        "hard": {
+          "resolved": 30,
+          "cost": 30.1350906,
+          "steps": 1967,
+          "out": 548023,
+          "ncc": 3930,
+          "cr": 51122377,
+          "cw": 1750998,
+          "intot": 52877305,
+          "wall": 7992.50031042099,
+          "peak_ctx": 89059
+        }
+      }
     }
   }
 }
