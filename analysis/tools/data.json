@@ -4,7 +4,7 @@
   ],
   "models": {
     "main/sonnet-5": {
-      "name": "Sonnet 5 \u2014 bash (control)",
+      "name": "Control",
       "sets": {
         "hard": {
           "resolved": 34,
@@ -20,8 +20,110 @@
         }
       }
     },
+    "exec-arm-1/sonnet-5": {
+      "name": "Exec Arm 1",
+      "sets": {
+        "hard": {
+          "resolved": 32,
+          "cost": 51.7436292,
+          "steps": 2395,
+          "out": 937887,
+          "ncc": 4788,
+          "cr": 93679509,
+          "cw": 2548562,
+          "intot": 96232859,
+          "wall": 12717.843539953232,
+          "peak_ctx": 165939
+        }
+      }
+    },
+    "execv1-arm2/sonnet-5": {
+      "name": "ExecV1, aligned",
+      "sets": {
+        "hard": {
+          "resolved": 32,
+          "cost": 50.69241405,
+          "steps": 2345,
+          "out": 920226,
+          "ncc": 4690,
+          "cr": 90373401,
+          "cw": 2603449,
+          "intot": 92981540,
+          "wall": 11508.106388568878,
+          "peak_ctx": 148551
+        }
+      }
+    },
+    "execv2-arm2/sonnet-5": {
+      "name": "ExecV2, aligned",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 43.62334890000002,
+          "steps": 2184,
+          "out": 796449,
+          "ncc": 4368,
+          "cr": 75622508,
+          "cw": 2393802,
+          "intot": 78020678,
+          "wall": 10035.93442440033,
+          "peak_ctx": 118823
+        }
+      }
+    },
+    "exec-arm-2/sonnet-5": {
+      "name": "ExecV3, aligned (bash-named)",
+      "sets": {
+        "hard": {
+          "resolved": 34,
+          "cost": 42.11240085000001,
+          "steps": 2118,
+          "out": 799082,
+          "ncc": 4236,
+          "cr": 69724697,
+          "cw": 2452281,
+          "intot": 72181214,
+          "wall": 11999.251038312912,
+          "peak_ctx": 111282
+        }
+      }
+    },
+    "exec-arm-3/sonnet-5": {
+      "name": "ExecV3, aligned (exec-named)",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 40.838980049999996,
+          "steps": 2063,
+          "out": 771096,
+          "ncc": 4126,
+          "cr": 68748036,
+          "cw": 2302867,
+          "intot": 71055029,
+          "wall": 10117.64091014862,
+          "peak_ctx": 118449
+        }
+      }
+    },
+    "exec-arm-2-no-ritual/sonnet-5": {
+      "name": "ExecV3, no ritual",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 40.51043070000001,
+          "steps": 2067,
+          "out": 803731,
+          "ncc": 4044,
+          "cr": 66887204,
+          "cw": 2233646,
+          "intot": 69124894,
+          "wall": 9760.663885593414,
+          "peak_ctx": 127122
+        }
+      }
+    },
     "tools-arm-1/sonnet-5": {
-      "name": "Sonnet 5 \u2014 Arm 1: schema bloat (bash + 90 unusable tools)",
+      "name": "+90 bloat tools",
       "sets": {
         "hard": {
           "resolved": 35,
@@ -38,7 +140,7 @@
       }
     },
     "tools-arm-2/sonnet-5": {
-      "name": "Sonnet 5 \u2014 Arm 2: +Edit/Write/Read, neutral",
+      "name": "+Edit/Write/Read, neutral",
       "sets": {
         "hard": {
           "resolved": 34,
@@ -55,7 +157,7 @@
       }
     },
     "tools-arm-3/sonnet-5": {
-      "name": "Sonnet 5 \u2014 Arm 3: +Edit/Write/Read, prompted to prefer them",
+      "name": "+Edit/Write/Read, prefer",
       "sets": {
         "hard": {
           "resolved": 36,
@@ -72,7 +174,7 @@
       }
     },
     "tools-arm-4/sonnet-5": {
-      "name": "Sonnet 5 \u2014 Arm 4: ExecV3 instead of bash, +Edit/Write/Read",
+      "name": "ExecV3 +Edit/Write/Read",
       "sets": {
         "hard": {
           "resolved": 33,
@@ -85,6 +187,23 @@
           "intot": 84199633,
           "wall": 10937.656138420105,
           "peak_ctx": 160836
+        }
+      }
+    },
+    "tools-arm-5/sonnet-5": {
+      "name": "ExecV3 +EWR, plain output",
+      "sets": {
+        "hard": {
+          "resolved": 32,
+          "cost": 46.198705350000004,
+          "steps": 2208,
+          "out": 825208,
+          "ncc": 4416,
+          "cr": 83343812,
+          "cw": 2347785,
+          "intot": 85696013,
+          "wall": 10713.058756828308,
+          "peak_ctx": 146792
         }
       }
     }

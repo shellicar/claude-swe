@@ -1,0 +1,12 @@
+{
+  "name": "tools-arm-5",
+  "dataset": "verified",
+  "selections": ["hard"],
+  "parallel": false,
+  "basePort": 19320,
+  "workers": 2,
+  "configs": ["swebench-local.yaml", "exec-filetools-base.yaml", "tools-arm-3.yaml", "tools-arm-5.yaml", "thinking-adaptive.yaml"],
+  "legs": [
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/tools-arm-5/sonnet-5" }
+  ]
+}

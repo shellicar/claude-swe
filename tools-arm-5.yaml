@@ -1,0 +1,11 @@
+# Arm 5 — identical to Arm 4 (ExecV3 as bash + Edit/Write/Read + the unchanged
+# "prefer dedicated tools" prompt) except exec's rendered OUTPUT is flattened to
+# plain concatenated stdout/stderr, matching bash's raw output shape, instead of
+# the default per-command "[1] exit N" block format. Isolates: does the shape of
+# what comes BACK from the tool matter, independent of the structured INPUT
+# question Arm 4 tests? Everything else (input format, tool set, prompt) is held.
+#
+# Layer: -c swebench-local.yaml -c exec-filetools-base.yaml -c tools-arm-3.yaml -c tools-arm-5.yaml -c thinking-adaptive.yaml
+
+environment:
+  plain_output: true

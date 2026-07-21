@@ -201,42 +201,6 @@ for card, heading, dirs in GROUPS:
     emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload)
 
 
-# Structured-execution division: bash control vs the exec-TOOL arms only. Every
-# leg here uses the real ExecV3 tool via exec_docker — the tool-grammar ladder.
-# Do NOT add bash-only variants here (they belong in the scaffold division
-# below): a leg that never touches exec_docker doesn't belong on this ladder,
-# it just confuses what's being compared.
-EXEC = [
-    ("Sonnet 5 — bash (control)", "main/sonnet-5"),
-    ("Sonnet 5 — Arm 1: exec, bash instructions", "exec-arm-1/sonnet-5"),
-    ("Sonnet 5 — Arm 2: ExecV1, aligned instructions", "execv1-arm2/sonnet-5"),
-    ("Sonnet 5 — Arm 2: ExecV2, aligned instructions", "execv2-arm2/sonnet-5"),
-    ("Sonnet 5 — Arm 2: ExecV3, aligned instructions (bash-named)", "exec-arm-2/sonnet-5"),
-    ("Sonnet 5 — Arm 2: ExecV3, no ritual (pen-down only)", "exec-arm-2-no-ritual/sonnet-5"),
-    ("Sonnet 5 — Arm 3: exec, aligned instructions (exec-named)", "exec-arm-3/sonnet-5"),
-]
-exec_data = {base: leg(base, "hard") for _, base in EXEC}
-
-
-def exec_section(bases):
-    body = []
-    for label, fn in rows:
-        if fn is None:  # thinking not attributed for the exec arms
-            body.append((label, ["—" for _ in bases]))
-            continue
-        body.append((label, [fn(exec_data[b], 45) for b in bases]))
-    return body
-
-
-_bases = [b for _, b in EXEC]
-emit("exec", "Structured-execution division — SWE-bench Verified hard, Sonnet 5",
-     [n for n, _ in EXEC],
-     [("Hard — 45 *Python* events (1+ h human effort)", exec_section(_bases))],
-     NOTE,
-     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": exec_data[b]}} for n, b in EXEC}})
-
-
-
 # Prompt-scaffolding division: does the imperative "MUST" scaffolding earn its
 # keep, and does the submission ritual itself matter? BASH ONLY (native
 # LitellmModel, no exec tool anywhere) — a different knob from the division
@@ -268,34 +232,44 @@ emit("scaffold", "Prompt-scaffolding division (bash only) — SWE-bench Verified
      {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": scaffold_data[b]}} for n, b in SCAFFOLD}})
 
 
-# Tool-alternatives division: does the SCHEMA alone move the needle? Arm 1 is
-# pure bloat (bash + 90 decorative Azure DevOps tool schemas, never usable, to
-# isolate the cost of a wider tools= list). Arms 2/3 hand the model bash +
-# Claude Code's real Edit/Write/Read (exact tools.json schemas) — 2 neutral
-# (available, unmentioned), 3 with bash's own real "prefer the dedicated tool"
-# description added. Legs render as — until run+marked (leg() would otherwise
-# crash the whole analyser on a missing eval report).
-# Arm 3 rebuilt 2026-07-20: the original was deleted because it tested a
-# hand-trimmed, self-edited excerpt of a tool's schema description ("Avoid...
-# NOT sed... NOT cat") instead of the actual instruction asked for. The real
-# Claude Code system prompt's "# Using your tools" section carries this as a
-# PROMPT line, not a tool schema edit: "Prefer dedicated tools over Bash when
-# one fits (Read, Edit, Write) — reserve Bash for shell-only operations," plus
-# the parallel-tool-calls sentence. Arm 3 now uses IDENTICAL tool schemas to
-# Arm 2 (see tools-arm-3.yaml) — only the prompt differs.
-# Arm 4 swaps bash for the real ExecV3 tool (still named `bash`, tools-arm-3's
-# prompt UNCHANGED) alongside Edit/Write/Read — does bash's edge hold once it
-# isn't the only tool? Arm 5 is Arm 4 with exec's rendered OUTPUT flattened to
-# plain text (matching bash's raw stdout) instead of the '[1] exit N' block
-# format, isolating whether OUTPUT shape (not input structure) drives any
-# difference.
-TOOLS = [
-    ("Sonnet 5 — bash (control)", "main/sonnet-5"),
-    ("Sonnet 5 — Arm 1: schema bloat (bash + 90 unusable tools)", "tools-arm-1/sonnet-5"),
-    ("Sonnet 5 — Arm 2: +Edit/Write/Read, neutral", "tools-arm-2/sonnet-5"),
-    ("Sonnet 5 — Arm 3: +Edit/Write/Read, prompted to prefer them", "tools-arm-3/sonnet-5"),
-    ("Sonnet 5 — Arm 4: ExecV3 instead of bash, +Edit/Write/Read", "tools-arm-4/sonnet-5"),
-    ("Sonnet 5 — Arm 5: Arm 4, exec output flattened to plain text", "tools-arm-5/sonnet-5"),
+# Tool & execution-mechanism division: every arm that varies the shell tool
+# and/or hands the model extra tools, merged into ONE table (previously split
+# across "exec" and "tools" cards, which made the same knobs hard to compare
+# side by side). Each arm's variables are ROWS, not header text — a column's
+# header is just its short name; what it actually differs on is read off the
+# Variables section above Results, so no column needs its whole config spelled
+# out in the header to be understood.
+#
+# Dims: tool (bash/ExecV1/V2/V3), name (what the tool is called in the prompt),
+# prompt (bash text / aligned-to-exec-grammar text / bash text + the real
+# "prefer dedicated tools" system-prompt line), extra (decorative bloat or real
+# Edit/Write/Read), submission (ritual vs pen-down), output (bash's raw text /
+# exec's per-command block format / block flattened to plain text).
+COMBINED = [
+    ("Control", "main/sonnet-5",
+     dict(tool="bash", name="bash", prompt="bash", extra="—", submission="ritual", output="text")),
+    ("Exec Arm 1", "exec-arm-1/sonnet-5",
+     dict(tool="ExecV3", name="bash", prompt="bash (mismatched)", extra="—", submission="ritual", output="block")),
+    ("ExecV1, aligned", "execv1-arm2/sonnet-5",
+     dict(tool="ExecV1", name="bash", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV2, aligned", "execv2-arm2/sonnet-5",
+     dict(tool="ExecV2", name="bash", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV3, aligned (bash-named)", "exec-arm-2/sonnet-5",
+     dict(tool="ExecV3", name="bash", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV3, aligned (exec-named)", "exec-arm-3/sonnet-5",
+     dict(tool="ExecV3", name="exec", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV3, no ritual", "exec-arm-2-no-ritual/sonnet-5",
+     dict(tool="ExecV3", name="bash", prompt="exec-aligned", extra="—", submission="pen-down", output="block")),
+    ("+90 bloat tools", "tools-arm-1/sonnet-5",
+     dict(tool="bash", name="bash", prompt="bash", extra="+90 unusable", submission="ritual", output="text")),
+    ("+Edit/Write/Read, neutral", "tools-arm-2/sonnet-5",
+     dict(tool="bash", name="bash", prompt="bash", extra="Edit/Write/Read", submission="ritual", output="text")),
+    ("+Edit/Write/Read, prefer", "tools-arm-3/sonnet-5",
+     dict(tool="bash", name="bash", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="text")),
+    ("ExecV3 +Edit/Write/Read", "tools-arm-4/sonnet-5",
+     dict(tool="ExecV3", name="bash", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="block")),
+    ("ExecV3 +EWR, plain output", "tools-arm-5/sonnet-5",
+     dict(tool="ExecV3", name="bash", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="plain")),
 ]
 
 
@@ -306,22 +280,36 @@ def safe_leg(base, s):
         return None
 
 
-tools_data = {base: safe_leg(base, "hard") for _, base in TOOLS}
+combined_data = {base: safe_leg(base, "hard") for _, base, _ in COMBINED}
+
+VARIABLE_DIMS = [
+    ("Shell tool", "tool"),
+    ("Tool name shown to model", "name"),
+    ("Prompt", "prompt"),
+    ("Extra tools", "extra"),
+    ("Submission", "submission"),
+    ("Output format", "output"),
+]
 
 
-def tools_section(bases):
+def combined_variables_section(entries):
+    return [(label, [v[key] for _, _, v in entries]) for label, key in VARIABLE_DIMS]
+
+
+def combined_section(bases):
     body = []
     for label, fn in rows:
         if fn is None:
             body.append((label, ["—" for _ in bases]))
             continue
-        body.append((label, [fn(tools_data[b], 45) if tools_data[b] else "—" for b in bases]))
+        body.append((label, [fn(combined_data[b], 45) if combined_data[b] else "—" for b in bases]))
     return body
 
 
-_tbases = [b for _, b in TOOLS]
-emit("tools", "Tool-alternatives division — SWE-bench Verified hard, Sonnet 5",
-     [n for n, _ in TOOLS],
-     [("Hard — 45 *Python* events (1+ h human effort)", tools_section(_tbases))],
+_cbases = [b for _, b, _ in COMBINED]
+emit("tools", "Tool & execution-mechanism division — SWE-bench Verified hard, Sonnet 5",
+     [n for n, _, _ in COMBINED],
+     [("Variables", combined_variables_section(COMBINED)),
+      ("Hard — 45 *Python* events (1+ h human effort)", combined_section(_cbases))],
      NOTE,
-     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": tools_data[b]}} for n, b in TOOLS if tools_data[b]}})
+     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": combined_data[b]}} for n, b, _ in COMBINED if combined_data[b]}})
