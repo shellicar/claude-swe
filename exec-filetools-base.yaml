@@ -1,0 +1,21 @@
+# Base for "ExecV3 instead of bash, with Edit/Write/Read alongside it and the
+# real 'prefer dedicated tools' prompt line" — the direct successor to
+# tools-arm-3, swapping only the execution mechanism for shell commands.
+#
+# The exec tool keeps the name `bash` (same dial exec-arm-1 used) so NO PROMPT
+# TEXT CHANGES AT ALL: layer this under tools-arm-3.yaml unmodified and its
+# instance_template (including "Prefer dedicated tools over Bash...") is used
+# verbatim. Edit/Write/Read are unchanged from tools-arm-2/3. Isolates: does
+# ExecV3's structured input still help/hurt once it isn't the only tool bash
+# has to compete with?
+#
+# Layer: -c swebench-local.yaml -c exec-filetools-base.yaml -c tools-arm-3.yaml -c thinking-adaptive.yaml
+
+environment:
+  environment_class: exec_filetools_docker
+  exec_sea_path: vendor/claude-cli/apps/tool-sea/dist/execv3-linux-x64
+
+model:
+  model_class: minisweagent.models.litellm_exec_filetools_model.LitellmExecFiletoolsModel
+  exec_tool_spec_path: vendor/claude-cli/apps/tool-sea/tool-spec.json
+  tool_name: bash

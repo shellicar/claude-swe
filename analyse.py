@@ -283,11 +283,19 @@ emit("scaffold", "Prompt-scaffolding division (bash only) — SWE-bench Verified
 # one fits (Read, Edit, Write) — reserve Bash for shell-only operations," plus
 # the parallel-tool-calls sentence. Arm 3 now uses IDENTICAL tool schemas to
 # Arm 2 (see tools-arm-3.yaml) — only the prompt differs.
+# Arm 4 swaps bash for the real ExecV3 tool (still named `bash`, tools-arm-3's
+# prompt UNCHANGED) alongside Edit/Write/Read — does bash's edge hold once it
+# isn't the only tool? Arm 5 is Arm 4 with exec's rendered OUTPUT flattened to
+# plain text (matching bash's raw stdout) instead of the '[1] exit N' block
+# format, isolating whether OUTPUT shape (not input structure) drives any
+# difference.
 TOOLS = [
     ("Sonnet 5 — bash (control)", "main/sonnet-5"),
     ("Sonnet 5 — Arm 1: schema bloat (bash + 90 unusable tools)", "tools-arm-1/sonnet-5"),
     ("Sonnet 5 — Arm 2: +Edit/Write/Read, neutral", "tools-arm-2/sonnet-5"),
     ("Sonnet 5 — Arm 3: +Edit/Write/Read, prompted to prefer them", "tools-arm-3/sonnet-5"),
+    ("Sonnet 5 — Arm 4: ExecV3 instead of bash, +Edit/Write/Read", "tools-arm-4/sonnet-5"),
+    ("Sonnet 5 — Arm 5: Arm 4, exec output flattened to plain text", "tools-arm-5/sonnet-5"),
 ]
 
 

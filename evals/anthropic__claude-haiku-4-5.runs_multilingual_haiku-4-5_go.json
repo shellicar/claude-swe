@@ -1,10 +1,10 @@
 {
     "total_instances": 300,
     "submitted_instances": 42,
-    "completed_instances": 41,
+    "completed_instances": 42,
     "resolved_instances": 25,
-    "unresolved_instances": 16,
-    "empty_patch_instances": 1,
+    "unresolved_instances": 17,
+    "empty_patch_instances": 0,
     "error_instances": 0,
     "completed_ids": [
         "caddyserver__caddy-4774",
@@ -32,6 +32,7 @@
         "gohugoio__hugo-12171",
         "gohugoio__hugo-12204",
         "gohugoio__hugo-12343",
+        "gohugoio__hugo-12448",
         "gohugoio__hugo-12562",
         "gohugoio__hugo-12579",
         "gohugoio__hugo-12768",
@@ -309,9 +310,7 @@
         "vuejs__core-11899",
         "vuejs__core-11915"
     ],
-    "empty_patch_ids": [
-        "gohugoio__hugo-12448"
-    ],
+    "empty_patch_ids": [],
     "submitted_ids": [
         "caddyserver__caddy-4774",
         "caddyserver__caddy-4943",
@@ -395,6 +394,7 @@
         "gin-gonic__gin-3741",
         "gin-gonic__gin-3820",
         "gohugoio__hugo-12204",
+        "gohugoio__hugo-12448",
         "hashicorp__terraform-34900",
         "hashicorp__terraform-35543",
         "prometheus__prometheus-10633",

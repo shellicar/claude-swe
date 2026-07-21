@@ -127,7 +127,7 @@
   "gohugoio__hugo-12448": {
     "model_name_or_path": "anthropic/claude-haiku-4-5",
     "instance_id": "gohugoio__hugo-12448",
-    "model_patch": ""
+    "model_patch": "diff --git a/common/hugo/version_current.go b/common/hugo/version_current.go\nindex 9631cf82a..5f4e104ff 100644\n--- a/common/hugo/version_current.go\n+++ b/common/hugo/version_current.go\n@@ -17,7 +17,7 @@ package hugo\n // This should be the only one.\n var CurrentVersion = Version{\n \tMajor:      0,\n-\tMinor:      125,\n-\tPatchLevel: 4,\n-\tSuffix:     \"\",\n+\tMinor:      126,\n+\tPatchLevel: 0,\n+\tSuffix:     \"-DEV\",\n }\ndiff --git a/hugoreleaser.env b/hugoreleaser.env\nindex 6973a0717..5b8ae8cd9 100644\n--- a/hugoreleaser.env\n+++ b/hugoreleaser.env\n@@ -1,7 +1,8 @@\n # Release env. \n # These will be replaced by script before release.\n-HUGORELEASER_TAG=v0.125.1\n-HUGORELEASER_COMMITISH=68c5ad638c2072969e47262926b912e80fd71a77\n+HUGORELEASER_TAG=v0.125.4\n+HUGORELEASER_COMMITISH=cc3574ef4f41fccbe88d9443ed066eb10867ada2\n+\n \n \n \n"
   },
   "gohugoio__hugo-12579": {
     "model_name_or_path": "anthropic/claude-haiku-4-5",

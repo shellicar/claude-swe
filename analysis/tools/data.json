@@ -70,6 +70,23 @@
           "peak_ctx": 130333
         }
       }
+    },
+    "tools-arm-4/sonnet-5": {
+      "name": "Sonnet 5 \u2014 Arm 4: ExecV3 instead of bash, +Edit/Write/Read",
+      "sets": {
+        "hard": {
+          "resolved": 33,
+          "cost": 45.14010179999998,
+          "steps": 2207,
+          "out": 798166,
+          "ncc": 4410,
+          "cr": 81906581,
+          "cw": 2288642,
+          "intot": 84199633,
+          "wall": 10937.656138420105,
+          "peak_ctx": 160836
+        }
+      }
     }
   }
 }
