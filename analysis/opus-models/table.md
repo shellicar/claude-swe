@@ -16,6 +16,7 @@
 | — non-cached | 669k | 1k | 2k |
 | — cache read | 15.51M | 18.68M | 11.21M |
 | — cache write | 831k | 1.01M | 862k |
+| Failed tool calls (FormatError) | 0 | 0 | 1 |
 | Input tokens/turn (avg) | 13,758 | 16,704 | 13,614 |
 | Output tokens/turn (avg) | 265 | 347 | 451 |
 | Context window (peak, single turn) | 73k | 73k | 63k |
@@ -36,6 +37,7 @@
 | — non-cached | 309k | 2k | 2k |
 | — cache read | 48.39M | 48.92M | 23.42M |
 | — cache write | 1.52M | 1.58M | 1.25M |
+| Failed tool calls (FormatError) | 0 | 0 | 1 |
 | Input tokens/turn (avg) | 27,916 | 29,398 | 20,273 |
 | Output tokens/turn (avg) | 376 | 409 | 475 |
 | Context window (peak, single turn) | 129k | 117k | 85k |
@@ -56,6 +58,7 @@
 | — non-cached | 979k | 3k | 4k |
 | — cache read | 63.90M | 67.60M | 34.64M |
 | — cache write | 2.35M | 2.60M | 2.11M |
+| Failed tool calls (FormatError) | 0 | 0 | 2 |
 | Input tokens/turn (avg) | 22,150 | 24,232 | 17,466 |
 | Output tokens/turn (avg) | 331 | 384 | 465 |
 | Context window (peak, single turn) | 129k | 117k | 85k |

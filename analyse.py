@@ -17,7 +17,7 @@ import hashlib
 import json
 import os
 
-from analysis_output import emit
+from analysis_output import _medal_row, emit
 
 MODELS = [  # display name -> dir
     ("Claude Fable 5", "fable-5"),
@@ -74,7 +74,7 @@ def leg(base, s):
     rid = base.replace("/", "_")
     rep = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")[0]
     resolved = len(json.load(open(rep))["resolved_ids"])
-    cost = steps = out = cr = cw = ncc = 0
+    cost = steps = out = cr = cw = ncc = failed = 0
     wall = 0.0
     peak_ctx = 0  # largest single-turn context (prompt_tokens) seen, any instance
     for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
@@ -85,6 +85,11 @@ def leg(base, s):
         prev = None
         for m in t["messages"]:
             ts = m.get("extra", {}).get("timestamp")
+            # FormatError: the model's tool call was rejected before ever
+            # reaching execution (bad shape, unknown tool, missing field).
+            # Counted per rejected call, not per turn.
+            if m.get("extra", {}).get("interrupt_type") == "FormatError":
+                failed += m.get("extra", {}).get("n_actions", 1) or 1
             if m.get("role") == "assistant":
                 u = (m.get("extra", {}).get("response") or {}).get("usage") or {}
                 out += u.get("completion_tokens", 0) or 0
@@ -99,7 +104,7 @@ def leg(base, s):
                     wall += ts - prev
             if ts:
                 prev = ts
-    return dict(resolved=resolved, cost=cost, steps=steps, out=out,
+    return dict(resolved=resolved, cost=cost, steps=steps, out=out, failed=failed,
                ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, peak_ctx=peak_ctx)
 
 
@@ -135,6 +140,7 @@ rows = [
     ("\u2014 non-cached", lambda L, n: tok(L["ncc"])),
     ("\u2014 cache read", lambda L, n: tok(L["cr"])),
     ("\u2014 cache write", lambda L, n: tok(L["cw"])),
+    ("Failed tool calls (FormatError)", lambda L, n: str(L["failed"])),
     ("Input tokens/turn (avg)", lambda L, n: f"{L['intot']/L['steps']:,.0f}"),
     ("Output tokens/turn (avg)", lambda L, n: f"{L['out']/L['steps']:,.0f}"),
     ("Context window (peak, single turn)", lambda L, n: tok(L["peak_ctx"])),
@@ -232,45 +238,16 @@ emit("scaffold", "Prompt-scaffolding division (bash only) — SWE-bench Verified
      {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": scaffold_data[b]}} for n, b in SCAFFOLD}})
 
 
-# Tool & execution-mechanism division: every arm that varies the shell tool
-# and/or hands the model extra tools, merged into ONE table (previously split
-# across "exec" and "tools" cards, which made the same knobs hard to compare
-# side by side). Each arm's variables are ROWS, not header text — a column's
-# header is just its short name; what it actually differs on is read off the
-# Variables section above Results, so no column needs its whole config spelled
-# out in the header to be understood.
+# Variable-row divisions: each entry is (label, base, {dim: value}). Rather than
+# packing an arm's whole config into its column header, each dimension is its
+# own row above Results — but SEPARATE EXPERIMENTS get SEPARATE tables/files.
+# Control repeats across all of them on purpose: each table answers one
+# question standalone, not "all arms ever run" in one wide sheet.
 #
 # Dims: tool (bash/ExecV1/V2/V3), name (what the tool is called in the prompt),
-# prompt (bash text / aligned-to-exec-grammar text / bash text + the real
-# "prefer dedicated tools" system-prompt line), extra (decorative bloat or real
-# Edit/Write/Read), submission (ritual vs pen-down), output (bash's raw text /
-# exec's per-command block format / block flattened to plain text).
-COMBINED = [
-    ("Control", "main/sonnet-5",
-     dict(tool="bash", name="bash", prompt="bash", extra="—", submission="ritual", output="text")),
-    ("Exec Arm 1", "exec-arm-1/sonnet-5",
-     dict(tool="ExecV3", name="bash", prompt="bash (mismatched)", extra="—", submission="ritual", output="block")),
-    ("ExecV1, aligned", "execv1-arm2/sonnet-5",
-     dict(tool="ExecV1", name="bash", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
-    ("ExecV2, aligned", "execv2-arm2/sonnet-5",
-     dict(tool="ExecV2", name="bash", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
-    ("ExecV3, aligned (bash-named)", "exec-arm-2/sonnet-5",
-     dict(tool="ExecV3", name="bash", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
-    ("ExecV3, aligned (exec-named)", "exec-arm-3/sonnet-5",
-     dict(tool="ExecV3", name="exec", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
-    ("ExecV3, no ritual", "exec-arm-2-no-ritual/sonnet-5",
-     dict(tool="ExecV3", name="bash", prompt="exec-aligned", extra="—", submission="pen-down", output="block")),
-    ("+90 bloat tools", "tools-arm-1/sonnet-5",
-     dict(tool="bash", name="bash", prompt="bash", extra="+90 unusable", submission="ritual", output="text")),
-    ("+Edit/Write/Read, neutral", "tools-arm-2/sonnet-5",
-     dict(tool="bash", name="bash", prompt="bash", extra="Edit/Write/Read", submission="ritual", output="text")),
-    ("+Edit/Write/Read, prefer", "tools-arm-3/sonnet-5",
-     dict(tool="bash", name="bash", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="text")),
-    ("ExecV3 +Edit/Write/Read", "tools-arm-4/sonnet-5",
-     dict(tool="ExecV3", name="bash", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="block")),
-    ("ExecV3 +EWR, plain output", "tools-arm-5/sonnet-5",
-     dict(tool="ExecV3", name="bash", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="plain")),
-]
+# encoding (raw string / JSON / plain-text variants), prompt, extra (decorative
+# bloat or real Edit/Write/Read), submission (ritual vs pen-down), output
+# (bash's raw text / exec's per-command block format / block flattened to plain).
 
 
 def safe_leg(base, s):
@@ -280,11 +257,10 @@ def safe_leg(base, s):
         return None
 
 
-combined_data = {base: safe_leg(base, "hard") for _, base, _ in COMBINED}
-
 VARIABLE_DIMS = [
     ("Shell tool", "tool"),
     ("Tool name shown to model", "name"),
+    ("Input encoding", "encoding"),
     ("Prompt", "prompt"),
     ("Extra tools", "extra"),
     ("Submission", "submission"),
@@ -292,24 +268,94 @@ VARIABLE_DIMS = [
 ]
 
 
-def combined_variables_section(entries):
-    return [(label, [v[key] for _, _, v in entries]) for label, key in VARIABLE_DIMS]
-
-
-def combined_section(bases):
-    body = []
+def experiment_table(heading, entries):
+    """Build one markdown table (own header, own columns) for one experiment.
+    Multiple of these get concatenated into ONE table.md — separate experiments,
+    not separate files: control repeats across tables on purpose, but nobody
+    reading exec-grammar results needs plain-text-encoding's columns in view."""
+    data_ = {base: safe_leg(base, "hard") for _, base, _ in entries}
+    bases = [b for _, b, _ in entries]
+    columns = [n for n, _, _ in entries]
+    variables_body = [(label, [v[key] for _, _, v in entries]) for label, key in VARIABLE_DIMS]
+    results_body = []
     for label, fn in rows:
         if fn is None:
-            body.append((label, ["—" for _ in bases]))
+            results_body.append((label, ["—" for _ in bases]))
             continue
-        body.append((label, [fn(combined_data[b], 45) if combined_data[b] else "—" for b in bases]))
-    return body
+        results_body.append((label, [fn(data_[b], 45) if data_[b] else "—" for b in bases]))
+    sections_ = [("Variables", variables_body), ("Hard — 45 *Python* events (1+ h human effort)", results_body)]
+    sections_ = [(title, [(label, _medal_row(label, cells)) for label, cells in body]) for title, body in sections_]
+    lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
+    for title, body in sections_:
+        lines.append(f"| **{title}** |" + " |" * len(columns))
+        for label, cells in body:
+            if label.startswith("## "):
+                lines.append(f"| **{label[3:]}** |" + " |" * len(columns))
+            else:
+                lines.append(f"| {label} | " + " | ".join(cells) + " |")
+    payload = {"models": {b: {"name": n, "sets": {"hard": data_[b]}} for n, b, _ in entries if data_[b]}}
+    return "\n".join(lines), payload
 
 
-_cbases = [b for _, b, _ in COMBINED]
-emit("tools", "Tool & execution-mechanism division — SWE-bench Verified hard, Sonnet 5",
-     [n for n, _, _ in COMBINED],
-     [("Variables", combined_variables_section(COMBINED)),
-      ("Hard — 45 *Python* events (1+ h human effort)", combined_section(_cbases))],
-     NOTE,
-     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": combined_data[b]}} for n, b, _ in COMBINED if combined_data[b]}})
+_CONTROL = ("Control", "main/sonnet-5",
+            dict(tool="bash", name="bash", encoding="raw string", prompt="bash", extra="—", submission="ritual", output="text"))
+
+# Experiment 1: does the exec-tool GRAMMAR (structured JSON) alone beat bash,
+# across tool generations and naming? Never mixed with real dedicated tools.
+EXEC_GRAMMAR = [
+    _CONTROL,
+    ("Exec Arm 1", "exec-arm-1/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="JSON", prompt="bash (mismatched)", extra="—", submission="ritual", output="block")),
+    ("ExecV1, aligned", "execv1-arm2/sonnet-5",
+     dict(tool="ExecV1", name="bash", encoding="JSON", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV2, aligned", "execv2-arm2/sonnet-5",
+     dict(tool="ExecV2", name="bash", encoding="JSON", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV3, aligned (bash-named)", "exec-arm-2/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="JSON", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV3, aligned (exec-named)", "exec-arm-3/sonnet-5",
+     dict(tool="ExecV3", name="exec", encoding="JSON", prompt="exec-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV3, no ritual", "exec-arm-2-no-ritual/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="JSON", prompt="exec-aligned", extra="—", submission="pen-down", output="block")),
+]
+_t1, _p1 = experiment_table("Exec-grammar division — SWE-bench Verified hard, Sonnet 5", EXEC_GRAMMAR)
+
+# Experiment 2: does the SCHEMA alone move the needle — pure bloat, real
+# dedicated tools (neutral / prompted to prefer), and swapping bash itself for
+# ExecV3 once those dedicated tools already exist alongside it.
+TOOL_ALTERNATIVES = [
+    _CONTROL,
+    ("+90 bloat tools", "tools-arm-1/sonnet-5",
+     dict(tool="bash", name="bash", encoding="raw string", prompt="bash", extra="+90 unusable", submission="ritual", output="text")),
+    ("+Edit/Write/Read, neutral", "tools-arm-2/sonnet-5",
+     dict(tool="bash", name="bash", encoding="raw string", prompt="bash", extra="Edit/Write/Read", submission="ritual", output="text")),
+    ("+Edit/Write/Read, prefer", "tools-arm-3/sonnet-5",
+     dict(tool="bash", name="bash", encoding="raw string", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="text")),
+    ("ExecV3 +Edit/Write/Read", "tools-arm-4/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="JSON", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="block")),
+    ("ExecV3 +EWR, plain output", "tools-arm-5/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="JSON", prompt="bash + prefer", extra="Edit/Write/Read", submission="ritual", output="plain")),
+]
+_t2, _p2 = experiment_table("Tool-alternatives division — SWE-bench Verified hard, Sonnet 5", TOOL_ALTERNATIVES)
+
+# Experiment 3: does the exec tool's plain-text ENCODING (vs JSON) change
+# anything — symbolic (bash-lookalike operators/redirects), the same grammar
+# with loud named rejections, and a keyword grammar sharing no symbols with bash.
+PLAIN_TEXT_ENCODING = [
+    _CONTROL,
+    ("ExecV3, plain-text (symbolic)", "exec-arm-4/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="text (symbolic)", prompt="text-aligned", extra="—", submission="ritual", output="block")),
+    ("ExecV3, plain-text (symbolic, loud)", "exec-arm-5/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="text (symbolic)", prompt="text-aligned + loud", extra="—", submission="ritual", output="block")),
+    ("ExecV3, plain-text (keyword)", "exec-arm-6/sonnet-5",
+     dict(tool="ExecV3", name="bash", encoding="text (keyword)", prompt="keyword-aligned", extra="—", submission="ritual", output="block")),
+]
+_t3, _p3 = experiment_table("Plain-text encoding division — SWE-bench Verified hard, Sonnet 5", PLAIN_TEXT_ENCODING)
+
+# One file, three separate tables — not three directories. Each keeps its own
+# header/columns; they're stacked, not merged into one wide sheet.
+os.makedirs(f"{ROOT}/analysis/tools", exist_ok=True)
+with open(f"{ROOT}/analysis/tools/table.md", "w") as f:
+    f.write(_t1 + "\n\n" + NOTE + "\n\n" + _t2 + "\n\n" + NOTE + "\n\n" + _t3 + "\n\n" + NOTE + "\n")
+with open(f"{ROOT}/analysis/tools/data.json", "w") as f:
+    json.dump({"exec-grammar": _p1, "tool-alternatives": _p2, "plain-text-encoding": _p3}, f, indent=2)
+print("wrote analysis/tools/: data.json, table.md")

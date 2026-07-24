@@ -16,6 +16,7 @@
 | — non-cached | 4k | 4k | 4k | 4k |
 | — cache read | 69.78M | 57.23M | 55.19M | 66.89M |
 | — cache write | 2.08M | 1.93M | 1.91M | 2.23M |
+| Failed tool calls (FormatError) | 0 | 0 | 0 | 0 |
 | Input tokens/turn (avg) | 32,575 | 28,029 | 27,925 | 33,442 |
 | Output tokens/turn (avg) | 329 | 297 | 309 | 389 |
 | Context window (peak, single turn) | 134k | 93k | 117k | 127k |

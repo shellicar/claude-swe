@@ -1,0 +1,124 @@
+# Arm 4 — plain-text ExecV3 encoding. Same execution mechanism as exec-arm-2
+# (real SEA, no shell), same aligned-instructions approach, but the tool takes a
+# single plain-text `script` string (see exectext_grammar.py) instead of a JSON
+# commands array. Isolates encoding alone: text vs JSON vs XML, execution and
+# tool name ("bash") held constant against exec-arm-2.
+#
+# Layer: -c swebench-local.yaml -c exec-arm-4.yaml -c thinking-adaptive.yaml
+
+environment:
+  environment_class: exec_docker
+  exec_sea_path: vendor/claude-cli/apps/tool-sea/dist/execv3-linux-x64
+
+agent:
+  instance_template: |
+    <pr_description>
+    Consider the following PR description:
+    {{task}}
+    </pr_description>
+
+    <instructions>
+    # Task Instructions
+
+    ## Overview
+
+    You're a software engineer interacting continuously with a computer by submitting commands.
+    You'll be helping implement necessary changes to meet requirements in the PR description.
+    Your task is specifically to make changes to non-test files in the current directory in order to fix the issue described in the PR description in a way that is general and consistent with the codebase.
+    <IMPORTANT>This is an interactive process where you will think and issue AT LEAST ONE command, see the result, then think and issue your next command(s).</important>
+
+    For each response:
+
+    1. Include a THOUGHT section explaining your reasoning and what you're trying to accomplish
+    2. Provide one bash tool call with a script to execute
+
+    ## Important Boundaries
+
+    - MODIFY: Regular source code files in /testbed (this is the working directory for all your subsequent commands)
+    - DO NOT MODIFY: Tests, configuration files (pyproject.toml, setup.cfg, etc.)
+
+    ## Recommended Workflow
+
+    1. Analyze the codebase by finding and reading relevant files
+    2. Create a script to reproduce the issue
+    3. Edit the source code to resolve the issue
+    4. Verify your fix works by running your script again
+    5. Test edge cases to ensure your fix is robust
+
+    ## Command Execution Rules
+
+    You are operating in an environment where the bash tool takes a `script`: plain text, NOT a real shell.
+
+    - Commands are separated by `&&`, `||`, or `|` (bash's own operators and precedence — inline or on separate lines, doesn't matter)
+    - Redirects use bash's own syntax: `> file`, `2> file`, `2>&1`
+    - Literal stdin: `<<< 'text'` (single-quoted, no expansion)
+    - Per-command overrides: `@cwd:/path`, `@env:KEY=VALUE`. An optional first line `cwd: /path` sets the default directory for the whole script.
+    - There is NO `$VAR` expansion, NO globbing (`*.py` is passed literally), NO backticks or `$(...)`, NO subshells, and NO `;` — use `&&` or a new line instead.
+    - Arguments containing whitespace need double quotes (`\"like this\"`); `\\"` and `\\\\` escape inside them.
+
+    Each response should include:
+
+    1. **Reasoning text** where you explain your analysis and plan
+    2. One bash tool call with your script
+
+    **CRITICAL REQUIREMENTS:**
+
+    - Your response SHOULD include reasoning text explaining what you're doing
+    - Your response MUST include AT LEAST ONE bash tool call
+    - Directory and environment changes do not persist across commands — use `@cwd:`/`@env:` or the `cwd:` header line instead of relying on a persistent shell
+
+    Example of a CORRECT response:
+    <example_response>
+    I need to understand the Builder-related code. Let me find relevant files and check the project structure.
+
+    [Makes a bash tool call: {"intent": "list files and find builder source", "script": "ls -la\n&& find src -name \"*.java\" | grep -i builder"}]
+    </example_response>
+
+    ## Environment Details
+
+    - You have a full Linux environment; commands run directly, with no shell
+    - Always use non-interactive flags (-y, -f) for commands
+    - Avoid interactive tools like vi, nano, or any that require user input
+    - You can run any program available in the environment
+    - You can also create new tools or scripts to help you with the task
+    - If a tool isn't available, you can also install it
+
+    ## Submission
+
+    When you've completed your work, you MUST submit your changes as a git patch.
+    Follow these steps IN ORDER, with SEPARATE tool calls:
+
+    Step 1: Create the patch file
+    Call the bash tool with a script that runs `git diff` over only the source files you modified and redirects its stdout to patch.txt:
+    `{"intent": "create patch", "script": "git diff -- path/to/file1 path/to/file2 > patch.txt"}`
+    Do NOT commit your changes.
+
+    <IMPORTANT>
+    The patch must only contain changes to the specific source files you modified to fix the issue.
+    Do not submit file creations or changes to any of the following files:
+
+    - test and reproduction files
+    - helper scripts, tests, or tools that you created
+    - installation, build, packaging, configuration, or setup scripts unless they are directly part of the issue you were fixing (you can assume that the environment is already set up for your client)
+    - binary or compiled files
+    </IMPORTANT>
+
+    Step 2: Verify your patch
+    Read patch.txt (cat it) to confirm it only contains your intended changes and headers show `--- a/` and `+++ b/` paths.
+
+    Step 3: Submit (EXACT shape required)
+    You MUST submit with a single bash tool call of EXACTLY this script: the sentinel then the patch, joined with `&&`:
+
+    `{"intent": "submit", "script": "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT && cat patch.txt"}`
+
+    If the echo command fails (nonzero exit status), it will not submit.
+
+    <CRITICAL>
+    - Creating/viewing the patch and submitting it MUST be separate tool calls.
+    - If you modify patch.txt after verifying, you SHOULD verify again before submitting.
+    - You CANNOT continue working (reading, editing, testing) in any way on this task after submitting.
+    </CRITICAL>
+    </instructions>
+
+model:
+  model_class: minisweagent.models.litellm_exectext_model.LitellmExectextModel

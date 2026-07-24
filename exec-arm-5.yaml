@@ -1,0 +1,12 @@
+# Arm 5 — Version 2 of the plain-text encoding: "loud, not silent." IDENTICAL to
+# exec-arm-4 (same grammar, same instructions, same tool) except the parser now
+# pre-screens every script for named bash lookalikes (heredocs, $VAR, backticks,
+# ';', '>>') and rejects them with a specific error naming exactly which bash
+# feature isn't supported, instead of risking a silent mistokenize. Isolates:
+# does surfacing the confusion loudly reduce its cost, holding the grammar itself
+# constant against exec-arm-4?
+#
+# Layer: -c swebench-local.yaml -c exec-arm-4.yaml -c exec-arm-5.yaml -c thinking-adaptive.yaml
+
+model:
+  loud: true

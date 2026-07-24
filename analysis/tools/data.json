@@ -1,209 +1,318 @@
 {
-  "covers": [
-    "hard"
-  ],
-  "models": {
-    "main/sonnet-5": {
-      "name": "Control",
-      "sets": {
-        "hard": {
-          "resolved": 34,
-          "cost": 39.629120700000016,
-          "steps": 2206,
-          "out": 725351,
-          "ncc": 4412,
-          "cr": 69775124,
-          "cw": 2080822,
-          "intot": 71860358,
-          "wall": 12420.108799934387,
-          "peak_ctx": 133796
+  "exec-grammar": {
+    "models": {
+      "main/sonnet-5": {
+        "name": "Control",
+        "sets": {
+          "hard": {
+            "resolved": 34,
+            "cost": 39.629120700000016,
+            "steps": 2206,
+            "out": 725351,
+            "failed": 0,
+            "ncc": 4412,
+            "cr": 69775124,
+            "cw": 2080822,
+            "intot": 71860358,
+            "wall": 12420.108799934387,
+            "peak_ctx": 133796
+          }
+        }
+      },
+      "exec-arm-1/sonnet-5": {
+        "name": "Exec Arm 1",
+        "sets": {
+          "hard": {
+            "resolved": 32,
+            "cost": 51.7436292,
+            "steps": 2395,
+            "out": 937887,
+            "failed": 1,
+            "ncc": 4788,
+            "cr": 93679509,
+            "cw": 2548562,
+            "intot": 96232859,
+            "wall": 12717.843539953232,
+            "peak_ctx": 165939
+          }
+        }
+      },
+      "execv1-arm2/sonnet-5": {
+        "name": "ExecV1, aligned",
+        "sets": {
+          "hard": {
+            "resolved": 32,
+            "cost": 50.69241405,
+            "steps": 2345,
+            "out": 920226,
+            "failed": 0,
+            "ncc": 4690,
+            "cr": 90373401,
+            "cw": 2603449,
+            "intot": 92981540,
+            "wall": 11508.106388568878,
+            "peak_ctx": 148551
+          }
+        }
+      },
+      "execv2-arm2/sonnet-5": {
+        "name": "ExecV2, aligned",
+        "sets": {
+          "hard": {
+            "resolved": 33,
+            "cost": 43.62334890000002,
+            "steps": 2184,
+            "out": 796449,
+            "failed": 0,
+            "ncc": 4368,
+            "cr": 75622508,
+            "cw": 2393802,
+            "intot": 78020678,
+            "wall": 10035.93442440033,
+            "peak_ctx": 118823
+          }
+        }
+      },
+      "exec-arm-2/sonnet-5": {
+        "name": "ExecV3, aligned (bash-named)",
+        "sets": {
+          "hard": {
+            "resolved": 34,
+            "cost": 42.11240085000001,
+            "steps": 2118,
+            "out": 799082,
+            "failed": 0,
+            "ncc": 4236,
+            "cr": 69724697,
+            "cw": 2452281,
+            "intot": 72181214,
+            "wall": 11999.251038312912,
+            "peak_ctx": 111282
+          }
+        }
+      },
+      "exec-arm-3/sonnet-5": {
+        "name": "ExecV3, aligned (exec-named)",
+        "sets": {
+          "hard": {
+            "resolved": 33,
+            "cost": 40.838980049999996,
+            "steps": 2063,
+            "out": 771096,
+            "failed": 0,
+            "ncc": 4126,
+            "cr": 68748036,
+            "cw": 2302867,
+            "intot": 71055029,
+            "wall": 10117.64091014862,
+            "peak_ctx": 118449
+          }
+        }
+      },
+      "exec-arm-2-no-ritual/sonnet-5": {
+        "name": "ExecV3, no ritual",
+        "sets": {
+          "hard": {
+            "resolved": 33,
+            "cost": 40.51043070000001,
+            "steps": 2067,
+            "out": 803731,
+            "failed": 0,
+            "ncc": 4044,
+            "cr": 66887204,
+            "cw": 2233646,
+            "intot": 69124894,
+            "wall": 9760.663885593414,
+            "peak_ctx": 127122
+          }
         }
       }
-    },
-    "exec-arm-1/sonnet-5": {
-      "name": "Exec Arm 1",
-      "sets": {
-        "hard": {
-          "resolved": 32,
-          "cost": 51.7436292,
-          "steps": 2395,
-          "out": 937887,
-          "ncc": 4788,
-          "cr": 93679509,
-          "cw": 2548562,
-          "intot": 96232859,
-          "wall": 12717.843539953232,
-          "peak_ctx": 165939
+    }
+  },
+  "tool-alternatives": {
+    "models": {
+      "main/sonnet-5": {
+        "name": "Control",
+        "sets": {
+          "hard": {
+            "resolved": 34,
+            "cost": 39.629120700000016,
+            "steps": 2206,
+            "out": 725351,
+            "failed": 0,
+            "ncc": 4412,
+            "cr": 69775124,
+            "cw": 2080822,
+            "intot": 71860358,
+            "wall": 12420.108799934387,
+            "peak_ctx": 133796
+          }
+        }
+      },
+      "tools-arm-1/sonnet-5": {
+        "name": "+90 bloat tools",
+        "sets": {
+          "hard": {
+            "resolved": 35,
+            "cost": 56.72469660000001,
+            "steps": 2052,
+            "out": 669438,
+            "failed": 1,
+            "ncc": 4102,
+            "cr": 130461252,
+            "cw": 2008652,
+            "intot": 132474006,
+            "wall": 8579.722920179367,
+            "peak_ctx": 141185
+          }
+        }
+      },
+      "tools-arm-2/sonnet-5": {
+        "name": "+Edit/Write/Read, neutral",
+        "sets": {
+          "hard": {
+            "resolved": 34,
+            "cost": 40.01167965000001,
+            "steps": 2250,
+            "out": 662270,
+            "failed": 1,
+            "ncc": 4498,
+            "cr": 73600098,
+            "cw": 2129095,
+            "intot": 75733691,
+            "wall": 10013.111176013947,
+            "peak_ctx": 114654
+          }
+        }
+      },
+      "tools-arm-3/sonnet-5": {
+        "name": "+Edit/Write/Read, prefer",
+        "sets": {
+          "hard": {
+            "resolved": 36,
+            "cost": 34.35581160000001,
+            "steps": 2129,
+            "out": 580231,
+            "failed": 0,
+            "ncc": 4258,
+            "cr": 62210317,
+            "cw": 1860394,
+            "intot": 64074969,
+            "wall": 9785.634981870651,
+            "peak_ctx": 130333
+          }
+        }
+      },
+      "tools-arm-4/sonnet-5": {
+        "name": "ExecV3 +Edit/Write/Read",
+        "sets": {
+          "hard": {
+            "resolved": 33,
+            "cost": 45.14010179999998,
+            "steps": 2207,
+            "out": 798166,
+            "failed": 2,
+            "ncc": 4410,
+            "cr": 81906581,
+            "cw": 2288642,
+            "intot": 84199633,
+            "wall": 10937.656138420105,
+            "peak_ctx": 160836
+          }
+        }
+      },
+      "tools-arm-5/sonnet-5": {
+        "name": "ExecV3 +EWR, plain output",
+        "sets": {
+          "hard": {
+            "resolved": 32,
+            "cost": 46.198705350000004,
+            "steps": 2208,
+            "out": 825208,
+            "failed": 0,
+            "ncc": 4416,
+            "cr": 83343812,
+            "cw": 2347785,
+            "intot": 85696013,
+            "wall": 10713.058756828308,
+            "peak_ctx": 146792
+          }
         }
       }
-    },
-    "execv1-arm2/sonnet-5": {
-      "name": "ExecV1, aligned",
-      "sets": {
-        "hard": {
-          "resolved": 32,
-          "cost": 50.69241405,
-          "steps": 2345,
-          "out": 920226,
-          "ncc": 4690,
-          "cr": 90373401,
-          "cw": 2603449,
-          "intot": 92981540,
-          "wall": 11508.106388568878,
-          "peak_ctx": 148551
+    }
+  },
+  "plain-text-encoding": {
+    "models": {
+      "main/sonnet-5": {
+        "name": "Control",
+        "sets": {
+          "hard": {
+            "resolved": 34,
+            "cost": 39.629120700000016,
+            "steps": 2206,
+            "out": 725351,
+            "failed": 0,
+            "ncc": 4412,
+            "cr": 69775124,
+            "cw": 2080822,
+            "intot": 71860358,
+            "wall": 12420.108799934387,
+            "peak_ctx": 133796
+          }
         }
-      }
-    },
-    "execv2-arm2/sonnet-5": {
-      "name": "ExecV2, aligned",
-      "sets": {
-        "hard": {
-          "resolved": 33,
-          "cost": 43.62334890000002,
-          "steps": 2184,
-          "out": 796449,
-          "ncc": 4368,
-          "cr": 75622508,
-          "cw": 2393802,
-          "intot": 78020678,
-          "wall": 10035.93442440033,
-          "peak_ctx": 118823
+      },
+      "exec-arm-4/sonnet-5": {
+        "name": "ExecV3, plain-text (symbolic)",
+        "sets": {
+          "hard": {
+            "resolved": 34,
+            "cost": 74.56187625000001,
+            "steps": 3824,
+            "out": 1293457,
+            "failed": 0,
+            "ncc": 7648,
+            "cr": 145261095,
+            "cw": 3082333,
+            "intot": 148351076,
+            "wall": 17850.903539419174,
+            "peak_ctx": 142674
+          }
         }
-      }
-    },
-    "exec-arm-2/sonnet-5": {
-      "name": "ExecV3, aligned (bash-named)",
-      "sets": {
-        "hard": {
-          "resolved": 34,
-          "cost": 42.11240085000001,
-          "steps": 2118,
-          "out": 799082,
-          "ncc": 4236,
-          "cr": 69724697,
-          "cw": 2452281,
-          "intot": 72181214,
-          "wall": 11999.251038312912,
-          "peak_ctx": 111282
+      },
+      "exec-arm-5/sonnet-5": {
+        "name": "ExecV3, plain-text (symbolic, loud)",
+        "sets": {
+          "hard": {
+            "resolved": 31,
+            "cost": 66.07172235,
+            "steps": 3775,
+            "out": 1173476,
+            "failed": 375,
+            "ncc": 6800,
+            "cr": 125681212,
+            "cw": 2865285,
+            "intot": 128553297,
+            "wall": 21997.387924432755,
+            "peak_ctx": 155537
+          }
         }
-      }
-    },
-    "exec-arm-3/sonnet-5": {
-      "name": "ExecV3, aligned (exec-named)",
-      "sets": {
-        "hard": {
-          "resolved": 33,
-          "cost": 40.838980049999996,
-          "steps": 2063,
-          "out": 771096,
-          "ncc": 4126,
-          "cr": 68748036,
-          "cw": 2302867,
-          "intot": 71055029,
-          "wall": 10117.64091014862,
-          "peak_ctx": 118449
-        }
-      }
-    },
-    "exec-arm-2-no-ritual/sonnet-5": {
-      "name": "ExecV3, no ritual",
-      "sets": {
-        "hard": {
-          "resolved": 33,
-          "cost": 40.51043070000001,
-          "steps": 2067,
-          "out": 803731,
-          "ncc": 4044,
-          "cr": 66887204,
-          "cw": 2233646,
-          "intot": 69124894,
-          "wall": 9760.663885593414,
-          "peak_ctx": 127122
-        }
-      }
-    },
-    "tools-arm-1/sonnet-5": {
-      "name": "+90 bloat tools",
-      "sets": {
-        "hard": {
-          "resolved": 35,
-          "cost": 56.72469660000001,
-          "steps": 2052,
-          "out": 669438,
-          "ncc": 4102,
-          "cr": 130461252,
-          "cw": 2008652,
-          "intot": 132474006,
-          "wall": 8579.722920179367,
-          "peak_ctx": 141185
-        }
-      }
-    },
-    "tools-arm-2/sonnet-5": {
-      "name": "+Edit/Write/Read, neutral",
-      "sets": {
-        "hard": {
-          "resolved": 34,
-          "cost": 40.01167965000001,
-          "steps": 2250,
-          "out": 662270,
-          "ncc": 4498,
-          "cr": 73600098,
-          "cw": 2129095,
-          "intot": 75733691,
-          "wall": 10013.111176013947,
-          "peak_ctx": 114654
-        }
-      }
-    },
-    "tools-arm-3/sonnet-5": {
-      "name": "+Edit/Write/Read, prefer",
-      "sets": {
-        "hard": {
-          "resolved": 36,
-          "cost": 34.35581160000001,
-          "steps": 2129,
-          "out": 580231,
-          "ncc": 4258,
-          "cr": 62210317,
-          "cw": 1860394,
-          "intot": 64074969,
-          "wall": 9785.634981870651,
-          "peak_ctx": 130333
-        }
-      }
-    },
-    "tools-arm-4/sonnet-5": {
-      "name": "ExecV3 +Edit/Write/Read",
-      "sets": {
-        "hard": {
-          "resolved": 33,
-          "cost": 45.14010179999998,
-          "steps": 2207,
-          "out": 798166,
-          "ncc": 4410,
-          "cr": 81906581,
-          "cw": 2288642,
-          "intot": 84199633,
-          "wall": 10937.656138420105,
-          "peak_ctx": 160836
-        }
-      }
-    },
-    "tools-arm-5/sonnet-5": {
-      "name": "ExecV3 +EWR, plain output",
-      "sets": {
-        "hard": {
-          "resolved": 32,
-          "cost": 46.198705350000004,
-          "steps": 2208,
-          "out": 825208,
-          "ncc": 4416,
-          "cr": 83343812,
-          "cw": 2347785,
-          "intot": 85696013,
-          "wall": 10713.058756828308,
-          "peak_ctx": 146792
+      },
+      "exec-arm-6/sonnet-5": {
+        "name": "ExecV3, plain-text (keyword)",
+        "sets": {
+          "hard": {
+            "resolved": 30,
+            "cost": 53.045769150000005,
+            "steps": 2410,
+            "out": 925609,
+            "failed": 5,
+            "ncc": 4810,
+            "cr": 82356968,
+            "cw": 3850697,
+            "intot": 86212475,
+            "wall": 66763.83354949951,
+            "peak_ctx": 150947
+          }
         }
       }
     }

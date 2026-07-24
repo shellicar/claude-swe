@@ -1,0 +1,125 @@
+# Arm 6 — Version 3 of the plain-text encoding: "design around it deliberately."
+# Same execution mechanism as exec-arm-4/5 (real SEA, no shell), but the grammar
+# shares ZERO symbols with bash on purpose — every command starts with `run`,
+# `then run`, `or run`, or `pipe to run`; no &&/||/|/>/2> as raw symbols, no
+# lookalike syntax to invite a bash reflex at all. Isolates: does removing
+# surface resemblance to bash reduce confusion more than naming it loudly does?
+#
+# Layer: -c swebench-local.yaml -c exec-arm-6.yaml -c thinking-adaptive.yaml
+
+environment:
+  environment_class: exec_docker
+  exec_sea_path: vendor/claude-cli/apps/tool-sea/dist/execv3-linux-x64
+
+agent:
+  instance_template: |
+    <pr_description>
+    Consider the following PR description:
+    {{task}}
+    </pr_description>
+
+    <instructions>
+    # Task Instructions
+
+    ## Overview
+
+    You're a software engineer interacting continuously with a computer by submitting commands.
+    You'll be helping implement necessary changes to meet requirements in the PR description.
+    Your task is specifically to make changes to non-test files in the current directory in order to fix the issue described in the PR description in a way that is general and consistent with the codebase.
+    <IMPORTANT>This is an interactive process where you will think and issue AT LEAST ONE command, see the result, then think and issue your next command(s).</important>
+
+    For each response:
+
+    1. Include a THOUGHT section explaining your reasoning and what you're trying to accomplish
+    2. Provide one bash tool call with a script to execute
+
+    ## Important Boundaries
+
+    - MODIFY: Regular source code files in /testbed (this is the working directory for all your subsequent commands)
+    - DO NOT MODIFY: Tests, configuration files (pyproject.toml, setup.cfg, etc.)
+
+    ## Recommended Workflow
+
+    1. Analyze the codebase by finding and reading relevant files
+    2. Create a script to reproduce the issue
+    3. Edit the source code to resolve the issue
+    4. Verify your fix works by running your script again
+    5. Test edge cases to ensure your fix is robust
+
+    ## Command Execution Rules
+
+    You are operating in an environment where the bash tool takes a `script`: a keyword-based plain-text grammar. This is NOT bash and shares no symbols with it.
+
+    - Every line is one command, starting with exactly one of: `run` (first command only), `then run` (only if the previous command succeeded), `or run` (only if the previous command failed), `pipe to run` (feed the previous command's output in as this one's input)
+    - There is no bare sequential form — every command after the first MUST use `then run` / `or run` / `pipe to run`
+    - Per-command modifiers, written after the program and its args: `output-to FILE`, `errors-to FILE`, `errors-to-output` (merge stderr into stdout), `in DIR` (working directory for this command), `with env KEY=VALUE` (repeatable), `with input 'text'` (literal stdin, single-quoted)
+    - An optional first line `in /path:` sets the default working directory for the whole script
+    - There is NO `$VAR` expansion, NO globbing (`*.py` is passed literally), NO backticks or `$(...)`, NO subshells, NO `;`, and none of `&&`, `||`, `|`, `>`, `2>` as raw symbols — everything is a word
+    - Arguments containing whitespace need double quotes (`\"like this\"`); `\\"` and `\\\\` escape inside them
+
+    Each response should include:
+
+    1. **Reasoning text** where you explain your analysis and plan
+    2. One bash tool call with your script
+
+    **CRITICAL REQUIREMENTS:**
+
+    - Your response SHOULD include reasoning text explaining what you're doing
+    - Your response MUST include AT LEAST ONE bash tool call
+    - Directory and environment changes do not persist across commands — use `in DIR` / `with env` or the `in /path:` header line instead of relying on a persistent shell
+
+    Example of a CORRECT response:
+    <example_response>
+    I need to understand the Builder-related code. Let me find relevant files and check the project structure.
+
+    [Makes a bash tool call: {"intent": "list files and find builder source", "script": "run ls -la\nthen run find src -name \"*.java\"\npipe to run grep -i builder"}]
+    </example_response>
+
+    ## Environment Details
+
+    - You have a full Linux environment; commands run directly, with no shell
+    - Always use non-interactive flags (-y, -f) for commands
+    - Avoid interactive tools like vi, nano, or any that require user input
+    - You can run any program available in the environment
+    - You can also create new tools or scripts to help you with the task
+    - If a tool isn't available, you can also install it
+
+    ## Submission
+
+    When you've completed your work, you MUST submit your changes as a git patch.
+    Follow these steps IN ORDER, with SEPARATE tool calls:
+
+    Step 1: Create the patch file
+    Call the bash tool with a script that runs `git diff` over only the source files you modified, redirecting its output to patch.txt:
+    `{"intent": "create patch", "script": "run git diff -- path/to/file1 path/to/file2 output-to patch.txt"}`
+    Do NOT commit your changes.
+
+    <IMPORTANT>
+    The patch must only contain changes to the specific source files you modified to fix the issue.
+    Do not submit file creations or changes to any of the following files:
+
+    - test and reproduction files
+    - helper scripts, tests, or tools that you created
+    - installation, build, packaging, configuration, or setup scripts unless they are directly part of the issue you were fixing (you can assume that the environment is already set up for your client)
+    - binary or compiled files
+    </IMPORTANT>
+
+    Step 2: Verify your patch
+    Read patch.txt (run cat on it) to confirm it only contains your intended changes and headers show `--- a/` and `+++ b/` paths.
+
+    Step 3: Submit (EXACT shape required)
+    You MUST submit with a single bash tool call of EXACTLY this script: the sentinel then the patch:
+
+    `{"intent": "submit", "script": "run echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\nthen run cat patch.txt"}`
+
+    If the echo command fails (nonzero exit status), it will not submit.
+
+    <CRITICAL>
+    - Creating/viewing the patch and submitting it MUST be separate tool calls.
+    - If you modify patch.txt after verifying, you SHOULD verify again before submitting.
+    - You CANNOT continue working (reading, editing, testing) in any way on this task after submitting.
+    </CRITICAL>
+    </instructions>
+
+model:
+  model_class: minisweagent.models.litellm_exectext_keyword_model.LitellmExectextKeywordModel
