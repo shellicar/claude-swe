@@ -125,18 +125,21 @@ function sh(args, input) {
   return { out: (r.stdout ?? "") + (r.stderr ?? ""), code: r.status ?? 128 };
 }
 
-// Both sides run under `sh -c '... "$0" 2>&1'` so output arrives as one
-// combined stream, matching the walker's own contract.
+// Both sides write combined output to a FILE inside the container, then cat
+// it — never a pipe held by the step's descendants. A backgrounded
+// grandchild that outlives the 90s timeout then holds the file, not the
+// exec stream, so `docker exec` always returns. (A pipe here hung two
+// shards of the first 10% run for half an hour at 0% CPU.)
+const STEP_WRAP = (interp) =>
+  `timeout ${STEP_TIMEOUT_S} ${interp} "$0" > /tmp/.seqrep-step.out 2>&1 < /dev/null; ec=$?; cat /tmp/.seqrep-step.out; exit $ec`;
+
 function stepBash(name, cmd) {
-  return sh([
-    "docker", "exec", name,
-    "sh", "-c", `timeout ${STEP_TIMEOUT_S} bash -lc "$0" 2>&1`, cmd,
-  ]);
+  return sh(["docker", "exec", name, "sh", "-c", STEP_WRAP("bash -lc"), cmd]);
 }
 function stepWalker(name, cmd, env) {
   return sh([
     "docker", "exec", ...env.flatMap((e) => ["-e", e]), name,
-    "sh", "-c", `timeout ${STEP_TIMEOUT_S} /opt/bash-walker -c "$0" 2>&1`, cmd,
+    "sh", "-c", STEP_WRAP("/opt/bash-walker -c"), cmd,
   ]);
 }
 
@@ -254,6 +257,7 @@ async function run(argv) {
         process.argv[1], "run",
         "--sample", String(sample), "--seed", String(seed),
         ...(limit > 0 ? ["--limit", String(limit)] : []),
+        ...(argv.includes("--resume") ? ["--resume"] : []),
         "--shard", `${k}/${parallel}`,
         "--results", `/tmp/sequence_replay_results-${k}.json`,
       ];
@@ -278,15 +282,24 @@ async function run(argv) {
   } else {
     console.log(`replaying ${picked.length}/${all.length} trajectories (sample=${sample}, seed=${seed})`);
   }
-  const results = [];
+  // Resume: keep prior completed results (same sample/seed/parallel), replay
+  // only what's missing.
+  let results = [];
+  if (argv.includes("--resume") && existsSync(resultsPath)) {
+    results = JSON.parse(readFileSync(resultsPath, "utf8"));
+  }
+  const done = new Set(results.map((r) => r.id));
+  const tag = shard ? `[shard ${shard}] ` : "";
   for (const [i, e] of picked.entries()) {
-    process.stdout.write(`[${i + 1}/${picked.length}] ${e.id} (${e.commands.length} cmds) ... `);
+    if (done.has(e.id)) continue;
+    process.stdout.write(`${tag}[${i + 1}/${picked.length}] ${e.id} (${e.commands.length} cmds) ... `);
     const t0 = Date.now();
     const r = replayOne(e, `${process.pid}-${i}`);
     results.push(r);
+    // Flush after every trajectory so an interrupted run loses nothing.
+    writeFileSync(resultsPath, JSON.stringify(results, null, 1));
     const secs = ((Date.now() - t0) / 1000).toFixed(0);
     const extras = `${r.orderOnly.length} order-only, ${r.windowNondet.length} window-nondet`;
-    const tag = shard ? `[shard ${shard}] ` : "";
     console.log(`${tag}${r.divergence ? `DIVERGED at step ${r.divergence.step} (${secs}s)` : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped (${secs}s)`}`);
   }
   writeFileSync(resultsPath, JSON.stringify(results, null, 1));
@@ -313,6 +326,6 @@ const [mode, ...rest] = process.argv.slice(2);
 if (mode === "extract") extract();
 else if (mode === "run") await run(rest);
 else {
-  console.error("usage: sequence_replay.mjs extract | run [--sample F] [--seed N] [--limit N] [--parallel N]");
+  console.error("usage: sequence_replay.mjs extract | run [--sample F] [--seed N] [--limit N] [--parallel N] [--resume]");
   process.exit(2);
 }
