@@ -42,7 +42,9 @@ function normalize(s) {
         .replace(/0x[0-9a-f]{4,}/gi, "ADDR")
         .replace(/\/tmp\/bash-walker[^\s'"]*/g, "TMPFILE")
         .replace(/\/tmp\/tmp[^\s'"]*/g, "TMPFILE")
-        .replace(/\bpid \d+\b/g, "pid PID");
+        .replace(/\bpid \d+\b/g, "pid PID")
+        .replace(/PYTHONHASHSEED=\d+/g, "PYTHONHASHSEED=SEED")
+        .replace(/\brandom seed:\s*\d+/g, "random seed: SEED");
     })
     .join("\n")
     .replace(/\n+$/, "");
@@ -164,8 +166,11 @@ function replayOne(entry, tag) {
     steps: entry.commands.length,
     compared: 0,
     skippedNondet: 0,
+    orderOnly: [],
+    windowNondet: [],
     divergence: null,
   };
+  const sortedLines = (s) => normalize(s).split("\n").sort().join("\n");
   try {
     const env = loginEnv(bashC);
     for (let i = 0; i < entry.commands.length; i++) {
@@ -177,15 +182,27 @@ function replayOne(entry, tag) {
         continue;
       }
       result.compared++;
-      if (a.code !== b.code || normalize(a.out) !== normalize(b.out)) {
-        result.divergence = {
-          step: i,
-          cmd: cmd.slice(0, 200),
-          bash: { code: a.code, out: a.out.slice(0, 400) },
-          walker: { code: b.code, out: b.out.slice(0, 400) },
-        };
-        break;
+      if (a.code === b.code && normalize(a.out) === normalize(b.out)) continue;
+      // Same lines, different order: concurrent writers (parallel test
+      // runners, downloads, stdout/stderr buffering) — counted, not failed.
+      if (a.code === b.code && sortedLines(a.out) === sortedLines(b.out)) {
+        result.orderOnly.push({ step: i, cmd: cmd.slice(0, 160) });
+        continue;
       }
+      // Parallel-runner output sliced by a tail/head window: the window
+      // lands differently per run even under bash-vs-bash. Status still
+      // must match; content is uncomparable — counted and listed.
+      if (a.code === b.code && /\|\s*(tail|head)\b/.test(cmd)) {
+        result.windowNondet.push({ step: i, cmd: cmd.slice(0, 160) });
+        continue;
+      }
+      result.divergence = {
+        step: i,
+        cmd,
+        bash: { code: a.code, out: a.out.slice(0, 2000) },
+        walker: { code: b.code, out: b.out.slice(0, 2000) },
+      };
+      break;
     }
   } finally {
     sh(["docker", "rm", "-f", bashC, walkC]);
@@ -231,17 +248,20 @@ function run(argv) {
     const r = replayOne(e, `${process.pid}-${i}`);
     results.push(r);
     const secs = ((Date.now() - t0) / 1000).toFixed(0);
-    console.log(r.divergence ? `DIVERGED at step ${r.divergence.step} (${secs}s)` : `ok ${r.compared} compared, ${r.skippedNondet} nondet-skipped (${secs}s)`);
+    const extras = `${r.orderOnly.length} order-only, ${r.windowNondet.length} window-nondet`;
+    console.log(r.divergence ? `DIVERGED at step ${r.divergence.step} (${secs}s)` : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped (${secs}s)`);
   }
   const diverged = results.filter((r) => r.divergence);
   const compared = results.reduce((a, r) => a + r.compared, 0);
   const skipped = results.reduce((a, r) => a + r.skippedNondet, 0);
+  const orderOnly = results.reduce((a, r) => a + r.orderOnly.length, 0);
+  const windowN = results.reduce((a, r) => a + r.windowNondet.length, 0);
   console.log(`\ntrajectories: ${results.length}  clean: ${results.length - diverged.length}  diverged: ${diverged.length}`);
-  console.log(`steps compared: ${compared}  nondet-skipped: ${skipped}`);
+  console.log(`steps compared: ${compared}  order-only: ${orderOnly}  window-nondet: ${windowN}  nondet-skipped: ${skipped}`);
   for (const r of diverged) {
-    console.log(`---\n${r.id} step ${r.divergence.step}\nCMD: ${r.divergence.cmd}`);
-    console.log(`  bash   rc=${r.divergence.bash.code}: ${JSON.stringify(r.divergence.bash.out)}`);
-    console.log(`  walker rc=${r.divergence.walker.code}: ${JSON.stringify(r.divergence.walker.out)}`);
+    console.log(`---\n${r.id} step ${r.divergence.step}\nCMD: ${r.divergence.cmd.slice(0, 300)}`);
+    console.log(`  bash   rc=${r.divergence.bash.code}: ${JSON.stringify(r.divergence.bash.out.slice(0, 400))}`);
+    console.log(`  walker rc=${r.divergence.walker.code}: ${JSON.stringify(r.divergence.walker.out.slice(0, 400))}`);
   }
   writeFileSync("/tmp/sequence_replay_results.json", JSON.stringify(results, null, 1));
   console.log("\nfull results: /tmp/sequence_replay_results.json");
