@@ -6,7 +6,7 @@
     "note": "JSON-string escape artifacts (\\\" and \\\\.) from the capture are preserved; fragments partition the raw file byte-exactly, in order."
   },
   "validity_legend": {
-    "true": "holds in the claude-swe rig as-is",
+    "true": "holds in the claude-swe rig as-is (parallel_calls corrected: the patched scaffold DOES execute multiple tool calls per response)",
     "approx_true": "holds once the arm config replicates it (conda env vars)",
     "arm_dependent": "true or false depending on the arm (the experiment variable)",
     "coupled_to_persistence": "only coherent when persistence is on; contaminates persistence cells",
@@ -183,7 +183,7 @@
     {
       "id": "parallel_calls",
       "category": "parallelism",
-      "validity": "false_affordance",
+      "validity": "true",
       "text": "\n\nYou can call multiple tools in a single response. When multiple independent pieces of information are requested and all commands are likely to succeed, run multiple tool calls in parallel for optimal performance. The numbered steps below indicate which commands should be batched in parallel."
     },
     {

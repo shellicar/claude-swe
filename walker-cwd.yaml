@@ -1,0 +1,4 @@
+# Untold-persist cell: cwd persists across commands (Claude Code semantics,
+# cwd only, never variables) — and nothing tells the model.
+environment:
+  interpreter: ["/opt/bash-walker", "--state-cwd", "/root/.bw-state.json", "-c"]

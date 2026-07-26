@@ -1,0 +1,7 @@
+# Told-fresh cell: behaviour identical to walker-base (fresh); the tool
+# description states it. The sentence is the experiment variable.
+model:
+  bash_tool_description: |-
+    Execute a bash command
+    
+    Each command runs in a fresh shell; the working directory and variables do not persist between commands.

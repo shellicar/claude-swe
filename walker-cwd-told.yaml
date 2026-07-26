@@ -1,0 +1,9 @@
+# Told-persist cell: cwd persists, and the description says so in
+# Anthropic's verbatim sentence (the string the model saw in training).
+environment:
+  interpreter: ["/opt/bash-walker", "--state-cwd", "/root/.bw-state.json", "-c"]
+model:
+  bash_tool_description: |-
+    Execute a bash command
+    
+    The working directory persists between commands, but shell state does not.

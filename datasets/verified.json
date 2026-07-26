@@ -12,14 +12,29 @@
   },
   "analyser": "analyse.py",
   "run": {
-    "configs": ["swebench-local.yaml", "thinking-adaptive.yaml"],
+    "configs": [
+      "swebench-local.yaml",
+      "thinking-adaptive.yaml"
+    ],
     "configExceptions": {
-      "haiku": ["swebench-local.yaml"]
+      "haiku": [
+        "swebench-local.yaml"
+      ]
     },
     "subset": "datasets/swe-bench-verified.jsonl"
   },
   "selections": {
-    "standard": { "file": "instances-standard.txt", "expected": 60 },
-    "hard": { "file": "instances-hard.txt", "expected": 45 }
+    "standard": {
+      "file": "instances-standard.txt",
+      "expected": 60
+    },
+    "hard": {
+      "file": "instances-hard.txt",
+      "expected": 45
+    },
+    "micro": {
+      "file": "instances-micro.txt",
+      "expected": 3
+    }
   }
 }

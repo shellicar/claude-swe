@@ -1,0 +1,22 @@
+{
+  "name": "walker-ccdesc",
+  "dataset": "verified",
+  "selections": [
+    "micro"
+  ],
+  "parallel": false,
+  "basePort": 19440,
+  "workers": 2,
+  "configs": [
+    "swebench-local.yaml",
+    "walker-base.yaml",
+    "walker-ccdesc.yaml",
+    "thinking-adaptive.yaml"
+  ],
+  "legs": [
+    {
+      "model": "anthropic/claude-sonnet-5",
+      "out": "runs/walker-ccdesc/sonnet-5"
+    }
+  ]
+}
