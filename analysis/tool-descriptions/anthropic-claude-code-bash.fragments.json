@@ -1,0 +1,256 @@
+{
+  "provenance": {
+    "source": "Anthropic Claude Code Bash tool description, recorded verbatim by Stephen",
+    "captured": "2026-07-26",
+    "raw_file": "anthropic-claude-code-bash.txt",
+    "note": "JSON-string escape artifacts (\\\" and \\\\.) from the capture are preserved; fragments partition the raw file byte-exactly, in order."
+  },
+  "validity_legend": {
+    "true": "holds in the claude-swe rig as-is",
+    "approx_true": "holds once the arm config replicates it (conda env vars)",
+    "arm_dependent": "true or false depending on the arm (the experiment variable)",
+    "coupled_to_persistence": "only coherent when persistence is on; contaminates persistence cells",
+    "false_affordance": "refers to a parameter/tool/capability the rig does not have",
+    "false_reference": "refers to systems that do not exist here (permissions, remotes, other tools)",
+    "irrelevant": "harmless noise in swebench (no user, diff-based submission)"
+  },
+  "presets": {
+    "verbatim": {},
+    "honest-cc": {
+      "exclude_categories": [
+        "prefer_dedicated_tools",
+        "anthropic_flags",
+        "anthropic_tools",
+        "anthropic_permissions",
+        "git_policy",
+        "git_commit_workflow",
+        "github_workflow",
+        "parallelism"
+      ]
+    },
+    "honest-cc-fresh": {
+      "exclude_categories": [
+        "prefer_dedicated_tools",
+        "anthropic_flags",
+        "anthropic_tools",
+        "anthropic_permissions",
+        "git_policy",
+        "git_commit_workflow",
+        "github_workflow",
+        "parallelism"
+      ],
+      "exclude_ids": [
+        "cd_avoidance"
+      ],
+      "replace_ids": {
+        "state_persistence": "Each command runs in a fresh shell; the working directory and variables do not persist between commands."
+      }
+    }
+  },
+  "fragments": [
+    {
+      "id": "core",
+      "category": "core",
+      "validity": "true",
+      "text": "Executes a given bash command and returns its output.\n\n"
+    },
+    {
+      "id": "state_persistence",
+      "category": "state_semantics",
+      "validity": "arm_dependent",
+      "text": "The working directory persists between commands, but shell state does not."
+    },
+    {
+      "id": "state_profile_init",
+      "category": "state_semantics",
+      "validity": "approx_true",
+      "text": " The shell environment is initialized from the user's profile (bash or zsh)."
+    },
+    {
+      "id": "prefer_dedicated_tools",
+      "category": "prefer_dedicated_tools",
+      "validity": "false_affordance",
+      "text": "\n\nIMPORTANT: Avoid using this tool to run `cat`, `head`, `tail`, `sed`, `awk`, or `echo` commands, unless explicitly instructed or after you have verified that a dedicated tool cannot accomplish your task. Instead, use the appropriate dedicated tool as this will provide a much better experience for the user:\n\n - Read files: Use Read (NOT cat/head/tail)\n - Edit files: Use Edit (NOT sed/awk)\n - Write files: Use Write (NOT echo >/cat <<EOF)\n - Communication: Output text directly (NOT echo/printf)\nWhile the Bash tool can do similar things, it’s better to use the built-in tools as they provide a better user experience and make it easier to review tool calls and give permission."
+    },
+    {
+      "id": "instructions_header",
+      "category": "structure",
+      "validity": "true",
+      "text": "\n\n# Instructions"
+    },
+    {
+      "id": "verify_parent_dir",
+      "category": "defensive_verification",
+      "validity": "true",
+      "text": "\n - If your command will create new directories or files, first use this tool to run `ls` to verify the parent directory exists and is the correct location."
+    },
+    {
+      "id": "quote_paths",
+      "category": "command_hygiene",
+      "validity": "true",
+      "text": "\n - Always quote file paths that contain spaces with double quotes in your command (e.g., cd \\\"path with spaces/file.txt\\\")"
+    },
+    {
+      "id": "cd_avoidance",
+      "category": "cd_avoidance",
+      "validity": "coupled_to_persistence",
+      "text": "\n - Try to maintain your current working directory throughout the session by using absolute paths and avoiding usage of `cd`. You may use `cd` if the User explicitly requests it."
+    },
+    {
+      "id": "cd_git_permission",
+      "category": "anthropic_permissions",
+      "validity": "false_reference",
+      "text": " In particular, never prepend `cd <current-directory>` to a `git` command — `git` already operates on the current working tree, and the compound triggers a permission prompt."
+    },
+    {
+      "id": "timeout_param",
+      "category": "anthropic_flags",
+      "validity": "false_affordance",
+      "text": "\n - You may specify an optional timeout in milliseconds (up to 600000ms / 10 minutes). By default, your command will timeout after 120000ms (2 minutes)."
+    },
+    {
+      "id": "background_param",
+      "category": "anthropic_flags",
+      "validity": "false_affordance",
+      "text": "\n - You can use the `run_in_background` parameter to run the command in the background. Only use this if you don't need the result immediately and are OK being notified when the command completes later. You do not need to check the output right away - you'll be notified when it finishes. You do not need to use '&' at the end of the command when using this parameter."
+    },
+    {
+      "id": "git_bullets",
+      "category": "git_policy",
+      "validity": "irrelevant",
+      "text": "\n - For git commands:\n  - Prefer to create a new commit rather than amending an existing commit.\n  - Before running destructive operations (e.g., git reset --hard, git push --force, git checkout --), consider whether there is a safer alternative that achieves the same goal. Only use destructive operations when they are truly the best approach.\n  - Never skip hooks (--no-verify) or bypass signing (--no-gpg-sign, -c commit.gpgsign=false) unless the user has explicitly asked for it. If a hook fails, investigate and fix the underlying issue."
+    },
+    {
+      "id": "sleep_no_gaps",
+      "category": "command_hygiene",
+      "validity": "true",
+      "text": "\n - Avoid unnecessary `sleep` commands:\n  - Do not sleep between commands that can run immediately — just run them."
+    },
+    {
+      "id": "sleep_monitor",
+      "category": "anthropic_tools",
+      "validity": "false_affordance",
+      "text": "\n  - Use the Monitor tool to stream events from a background process (each stdout line is a notification). For one-shot \\\"wait until done,\\\" use Bash with run_in_background instead."
+    },
+    {
+      "id": "sleep_background",
+      "category": "anthropic_flags",
+      "validity": "false_affordance",
+      "text": "\n  - If your command is long running and you would like to be notified when it finishes — use `run_in_background`. No sleep needed."
+    },
+    {
+      "id": "sleep_no_retry_loop",
+      "category": "command_hygiene",
+      "validity": "true",
+      "text": "\n  - Do not retry failing commands in a sleep loop — diagnose the root cause."
+    },
+    {
+      "id": "sleep_background_wait",
+      "category": "anthropic_flags",
+      "validity": "false_affordance",
+      "text": "\n  - If waiting for a background task you started with `run_in_background`, you will be notified when it completes — do not poll."
+    },
+    {
+      "id": "sleep_blocked_monitor",
+      "category": "anthropic_tools",
+      "validity": "false_affordance",
+      "text": "\n  - Long leading `sleep` commands are blocked. To poll until a condition is met, use Monitor with an until-loop (e.g. `until <check>; do sleep 2; done`) — you get a notification when the loop exits. Do not chain shorter sleeps to work around the block."
+    },
+    {
+      "id": "find_from_dot",
+      "category": "command_hygiene",
+      "validity": "true",
+      "text": "\n - When running `find`, search from `.` (or a specific path), not `/` — scanning the full filesystem can exhaust system resources on large trees."
+    },
+    {
+      "id": "find_regex_order",
+      "category": "command_hygiene",
+      "validity": "true",
+      "text": "\n - When using `find -regex` with alternation, put the longest alternative first. Example: use `'.*\\\\.\\\\(tsx\\\\|ts\\\\)'` not `'.*\\\\.\\\\(ts\\\\|tsx\\\\)'` — the second form silently skips `.tsx` files."
+    },
+    {
+      "id": "commit_header",
+      "category": "structure",
+      "validity": "irrelevant",
+      "text": "\n\n\n# Committing changes with git"
+    },
+    {
+      "id": "commit_when_asked",
+      "category": "git_policy",
+      "validity": "irrelevant",
+      "text": "\n\nOnly create commits when requested by the user. If unclear, ask first. When the user asks you to create a new git commit, follow these steps carefully:"
+    },
+    {
+      "id": "parallel_calls",
+      "category": "parallelism",
+      "validity": "false_affordance",
+      "text": "\n\nYou can call multiple tools in a single response. When multiple independent pieces of information are requested and all commands are likely to succeed, run multiple tool calls in parallel for optimal performance. The numbered steps below indicate which commands should be batched in parallel."
+    },
+    {
+      "id": "git_safety_protocol",
+      "category": "git_policy",
+      "validity": "irrelevant",
+      "text": "\n\nGit Safety Protocol:\n- NEVER update the git config\n- NEVER run destructive git commands (push --force, reset --hard, checkout ., restore ., clean -f, branch -D) unless the user explicitly requests these actions. Taking unauthorized destructive actions is unhelpful and can result in lost work, so it's best to ONLY run these commands when given direct instructions \n- NEVER skip hooks (--no-verify, --no-gpg-sign, etc) unless the user explicitly requests it\n- NEVER run force push to main/master, warn the user if they request it\n- CRITICAL: Always create NEW commits rather than amending, unless the user explicitly requests a git amend. When a pre-commit hook fails, the commit did NOT happen — so --amend would modify the PREVIOUS commit, which may result in destroying work or losing previous changes. Instead, after hook failure, fix the issue, re-stage, and create a NEW commit\n- When staging files, prefer adding specific files by name rather than using \\\"git add -A\\\" or \\\"git add .\\\", which can accidentally include sensitive files (.env, credentials) or large binaries\n- NEVER commit changes unless the user explicitly asks you to. It is VERY IMPORTANT to only commit when explicitly asked, otherwise the user will feel that you are being too proactive"
+    },
+    {
+      "id": "commit_steps",
+      "category": "git_commit_workflow",
+      "validity": "irrelevant",
+      "text": "\n\n1. Run the following bash commands in parallel, each using the Bash tool:\n  - Run a git status command to see all untracked files. IMPORTANT: Never use the -uall flag as it can cause memory issues on large repos.\n  - Run a git diff command to see both staged and unstaged changes that will be committed.\n  - Run a git log command to see recent commit messages, so that you can follow this repository's commit message style.\n2. Analyze all staged changes (both previously staged and newly added) and draft a commit message:\n  - Summarize the nature of the changes (eg. new feature, enhancement to an existing feature, bug fix, refactoring, test, docs, etc.). Ensure the message accurately reflects the changes and their purpose (i.e. \\\"add\\\" means a wholly new feature, \\\"update\\\" means an enhancement to an existing feature, \\\"fix\\\" means a bug fix, etc.).\n  - Do not commit files that likely contain secrets (.env, credentials.json, etc). Warn the user if they specifically request to commit those files\n  - Draft a concise (1-2 sentences) commit message that focuses on the \\\"why\\\" rather than the \\\"what\\\"\n  - Ensure it accurately reflects the changes and their purpose\n3. Run the following commands in parallel:\n   - Add relevant untracked files to the staging area.\n   - Create the commit with a message.\n   - Run git status after the commit completes to verify success.\n   Note: git status depends on the commit completing, so run it sequentially after the commit.\n4. If the commit fails due to pre-commit hook: fix the issue and create a NEW commit"
+    },
+    {
+      "id": "commit_notes",
+      "category": "git_commit_workflow",
+      "validity": "irrelevant",
+      "text": "\n\nImportant notes:\n- NEVER run additional commands to read or explore code, besides git bash commands"
+    },
+    {
+      "id": "no_task_agent_tools",
+      "category": "anthropic_tools",
+      "validity": "false_reference",
+      "text": "\n- NEVER use the TaskCreate or Agent tools"
+    },
+    {
+      "id": "no_push",
+      "category": "git_policy",
+      "validity": "irrelevant",
+      "text": "\n- DO NOT push to the remote repository unless the user explicitly asks you to do so"
+    },
+    {
+      "id": "no_interactive_flags",
+      "category": "interactivity",
+      "validity": "true",
+      "text": "\n- IMPORTANT: Never use git commands with the -i flag (like git rebase -i or git add -i) since they require interactive input which is not supported."
+    },
+    {
+      "id": "no_edit_rebase",
+      "category": "git_policy",
+      "validity": "irrelevant",
+      "text": "\n- IMPORTANT: Do not use --no-edit with git rebase commands, as the --no-edit flag is not a valid option for git rebase."
+    },
+    {
+      "id": "no_empty_commit",
+      "category": "git_commit_workflow",
+      "validity": "irrelevant",
+      "text": "\n- If there are no changes to commit (i.e., no untracked files and no modifications), do not create an empty commit"
+    },
+    {
+      "id": "commit_heredoc",
+      "category": "git_commit_workflow",
+      "validity": "irrelevant",
+      "text": "\n- In order to ensure good formatting, ALWAYS pass the commit message via a HEREDOC, a la this example:\n<example>\ngit commit -m \\\"$(cat <<'EOF'\n   Commit message here.\n   EOF\n   )\\\"\n</example>"
+    },
+    {
+      "id": "pr_section",
+      "category": "github_workflow",
+      "validity": "false_reference",
+      "text": "\n\n# Creating pull requests\nUse the gh command via the Bash tool for ALL GitHub-related tasks including working with issues, pull requests, checks, and releases. If given a Github URL use the gh command to get the information needed.\n\nIMPORTANT: When the user asks you to create a pull request, follow these steps carefully:\n\n1. Run the following bash commands in parallel using the Bash tool, in order to understand the current state of the branch since it diverged from the main branch:\n   - Run a git status command to see all untracked files (never use -uall flag)\n   - Run a git diff command to see both staged and unstaged changes that will be committed\n   - Check if the current branch tracks a remote branch and is up to date with the remote, so you know if you need to push to the remote\n   - Run a git log command and `git diff [base-branch]...HEAD` to understand the full commit history for the current branch (from the time it diverged from the base branch)\n2. Analyze all changes that will be included in the pull request, making sure to look at all relevant commits (NOT just the latest commit, but ALL commits that will be included in the pull request!!!), and draft a pull request title and summary:\n   - Keep the PR title short (under 70 characters)\n   - Use the description/body for details, not the title\n3. Run the following commands in parallel:\n   - Create new branch if needed\n   - Push to remote with -u flag if needed\n   - Create PR using gh pr create with the format below. Use a HEREDOC to pass the body to ensure correct formatting.\n<example>\ngh pr create --title \\\"the pr title\\\" --body \\\"$(cat <<'EOF'\n## Summary\n<1-3 bullet points>\n\n## Test plan\n[Bulleted markdown checklist of TODOs for testing the pull request...]\nEOF\n)\\\"\n</example>\n\nImportant:\n- DO NOT use the TaskCreate or Agent tools\n- Return the PR URL when you're done, so the user can see it"
+    },
+    {
+      "id": "other_ops",
+      "category": "github_workflow",
+      "validity": "false_reference",
+      "text": "\n\n# Other common operations\n- View comments on a Github PR: gh api repos/foo/bar/pulls/123/comments"
+    }
+  ]
+}
