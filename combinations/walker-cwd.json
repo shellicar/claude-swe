@@ -2,7 +2,7 @@
   "name": "walker-cwd",
   "dataset": "verified",
   "selections": [
-    "micro"
+    "hard"
   ],
   "parallel": false,
   "basePort": 19420,
