@@ -13,7 +13,7 @@
 //
 // Containers are created, owned, and removed by this script.
 
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync, spawnSync, spawn } from "node:child_process";
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -24,7 +24,7 @@ const STEP_TIMEOUT_S = 90;
 
 // Commands that run on both sides but whose output is inherently
 // nondeterministic — executed (state must advance) but not compared.
-const NONDET_CMD = /\$RANDOM|\$\$|\$!|\bdate\b|\bmktemp\b|\btime\s|SECONDS|EPOCH|BASHPID|&\s*$|\bcurl\b|\bwget\b|\bpip3? (install|download)\b/m;
+const NONDET_CMD = /\$RANDOM|\$\$|\$!|\bdate\b|\bmktemp\b|\btime\s|SECONDS|EPOCH|BASHPID|&\s*$|\bcurl\b|\bwget\b|\bpip3? (install|download)\b|\bsleep\s+\d+\s*(&&|;)/m;
 
 // Output noise both shells legitimately produce differently run-to-run.
 function normalize(s) {
@@ -220,7 +220,7 @@ function mulberry(seed) {
   };
 }
 
-function run(argv) {
+async function run(argv) {
   const arg = (n, d) => {
     const i = argv.indexOf(n);
     return i >= 0 ? argv[i + 1] : d;
@@ -228,6 +228,9 @@ function run(argv) {
   const sample = parseFloat(arg("--sample", "0.01"));
   const seed = parseInt(arg("--seed", "1"), 10);
   const limit = parseInt(arg("--limit", "0"), 10);
+  const parallel = parseInt(arg("--parallel", "1"), 10);
+  const shard = arg("--shard", "");
+  const resultsPath = arg("--results", "/tmp/sequence_replay_results.json");
   if (!existsSync(CORPUS)) {
     console.error("no corpus; run `extract` first");
     process.exit(2);
@@ -240,7 +243,41 @@ function run(argv) {
     .map(([, e]) => e);
   let picked = shuffled.slice(0, Math.max(1, Math.round(all.length * sample)));
   if (limit > 0) picked = picked.slice(0, limit);
-  console.log(`replaying ${picked.length}/${all.length} trajectories (sample=${sample}, seed=${seed})`);
+
+  // Parent mode: shard the picked set across N copies of this script — the
+  // per-trajectory work stays simple and synchronous inside each shard.
+  if (parallel > 1 && !shard) {
+    console.log(`replaying ${picked.length}/${all.length} trajectories across ${parallel} shards (sample=${sample}, seed=${seed})`);
+    const kids = [];
+    for (let k = 0; k < parallel; k++) {
+      const kidArgs = [
+        process.argv[1], "run",
+        "--sample", String(sample), "--seed", String(seed),
+        ...(limit > 0 ? ["--limit", String(limit)] : []),
+        "--shard", `${k}/${parallel}`,
+        "--results", `/tmp/sequence_replay_results-${k}.json`,
+      ];
+      kids.push(new Promise((res) => {
+        const c = spawn(process.execPath, kidArgs, { stdio: ["ignore", "inherit", "inherit"] });
+        c.on("exit", res);
+      }));
+    }
+    await Promise.all(kids);
+    const merged = [];
+    for (let k = 0; k < parallel; k++) {
+      merged.push(...JSON.parse(readFileSync(`/tmp/sequence_replay_results-${k}.json`, "utf8")));
+    }
+    writeFileSync(resultsPath, JSON.stringify(merged, null, 1));
+    summarize(merged, resultsPath);
+    return;
+  }
+
+  if (shard) {
+    const [k, n] = shard.split("/").map(Number);
+    picked = picked.filter((_, i) => i % n === k);
+  } else {
+    console.log(`replaying ${picked.length}/${all.length} trajectories (sample=${sample}, seed=${seed})`);
+  }
   const results = [];
   for (const [i, e] of picked.entries()) {
     process.stdout.write(`[${i + 1}/${picked.length}] ${e.id} (${e.commands.length} cmds) ... `);
@@ -249,8 +286,14 @@ function run(argv) {
     results.push(r);
     const secs = ((Date.now() - t0) / 1000).toFixed(0);
     const extras = `${r.orderOnly.length} order-only, ${r.windowNondet.length} window-nondet`;
-    console.log(r.divergence ? `DIVERGED at step ${r.divergence.step} (${secs}s)` : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped (${secs}s)`);
+    const tag = shard ? `[shard ${shard}] ` : "";
+    console.log(`${tag}${r.divergence ? `DIVERGED at step ${r.divergence.step} (${secs}s)` : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped (${secs}s)`}`);
   }
+  writeFileSync(resultsPath, JSON.stringify(results, null, 1));
+  if (!shard) summarize(results, resultsPath);
+}
+
+function summarize(results, resultsPath) {
   const diverged = results.filter((r) => r.divergence);
   const compared = results.reduce((a, r) => a + r.compared, 0);
   const skipped = results.reduce((a, r) => a + r.skippedNondet, 0);
@@ -263,14 +306,13 @@ function run(argv) {
     console.log(`  bash   rc=${r.divergence.bash.code}: ${JSON.stringify(r.divergence.bash.out.slice(0, 400))}`);
     console.log(`  walker rc=${r.divergence.walker.code}: ${JSON.stringify(r.divergence.walker.out.slice(0, 400))}`);
   }
-  writeFileSync("/tmp/sequence_replay_results.json", JSON.stringify(results, null, 1));
-  console.log("\nfull results: /tmp/sequence_replay_results.json");
+  console.log(`\nfull results: ${resultsPath}`);
 }
 
 const [mode, ...rest] = process.argv.slice(2);
 if (mode === "extract") extract();
-else if (mode === "run") run(rest);
+else if (mode === "run") await run(rest);
 else {
-  console.error("usage: sequence_replay.mjs extract | run [--sample F] [--seed N] [--limit N]");
+  console.error("usage: sequence_replay.mjs extract | run [--sample F] [--seed N] [--limit N] [--parallel N]");
   process.exit(2);
 }
