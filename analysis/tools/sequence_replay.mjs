@@ -24,7 +24,7 @@ const STEP_TIMEOUT_S = 90;
 
 // Commands that run on both sides but whose output is inherently
 // nondeterministic — executed (state must advance) but not compared.
-const NONDET_CMD = /\$RANDOM|\$\$|\$!|\bdate\b|\bmktemp\b|\btime\s|SECONDS|EPOCH|BASHPID|&\s*$|\bcurl\b|\bwget\b|\bpip3? (install|download)\b|\bsleep\s+\d+\s*(&&|;)/m;
+const NONDET_CMD = /\$RANDOM|\$\$|\$!|\bdate\b|\bmktemp\b|\btime\s|SECONDS|EPOCH|BASHPID|&\s*$|\bcurl\b|\bwget\b|\bpip3? (install|download)\b|\bsleep\s+\d+\s*(&&|;)|\bpgrep\b|\bpkill\b|\bps\s+(aux|ax|-)/m;
 
 // Output noise both shells legitimately produce differently run-to-run.
 function normalize(s) {
@@ -44,7 +44,11 @@ function normalize(s) {
         .replace(/\/tmp\/tmp[^\s'"]*/g, "TMPFILE")
         .replace(/\bpid \d+\b/g, "pid PID")
         .replace(/PYTHONHASHSEED=\d+/g, "PYTHONHASHSEED=SEED")
-        .replace(/\brandom seed:\s*\d+/g, "random seed: SEED");
+        .replace(/\brandom seed:\s*\d+/g, "random seed: SEED")
+        .replace(/\b[0-9a-f]{40}\b/g, "SHA")
+        .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, "UUID")
+        .replace(/\b[0-9a-f]{16,}\b/g, "HEX")
+        .replace(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?( [+-]\d{4})?/g, "TIMESTAMP");
     })
     .join("\n")
     .replace(/\n+$/, "");
@@ -171,6 +175,7 @@ function replayOne(entry, tag) {
     skippedNondet: 0,
     orderOnly: [],
     windowNondet: [],
+    runNondet: [],
     divergence: null,
   };
   const sortedLines = (s) => normalize(s).split("\n").sort().join("\n");
@@ -198,6 +203,22 @@ function replayOne(entry, tag) {
       if (a.code === b.code && /\|\s*(tail|head)\b/.test(cmd)) {
         result.windowNondet.push({ step: i, cmd: cmd.slice(0, 160) });
         continue;
+      }
+      // Both sides hit the step timeout: output truncated at an arbitrary
+      // point on each side; only the status is comparable.
+      if (a.code === 124 && b.code === 124) {
+        result.windowNondet.push({ step: i, cmd: cmd.slice(0, 160) });
+        continue;
+      }
+      // The self-test: rerun the step on the BASH side. If bash disagrees
+      // with itself, this is run-to-run nondeterminism (unseeded random,
+      // set ordering, live logs), not a walker divergence. The rerun may
+      // mutate state, so the instance still stops here — classified, not
+      // failed.
+      const a2 = stepBash(bashC, cmd);
+      if (a2.code !== a.code || normalize(a2.out) !== normalize(a.out)) {
+        result.runNondet.push({ step: i, cmd: cmd.slice(0, 160) });
+        break;
       }
       result.divergence = {
         step: i,
@@ -300,7 +321,12 @@ async function run(argv) {
     writeFileSync(resultsPath, JSON.stringify(results, null, 1));
     const secs = ((Date.now() - t0) / 1000).toFixed(0);
     const extras = `${r.orderOnly.length} order-only, ${r.windowNondet.length} window-nondet`;
-    console.log(`${tag}${r.divergence ? `DIVERGED at step ${r.divergence.step} (${secs}s)` : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped (${secs}s)`}`);
+    const verdict = r.divergence
+      ? `DIVERGED at step ${r.divergence.step}`
+      : r.runNondet.length
+        ? `stopped run-nondet at step ${r.runNondet[0].step}, ${r.compared} compared (${extras})`
+        : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped`;
+    console.log(`${tag}${verdict} (${secs}s)`);
   }
   writeFileSync(resultsPath, JSON.stringify(results, null, 1));
   if (!shard) summarize(results, resultsPath);
@@ -312,8 +338,9 @@ function summarize(results, resultsPath) {
   const skipped = results.reduce((a, r) => a + r.skippedNondet, 0);
   const orderOnly = results.reduce((a, r) => a + r.orderOnly.length, 0);
   const windowN = results.reduce((a, r) => a + r.windowNondet.length, 0);
+  const runN = results.reduce((a, r) => a + (r.runNondet?.length ?? 0), 0);
   console.log(`\ntrajectories: ${results.length}  clean: ${results.length - diverged.length}  diverged: ${diverged.length}`);
-  console.log(`steps compared: ${compared}  order-only: ${orderOnly}  window-nondet: ${windowN}  nondet-skipped: ${skipped}`);
+  console.log(`steps compared: ${compared}  order-only: ${orderOnly}  window-nondet: ${windowN}  run-nondet stops: ${runN}  nondet-skipped: ${skipped}`);
   for (const r of diverged) {
     console.log(`---\n${r.id} step ${r.divergence.step}\nCMD: ${r.divergence.cmd.slice(0, 300)}`);
     console.log(`  bash   rc=${r.divergence.bash.code}: ${JSON.stringify(r.divergence.bash.out.slice(0, 400))}`);
