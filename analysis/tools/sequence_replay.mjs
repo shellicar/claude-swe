@@ -268,18 +268,37 @@ async function run(argv) {
   let picked = shuffled.slice(0, Math.max(1, Math.round(all.length * sample)));
   if (limit > 0) picked = picked.slice(0, limit);
 
-  // Parent mode: shard the picked set across N copies of this script — the
-  // per-trajectory work stays simple and synchronous inside each shard.
+  // Estimated seconds per trajectory: both sides pay every commanded sleep,
+  // plus a few seconds of real work per step. Scheduling input only — the
+  // commands themselves are never touched.
+  const cost = (e) => {
+    let sleep = 0;
+    for (const c of e.commands) {
+      for (const m of c.matchAll(/\bsleep\s+(\d+)\b/g)) sleep += parseInt(m[1], 10);
+    }
+    return 2 * sleep + 4 * e.commands.length;
+  };
+
+  // Parent mode: longest-first, greedily dealt to the least-loaded shard,
+  // so the sleep-heavy build-poll trajectories start at minute zero instead
+  // of straggling at the end.
   if (parallel > 1 && !shard) {
     console.log(`replaying ${picked.length}/${all.length} trajectories across ${parallel} shards (sample=${sample}, seed=${seed})`);
+    const buckets = Array.from({ length: parallel }, () => ({ load: 0, ids: [] }));
+    for (const e of [...picked].sort((a, b) => cost(b) - cost(a))) {
+      const b = buckets.reduce((m, x) => (x.load < m.load ? x : m));
+      b.load += cost(e);
+      b.ids.push(e.id);
+    }
     const kids = [];
     for (let k = 0; k < parallel; k++) {
+      writeFileSync(`/tmp/sequence_replay_shard-${k}.ids.json`, JSON.stringify(buckets[k].ids));
       const kidArgs = [
         process.argv[1], "run",
         "--sample", String(sample), "--seed", String(seed),
-        ...(limit > 0 ? ["--limit", String(limit)] : []),
         ...(argv.includes("--resume") ? ["--resume"] : []),
         "--shard", `${k}/${parallel}`,
+        "--ids", `/tmp/sequence_replay_shard-${k}.ids.json`,
         "--results", `/tmp/sequence_replay_results-${k}.json`,
       ];
       kids.push(new Promise((res) => {
@@ -297,10 +316,15 @@ async function run(argv) {
     return;
   }
 
-  if (shard) {
+  const idsFile = arg("--ids", "");
+  if (idsFile) {
+    const ids = new Set(JSON.parse(readFileSync(idsFile, "utf8")));
+    picked = picked.filter((e) => ids.has(e.id)).sort((a, b) => cost(b) - cost(a));
+  } else if (shard) {
     const [k, n] = shard.split("/").map(Number);
     picked = picked.filter((_, i) => i % n === k);
   } else {
+    picked = [...picked].sort((a, b) => cost(b) - cost(a));
     console.log(`replaying ${picked.length}/${all.length} trajectories (sample=${sample}, seed=${seed})`);
   }
   // Resume: keep prior completed results (same sample/seed/parallel), replay
