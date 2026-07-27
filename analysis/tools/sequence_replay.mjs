@@ -311,9 +311,12 @@ async function run(argv) {
   }
   const done = new Set(results.map((r) => r.id));
   const tag = shard ? `[shard ${shard}] ` : "";
+  // Every line is complete and self-identifying — parallel shards share one
+  // terminal, so a dangling half-line would get another shard's completion
+  // spliced onto it.
   for (const [i, e] of picked.entries()) {
     if (done.has(e.id)) continue;
-    process.stdout.write(`${tag}[${i + 1}/${picked.length}] ${e.id} (${e.commands.length} cmds) ... `);
+    console.log(`${tag}[${i + 1}/${picked.length}] > ${e.id} (${e.commands.length} cmds)`);
     const t0 = Date.now();
     const r = replayOne(e, `${process.pid}-${i}`);
     results.push(r);
@@ -326,7 +329,7 @@ async function run(argv) {
       : r.runNondet.length
         ? `stopped run-nondet at step ${r.runNondet[0].step}, ${r.compared} compared (${extras})`
         : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped`;
-    console.log(`${tag}${verdict} (${secs}s)`);
+    console.log(`${tag}[${i + 1}/${picked.length}] ${e.id}: ${verdict} (${secs}s)`);
   }
   writeFileSync(resultsPath, JSON.stringify(results, null, 1));
   if (!shard) summarize(results, resultsPath);
