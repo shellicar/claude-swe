@@ -145,10 +145,16 @@ const STEP_WRAP = (interp) =>
 function stepBash(name, cmd) {
   return sh(["docker", "exec", name, "sh", "-c", STEP_WRAP("bash -lc"), cmd]);
 }
+// Hidden (dotfile) and outside /opt: found live, `ls /opt` in a corpus
+// command surfaced our own mounted binary as a spurious directory entry
+// bash's container never has — a replay-harness artifact, not a walker
+// divergence, but one worth not manufacturing.
+const WALKER_MOUNT = "/root/.bash-walker";
+
 function stepWalker(name, cmd, env) {
   return sh([
     "docker", "exec", ...env.flatMap((e) => ["-e", e]), name,
-    "sh", "-c", STEP_WRAP("/opt/bash-walker -c"), cmd,
+    "sh", "-c", STEP_WRAP(`${WALKER_MOUNT} -c`), cmd,
   ]);
 }
 
@@ -169,7 +175,7 @@ function replayOne(entry, tag) {
   execFileSync("docker", [...common, "--name", bashC, entry.image, "sleep", "infinity"], { stdio: "pipe" });
   execFileSync(
     "docker",
-    [...common, "--name", walkC, "-v", `${WALKER}:/opt/bash-walker:ro`, entry.image, "sleep", "infinity"],
+    [...common, "--name", walkC, "-v", `${WALKER}:${WALKER_MOUNT}:ro`, entry.image, "sleep", "infinity"],
     { stdio: "pipe" },
   );
   const result = {
