@@ -48,7 +48,12 @@ function normalize(s) {
         .replace(/\b[0-9a-f]{40}\b/g, "SHA")
         .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, "UUID")
         .replace(/\b[0-9a-f]{16,}\b/g, "HEX")
-        .replace(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?( [+-]\d{4})?/g, "TIMESTAMP");
+        .replace(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?( [+-]\d{4})?/g, "TIMESTAMP")
+        // Python's id(): a decimal memory address, e.g. Django/sympy repr
+        // output like "GreaterThan(id=140737446409072)" — our hex-only
+        // normalization above missed this decimal form entirely.
+        .replace(/\bid=\d{8,}\b/g, "id=ID")
+        .replace(/\bat 0x[0-9a-f]+\b/gi, "at ADDR");
     })
     .join("\n")
     .replace(/\n+$/, "");
