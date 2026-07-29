@@ -14,13 +14,19 @@
 // Containers are created, owned, and removed by this script.
 
 import { execFileSync, spawnSync, spawn } from "node:child_process";
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
-const CORPUS = "/tmp/sequence_corpus.json";
+// Machine capacity comes from the one place that declares it.
+const RIG = JSON.parse(readFileSync(`${ROOT}/rig.json`, "utf8"));
+// On the repo's own disk, not /tmp: macOS clears /tmp on reboot, which lost
+// an entire multi-hour run's progress (and the corpus itself) to a restart.
+const STATE_DIR = new URL("../../.sequence-replay-state", import.meta.url).pathname;
+mkdirSync(STATE_DIR, { recursive: true });
+const CORPUS = `${STATE_DIR}/sequence_corpus.json`;
 const WALKER = `${ROOT}/rust/target-linux/release/bash-walker`;
-const STEP_TIMEOUT_S = 90;
+const STEP_TIMEOUT_S = RIG.replayStepTimeoutS;
 
 // Commands that run on both sides but whose output is inherently
 // nondeterministic — executed (state must advance) but not compared.
@@ -263,9 +269,9 @@ async function run(argv) {
   const sample = parseFloat(arg("--sample", "0.01"));
   const seed = parseInt(arg("--seed", "1"), 10);
   const limit = parseInt(arg("--limit", "0"), 10);
-  const parallel = parseInt(arg("--parallel", "1"), 10);
+  const parallel = parseInt(arg("--parallel", String(RIG.replayParallel)), 10);
   const shard = arg("--shard", "");
-  const resultsPath = arg("--results", "/tmp/sequence_replay_results.json");
+  const resultsPath = arg("--results", `${STATE_DIR}/sequence_replay_results.json`);
   if (!existsSync(CORPUS)) {
     console.error("no corpus; run `extract` first");
     process.exit(2);
@@ -303,14 +309,14 @@ async function run(argv) {
     }
     const kids = [];
     for (let k = 0; k < parallel; k++) {
-      writeFileSync(`/tmp/sequence_replay_shard-${k}.ids.json`, JSON.stringify(buckets[k].ids));
+      writeFileSync(`${STATE_DIR}/sequence_replay_shard-${k}.ids.json`, JSON.stringify(buckets[k].ids));
       const kidArgs = [
         process.argv[1], "run",
         "--sample", String(sample), "--seed", String(seed),
         ...(argv.includes("--resume") ? ["--resume"] : []),
         "--shard", `${k}/${parallel}`,
-        "--ids", `/tmp/sequence_replay_shard-${k}.ids.json`,
-        "--results", `/tmp/sequence_replay_results-${k}.json`,
+        "--ids", `${STATE_DIR}/sequence_replay_shard-${k}.ids.json`,
+        "--results", `${STATE_DIR}/sequence_replay_results-${k}.json`,
       ];
       kids.push(new Promise((res) => {
         const c = spawn(process.execPath, kidArgs, { stdio: ["ignore", "inherit", "inherit"] });
@@ -320,7 +326,7 @@ async function run(argv) {
     await Promise.all(kids);
     const merged = [];
     for (let k = 0; k < parallel; k++) {
-      merged.push(...JSON.parse(readFileSync(`/tmp/sequence_replay_results-${k}.json`, "utf8")));
+      merged.push(...JSON.parse(readFileSync(`${STATE_DIR}/sequence_replay_results-${k}.json`, "utf8")));
     }
     writeFileSync(resultsPath, JSON.stringify(merged, null, 1));
     summarize(merged, resultsPath);

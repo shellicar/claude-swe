@@ -4,7 +4,6 @@
   "selections": ["hard"],
   "parallel": false,
   "basePort": 19340,
-  "workers": 2,
   "configs": ["swebench-local.yaml", "exec-arm-4.yaml", "exec-arm-5.yaml", "thinking-adaptive.yaml"],
   "legs": [
     { "model": "anthropic/claude-sonnet-5", "out": "runs/exec-arm-5/sonnet-5" }

@@ -8,7 +8,6 @@
   ],
   "parallel": true,
   "basePort": 19130,
-  "workers": 2,
   "legs": [
     {
       "model": "anthropic/claude-opus-4-8",

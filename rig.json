@@ -1,0 +1,8 @@
+{
+  "_comment": "Machine capacity for this box — how much work it can chew at once. Experiment DESIGN (which legs, parallel legs, cost/step guards) stays in combinations/*.json and the yaml configs. Env vars and CLI flags still override per-run.",
+  "agentWorkers": 12,
+  "markWorkers": 14,
+  "replayParallel": 24,
+  "basePort": 19180,
+  "replayStepTimeoutS": 90
+}

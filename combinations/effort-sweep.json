@@ -4,11 +4,22 @@
   "selections": ["standard", "hard"],
   "parallel": false,
   "basePort": 19200,
-  "workers": 3,
   "legs": [
     { "model": "anthropic/claude-opus-4-8", "effort": "low", "out": "runs/effort-sweep/opus-4-8-low" },
     { "model": "anthropic/claude-opus-4-8", "effort": "medium", "out": "runs/effort-sweep/opus-4-8-medium" },
     { "model": "anthropic/claude-opus-4-8", "effort": "xhigh", "out": "runs/effort-sweep/opus-4-8-xhigh" },
-    { "model": "anthropic/claude-opus-4-8", "effort": "max", "out": "runs/effort-sweep/opus-4-8-max" }
+    { "model": "anthropic/claude-opus-4-8", "effort": "max", "out": "runs/effort-sweep/opus-4-8-max" },
+    { "model": "anthropic/claude-opus-5", "effort": "low", "out": "runs/effort-sweep/opus-5-low" },
+    { "model": "anthropic/claude-opus-5", "effort": "medium", "out": "runs/effort-sweep/opus-5-medium" },
+    { "model": "anthropic/claude-opus-5", "effort": "xhigh", "out": "runs/effort-sweep/opus-5-xhigh" },
+    { "model": "anthropic/claude-opus-5", "effort": "max", "out": "runs/effort-sweep/opus-5-max" },
+    { "model": "anthropic/claude-sonnet-5", "effort": "low", "out": "runs/effort-sweep/sonnet-5-low" },
+    { "model": "anthropic/claude-sonnet-5", "effort": "medium", "out": "runs/effort-sweep/sonnet-5-medium" },
+    { "model": "anthropic/claude-sonnet-5", "effort": "xhigh", "out": "runs/effort-sweep/sonnet-5-xhigh" },
+    { "model": "anthropic/claude-sonnet-5", "effort": "max", "out": "runs/effort-sweep/sonnet-5-max" },
+    { "model": "anthropic/claude-fable-5", "effort": "low", "out": "runs/effort-sweep/fable-5-low" },
+    { "model": "anthropic/claude-fable-5", "effort": "medium", "out": "runs/effort-sweep/fable-5-medium" },
+    { "model": "anthropic/claude-fable-5", "effort": "xhigh", "out": "runs/effort-sweep/fable-5-xhigh" },
+    { "model": "anthropic/claude-fable-5", "effort": "max", "out": "runs/effort-sweep/fable-5-max" }
   ]
 }

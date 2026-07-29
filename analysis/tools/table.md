@@ -29,6 +29,11 @@
 | Output tokens/turn (avg) | 329 | 392 | 392 | 365 | 377 | 374 | 389 |
 | Context window (peak, single turn) | 134k | 166k | 149k | 119k | 111k | 118k | 127k |
 | Wall-clock (12-way parallel) | 3.5 h | 3.5 h | 3.2 h | 2.8 h | 3.3 h | 2.8 h | 2.7 h |
+| **Medal tally — per instance (45 events, 4 unsolved by every arm)** | | | | | | | |
+| 🥇 gold | 14 | 5 | 1 | 3 | 4 | 7 | 7 |
+| 🥈 silver | 4 | 3 | 4 | 8 | 5 | 6 | 10 |
+| 🥉 bronze | 4 | 3 | 6 | 8 | 6 | 6 | 3 |
+| medals total | 22 | 11 | 11 | 19 | 15 | 19 | 20 |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.
 
@@ -63,6 +68,11 @@ Verdicts from the pinned swebench judges. Full caveats in report.md.
 | Output tokens/turn (avg) | 329 | 326 | 294 | 273 | 362 | 374 |
 | Context window (peak, single turn) | 134k | 141k | 115k | 130k | 161k | 147k |
 | Wall-clock (12-way parallel) | 3.5 h | 2.4 h | 2.8 h | 2.7 h | 3.0 h | 3.0 h |
+| **Medal tally — per instance (45 events, 6 unsolved by every arm)** | | | | | | |
+| 🥇 gold | 7 | 0 | 12 | 11 | 5 | 4 |
+| 🥈 silver | 13 | 2 | 7 | 7 | 6 | 3 |
+| 🥉 bronze | 8 | 3 | 7 | 8 | 4 | 8 |
+| medals total | 28 | 5 | 26 | 26 | 15 | 15 |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.
 
@@ -97,5 +107,10 @@ Verdicts from the pinned swebench judges. Full caveats in report.md.
 | Output tokens/turn (avg) | 329 | 338 | 311 | 384 |
 | Context window (peak, single turn) | 134k | 143k | 156k | 151k |
 | Wall-clock (12-way parallel) | 3.5 h | 5.0 h | 6.1 h | 18.5 h |
+| **Medal tally — per instance (45 events, 5 unsolved by every arm)** | | | | |
+| 🥇 gold | 25 | 3 | 2 | 10 |
+| 🥈 silver | 5 | 9 | 10 | 10 |
+| 🥉 bronze | 2 | 12 | 10 | 9 |
+| medals total | 32 | 24 | 22 | 29 |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.

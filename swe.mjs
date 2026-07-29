@@ -28,6 +28,11 @@ import { spawnAwait, onShutdown, repoRoot } from './orchestration/harness.mjs';
 const MANIFEST = join(repoRoot, 'image-manifest.txt');
 const EVALS_DIR = join(repoRoot, 'evals');
 
+// Machine capacity, declared once. Experiment design stays per-combination;
+// how much this box chews at once does not belong copied into 27 files.
+const RIG = JSON.parse(readFileSync(join(repoRoot, 'rig.json'), 'utf8'));
+const markWorkers = () => String(process.env.MARK_WORKERS ?? RIG.markWorkers);
+
 // ---- declarations ------------------------------------------------------------
 const loadDataset = (name) => {
   const path = join(repoRoot, 'datasets', `${name}.json`);
@@ -263,8 +268,8 @@ async function run(target, flags) {
   if (missingImages.length > 0) {
     throw new Error(`run refused: ${missingImages.length} declared images not local (e.g. ${missingImages[0]}) — run ensure first`);
   }
-  const basePort = combo?.basePort ?? 19180;
-  const workers = combo?.workers ?? Number(flags.workers ?? 2);
+  const basePort = combo?.basePort ?? RIG.basePort;
+  const workers = Number(flags.workers ?? combo?.workers ?? RIG.agentWorkers);
   const results = [];
   const pending = [];
   for (let i = 0; i < theLegs.length; i++) {
@@ -351,7 +356,7 @@ async function mark(target, flags) {
           '-m', 'swebench.harness.run_evaluation',
           '--dataset_name', join(repoRoot, ds.snapshot),
           '--predictions_path', preds,
-          '--max_workers', process.env.MARK_WORKERS ?? '2',
+          '--max_workers', markWorkers(),
           '--namespace', 'swebench',
           '--run_id', runId,
         ], { cwd: EVALS_DIR, onChild: (c) => { current = c; } });
@@ -372,7 +377,7 @@ async function mark(target, flags) {
           '--scripts_dir', 'run_scripts',
           '--use_local_docker',
           '--docker_platform', 'linux/amd64',
-          '--num_workers', process.env.MARK_WORKERS ?? '2',
+          '--num_workers', markWorkers(),
         ], { cwd: join(repoRoot, ds.marker.harness), onChild: (c) => { current = c; } });
       } else if (ds.marker.type === 'multi-swe') {
         const outDir = multiSweOutDir(ds, leg, sel);
@@ -402,7 +407,7 @@ async function mark(target, flags) {
         writeFileSync(patchPath, lines.join('\n') + '\n');
         const datasetPath = join(outDir, 'dataset.jsonl');
         writeFileSync(datasetPath, datasetLines.join('\n') + '\n');
-        const workers = Number(process.env.MARK_WORKERS ?? 2);
+        const workers = Number(markWorkers());
         const cfgPath = join(outDir, 'config.json');
         writeFileSync(cfgPath, JSON.stringify({
           mode: 'evaluation',
@@ -648,10 +653,14 @@ async function analyse({ ds, selections }) {
   // Coverage check: each analyser declares which selections its sections
   // cover. A selection missing from the list means the tables just silently
   // omitted it (how element/tokio briefly vanished, 2026-07-12) — fail loudly.
+  // Selections declared `"analyse": false` are smoke/utility sets (micro), not
+  // experiments: nobody wants a table of three instances, so they are exempt
+  // rather than crying wolf on every run.
   const dataPath = join(repoRoot, 'analysis', ds.name, 'data.json');
   const covers = JSON.parse(readFileSync(dataPath, 'utf8')).covers;
   if (covers) {
-    const missing = selections.filter((s) => !covers.includes(s));
+    const analysed = selections.filter((s) => ds.selections?.[s]?.analyse !== false);
+    const missing = analysed.filter((s) => !covers.includes(s));
     if (missing.length > 0) {
       throw new Error(`${ds.analyser} does not cover selection(s) ${missing.join(', ')} — extend its sections`);
     }

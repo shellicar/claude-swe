@@ -49,3 +49,8 @@ mitm/api-timing.jsonl
 # Raw request bodies from the 4.6/4.7 wire capture: 472MB, too large for git.
 # Kept on disk only. The responses (with usage/thinking) and api-timing ARE tracked.
 runs/main/opus46-47-requests.jsonl
+
+# Sequence replay's scratch state (corpus extract, per-shard progress) —
+# regenerable from runs/**/*.traj.json, but must survive a crash/reboot
+# mid-run (a multi-hour job), which /tmp does NOT on macOS.
+.sequence-replay-state/

@@ -16,9 +16,9 @@
   "global_env": [],
   "clear_env": true,
   "stop_on_error": false,
-  "max_workers": 2,
-  "max_workers_build_image": 2,
-  "max_workers_run_instance": 2,
+  "max_workers": 14,
+  "max_workers_build_image": 14,
+  "max_workers_run_instance": 14,
   "log_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/opus-4-8-cpp/logs",
   "log_level": "INFO"
 }

@@ -4,7 +4,6 @@
   "selections": ["cpp"],
   "parallel": true,
   "basePort": 19170,
-  "workers": 2,
   "configs": ["swebench-local.yaml", "swebench-fmt-variation.yaml", "thinking-adaptive.yaml"],
   "legs": [
     { "model": "anthropic/claude-opus-4-8", "out": "runs/fmt-variation/opus-4-8" },

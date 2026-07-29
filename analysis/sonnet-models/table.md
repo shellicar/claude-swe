@@ -63,9 +63,10 @@
 | Output tokens/turn (avg) | 606 | 310 |
 | Context window (peak, single turn) | 438k | 134k |
 | Wall-clock (12-way parallel) | 15.2 h | 5.5 h |
-| **Medal tally — counted in events** | | |
-| 🥇 gold | 0 | 3 |
-| 🥈 silver | 3 | 0 |
+| **Medal tally — per instance (105 events, 19 unsolved by every model)** | | |
+| 🥇 gold | 14 | 72 |
+| 🥈 silver | 51 | 13 |
 | 🥉 bronze | 0 | 0 |
+| medals total | 65 | 85 |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.

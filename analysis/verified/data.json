@@ -67,6 +67,41 @@
         "hard": 283150
       }
     },
+    "opus-5": {
+      "name": "Claude Opus 5",
+      "sets": {
+        "standard": {
+          "resolved": 56,
+          "cost": 18.8134755,
+          "steps": 795,
+          "out": 325841,
+          "failed": 0,
+          "ncc": 1590,
+          "cr": 9485001,
+          "cw": 946720,
+          "intot": 10433311,
+          "wall": 4581.504316806793,
+          "peak_ctx": 61872
+        },
+        "hard": {
+          "resolved": 38,
+          "cost": 37.64664075,
+          "steps": 1131,
+          "out": 594764,
+          "failed": 0,
+          "ncc": 2262,
+          "cr": 27061149,
+          "cw": 1477705,
+          "intot": 28541116,
+          "wall": 8189.523367643356,
+          "peak_ctx": 107438
+        }
+      },
+      "thinking": {
+        "standard": 150534,
+        "hard": 320895
+      }
+    },
     "opus-4-8": {
       "name": "Claude Opus 4.8",
       "sets": {

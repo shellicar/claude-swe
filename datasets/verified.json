@@ -34,7 +34,8 @@
     },
     "micro": {
       "file": "instances-micro.txt",
-      "expected": 3
+      "expected": 3,
+      "analyse": false
     }
   }
 }

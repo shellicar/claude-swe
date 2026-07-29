@@ -4,7 +4,6 @@
   "selections": ["standard", "hard"],
   "parallel": true,
   "basePort": 19100,
-  "workers": 3,
   "legs": [
     { "model": "anthropic/claude-opus-4-6", "out": "runs/main/opus-4-6" },
     { "model": "anthropic/claude-opus-4-7", "out": "runs/main/opus-4-7" },
@@ -12,6 +11,7 @@
     { "model": "anthropic/claude-fable-5", "out": "runs/main/fable-5" },
     { "model": "anthropic/claude-haiku-4-5", "out": "runs/main/haiku-4-5" },
     { "model": "anthropic/claude-sonnet-4-6", "out": "runs/main/sonnet-4-6" },
-    { "model": "anthropic/claude-sonnet-5", "out": "runs/main/sonnet-5" }
+    { "model": "anthropic/claude-sonnet-5", "out": "runs/main/sonnet-5" },
+    { "model": "anthropic/claude-opus-5", "out": "runs/main/opus-5" }
   ]
 }

@@ -6,7 +6,6 @@
   ],
   "parallel": false,
   "basePort": 19410,
-  "workers": 2,
   "configs": [
     "swebench-local.yaml",
     "walker-base.yaml",

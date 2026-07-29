@@ -22,6 +22,7 @@ from analysis_output import _medal_row, emit
 MODELS = [  # display name -> dir
     ("Claude Fable 5", "fable-5"),
     ("Claude Fable 5 (2 Jul)", "fable-5-high-2026-07-02"),
+    ("Claude Opus 5", "opus-5"),
     ("Claude Opus 4.8", "opus-4-8"),
     ("Claude Opus 4.7", "opus-4-7"),
     ("Claude Opus 4.6", "opus-4-6"),
@@ -108,6 +109,58 @@ def leg(base, s):
                ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, peak_ctx=peak_ctx)
 
 
+def per_instance(base, s):
+    """{instance_id: (resolved, cost)} — the granularity leg() aggregates away."""
+    rid = base.replace("/", "_")
+    rep = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")[0]
+    resolved = set(json.load(open(rep))["resolved_ids"])
+    out = {}
+    for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
+        t = json.load(open(tf))
+        iid = t["instance_id"]
+        out[iid] = (iid in resolved, t["info"]["model_stats"]["instance_cost"])
+    return out
+
+
+def instance_medals(bases, sets=None):
+    """Medals per INSTANCE, not per aggregate row: each instance is its own
+    event. Resolving is the entry ticket — a competitor that failed cannot
+    place, however cheap it was — and among the finishers the cheapest takes
+    gold. An instance nobody resolved awards nothing to anyone.
+
+    This shows what averages hide: a model can post the best $/resolved while
+    rarely being the cheapest on any individual instance, if it is cheap on
+    the easy majority.
+
+    `bases` are run out-paths ("main/opus-5", "exec-arm-1/sonnet-5"), so the
+    same contest works for model divisions and for scaffolding arms.
+    """
+    sets = sets or [s for s, _n in SETS]
+    per = {}
+    for b in bases:
+        acc = {}
+        for s in sets:
+            try:
+                acc.update(per_instance(b, s))
+            except IndexError:
+                pass  # leg never run or never marked
+        per[b] = acc
+    counts = {b: [0, 0, 0] for b in bases}
+    unsolved = 0
+    every = {i for b in bases for i in per[b]}
+    for iid in sorted(every):
+        finishers = sorted(
+            (per[b][iid][1], b) for b in bases
+            if per[b].get(iid, (False, 0.0))[0]
+        )
+        if not finishers:
+            unsolved += 1
+            continue
+        for rank, (_cost, b) in enumerate(finishers[:3]):
+            counts[b][rank] += 1
+    return counts, unsolved, len(every)
+
+
 def tok(x):
     return f"{x/1e6:.2f}M" if x >= 1e6 else f"{x/1e3:.0f}k"
 
@@ -192,9 +245,9 @@ NOTE = "Verdicts from the pinned swebench judges. Full caveats in report.md."
 # data.json keeps EVERY model — grouping is presentation, not data loss.
 GROUPS = [
     ("verified", "SWE-bench Verified — latest-generation division",
-     ["fable-5", "opus-4-8", "sonnet-5", "haiku-4-5"]),
+     ["fable-5", "opus-5", "sonnet-5", "haiku-4-5"]),
     ("opus-models", "Opus division — the lineage (SWE-bench Verified)",
-     ["opus-4-6", "opus-4-7", "opus-4-8"]),
+     ["opus-4-6", "opus-4-7", "opus-4-8", "opus-5"]),
     ("sonnet-models", "Sonnet division — the lineage (SWE-bench Verified)",
      ["sonnet-4-6", "sonnet-5"]),
 ]
@@ -204,7 +257,8 @@ for card, heading, dirs in GROUPS:
                           for name, d in MODELS}}
     if card == "verified":
         payload["covers"] = ["standard", "hard"]
-    emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload)
+    emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload,
+         medals=instance_medals([f"main/{d}" for d in dirs]))
 
 
 # Prompt-scaffolding division: does the imperative "MUST" scaffolding earn its
@@ -235,7 +289,8 @@ emit("scaffold", "Prompt-scaffolding division (bash only) — SWE-bench Verified
      [n for n, _ in SCAFFOLD],
      [("Hard — 45 *Python* events (1+ h human effort)", scaffold_section(_sbases))],
      NOTE,
-     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": scaffold_data[b]}} for n, b in SCAFFOLD}})
+     {"covers": ["hard"], "models": {b: {"name": n, "sets": {"hard": scaffold_data[b]}} for n, b in SCAFFOLD}},
+     medals=instance_medals(_sbases, sets=["hard"]))
 
 
 # Variable-row divisions: each entry is (label, base, {dim: value}). Rather than
@@ -285,6 +340,19 @@ def experiment_table(heading, entries):
         results_body.append((label, [fn(data_[b], 45) if data_[b] else "—" for b in bases]))
     sections_ = [("Variables", variables_body), ("Hard — 45 *Python* events (1+ h human effort)", results_body)]
     sections_ = [(title, [(label, _medal_row(label, cells)) for label, cells in body]) for title, body in sections_]
+    # Per-instance contest across the arms, same rules as the model divisions:
+    # only arms that resolved an instance can place, cheapest takes gold.
+    counts, unsolved, total = instance_medals(bases, sets=["hard"])
+    if total:
+        tally_body = []
+        for i, (m, word) in enumerate(zip(("\U0001F947", "\U0001F948", "\U0001F949"),
+                                          ("gold", "silver", "bronze"))):
+            tally_body.append((f"{m} {word}", [str(counts[b][i]) for b in bases]))
+        tally_body.append(("medals total", [str(sum(counts[b])) for b in bases]))
+        sections_.append((
+            f"Medal tally — per instance ({total} events, {unsolved} unsolved by every arm)",
+            tally_body,
+        ))
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
     for title, body in sections_:
         lines.append(f"| **{title}** |" + " |" * len(columns))

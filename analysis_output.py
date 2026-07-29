@@ -91,7 +91,7 @@ def _medal_row(label, cells):
     return out
 
 
-def emit(name, heading, columns, sections, note, payload):
+def emit(name, heading, columns, sections, note, payload, medals=None):
     outdir = f"{ROOT}/analysis/{name}"
     os.makedirs(outdir, exist_ok=True)
 
@@ -123,30 +123,44 @@ def emit(name, heading, columns, sections, note, payload):
         return int(m.group(1)) if m else 1
 
     MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
-    DISCIPLINES = ("Resolved",)
-    tally = {d: {m: [0] * len(columns) for m in MEDALS} for d in DISCIPLINES}
-    for title, body in sections:
-        if title.startswith("TOTAL"):
-            continue
-        weight = _events_in(title)
-        in_total_group = False
-        for label, cells in body:
-            if label.startswith("## "):
-                in_total_group = "total" in label.lower()
-                if not in_total_group:
-                    weight = _events_in(label)
-                continue
-            if in_total_group or label.strip() not in tally:
-                continue
-            for i, c in enumerate(cells):
-                for m in MEDALS:
-                    if m in c:
-                        tally[label.strip()][m][i] += weight
-    if any(any(v) for d in tally.values() for v in d.values()):
+    # Per-INSTANCE medals when the caller computed them: every instance is its
+    # own event, resolving is the entry ticket, cheapest finisher takes gold.
+    if medals:
+        counts, unsolved, total = medals
         body = []
-        for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
-            body.append((f"{m} {word}", [str(n) for n in tally["Resolved"][m]]))
-        sections = sections + [("Medal tally — counted in events", body)]
+        for i, (m, word) in enumerate(zip(MEDALS, ("gold", "silver", "bronze"))):
+            body.append((f"{m} {word}", [str(counts[d][i]) for d in counts]))
+        body.append(("medals total", [str(sum(counts[d])) for d in counts]))
+        heading_row = (
+            f"Medal tally — per instance ({total} events, "
+            f"{unsolved} unsolved by every model)"
+        )
+        sections = sections + [(heading_row, body)]
+    else:
+        DISCIPLINES = ("Resolved",)
+        tally = {d: {m: [0] * len(columns) for m in MEDALS} for d in DISCIPLINES}
+        for title, body in sections:
+            if title.startswith("TOTAL"):
+                continue
+            weight = _events_in(title)
+            in_total_group = False
+            for label, cells in body:
+                if label.startswith("## "):
+                    in_total_group = "total" in label.lower()
+                    if not in_total_group:
+                        weight = _events_in(label)
+                    continue
+                if in_total_group or label.strip() not in tally:
+                    continue
+                for i, c in enumerate(cells):
+                    for m in MEDALS:
+                        if m in c:
+                            tally[label.strip()][m][i] += weight
+        if any(any(v) for d in tally.values() for v in d.values()):
+            body = []
+            for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
+                body.append((f"{m} {word}", [str(n) for n in tally["Resolved"][m]]))
+            sections = sections + [("Medal tally — counted in events", body)]
 
     # markdown
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
