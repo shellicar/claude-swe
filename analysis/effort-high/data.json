@@ -1,33 +1,33 @@
 {
   "models": {
-    "main/opus-4-8": {
-      "name": "Claude Opus 4.8",
+    "main/fable-5": {
+      "name": "Claude Fable 5",
       "sets": {
         "standard": {
-          "resolved": 51,
-          "cost": 21.002607750000006,
-          "steps": 887,
-          "out": 400111,
-          "failed": 1,
-          "ncc": 1772,
-          "cr": 11212608,
-          "cw": 861547,
-          "intot": 12075927,
-          "wall": 7385.718563318253,
-          "peak_ctx": 63238
+          "resolved": 55,
+          "cost": 30.679250500000002,
+          "steps": 657,
+          "out": 309207,
+          "failed": 0,
+          "ncc": 1314,
+          "cr": 6071898,
+          "cw": 730709,
+          "intot": 6803921,
+          "wall": 7105.604848384857,
+          "peak_ctx": 48594
         },
         "hard": {
-          "resolved": 32,
-          "cost": 33.967708,
-          "steps": 1217,
-          "out": 578261,
-          "failed": 1,
-          "ncc": 2432,
-          "cr": 23423796,
-          "cw": 1245940,
-          "intot": 24672168,
-          "wall": 8278.917766809464,
-          "peak_ctx": 85104
+          "resolved": 39,
+          "cost": 52.847566,
+          "steps": 743,
+          "out": 536281,
+          "failed": 0,
+          "ncc": 1486,
+          "cr": 11690031,
+          "cw": 1146290,
+          "intot": 12837807,
+          "wall": 8757.3410654068,
+          "peak_ctx": 56928
         }
       },
       "thinking": null
@@ -67,6 +67,38 @@
         "hard": 320895
       }
     },
+    "main/opus-4-8": {
+      "name": "Claude Opus 4.8",
+      "sets": {
+        "standard": {
+          "resolved": 51,
+          "cost": 21.002607750000006,
+          "steps": 887,
+          "out": 400111,
+          "failed": 1,
+          "ncc": 1772,
+          "cr": 11212608,
+          "cw": 861547,
+          "intot": 12075927,
+          "wall": 7385.718563318253,
+          "peak_ctx": 63238
+        },
+        "hard": {
+          "resolved": 32,
+          "cost": 33.967708,
+          "steps": 1217,
+          "out": 578261,
+          "failed": 1,
+          "ncc": 2432,
+          "cr": 23423796,
+          "cw": 1245940,
+          "intot": 24672168,
+          "wall": 8278.917766809464,
+          "peak_ctx": 85104
+        }
+      },
+      "thinking": null
+    },
     "main/sonnet-5": {
       "name": "Claude Sonnet 5",
       "sets": {
@@ -101,38 +133,6 @@
         "standard": 185698,
         "hard": 368302
       }
-    },
-    "main/fable-5": {
-      "name": "Claude Fable 5",
-      "sets": {
-        "standard": {
-          "resolved": 55,
-          "cost": 30.679250500000002,
-          "steps": 657,
-          "out": 309207,
-          "failed": 0,
-          "ncc": 1314,
-          "cr": 6071898,
-          "cw": 730709,
-          "intot": 6803921,
-          "wall": 7105.604848384857,
-          "peak_ctx": 48594
-        },
-        "hard": {
-          "resolved": 39,
-          "cost": 52.847566,
-          "steps": 743,
-          "out": 536281,
-          "failed": 0,
-          "ncc": 1486,
-          "cr": 11690031,
-          "cw": 1146290,
-          "intot": 12837807,
-          "wall": 8757.3410654068,
-          "peak_ctx": 56928
-        }
-      },
-      "thinking": null
     }
   }
 }

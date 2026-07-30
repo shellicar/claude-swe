@@ -1,37 +1,5 @@
 {
   "models": {
-    "effort-sweep/opus-4-8-low": {
-      "name": "Claude Opus 4.8",
-      "sets": {
-        "standard": {
-          "resolved": 48,
-          "cost": 8.734529499999997,
-          "steps": 560,
-          "out": 149850,
-          "failed": 0,
-          "ncc": 1120,
-          "cr": 3746509,
-          "cw": 497508,
-          "intot": 4245137,
-          "wall": 2514.329846382141,
-          "peak_ctx": 33593
-        },
-        "hard": {
-          "resolved": 30,
-          "cost": 22.83839925,
-          "steps": 1002,
-          "out": 372615,
-          "failed": 0,
-          "ncc": 2004,
-          "cr": 15981671,
-          "cw": 883547,
-          "intot": 16867222,
-          "wall": 5692.076584100723,
-          "peak_ctx": 87465
-        }
-      },
-      "thinking": null
-    },
     "effort-sweep/opus-5-low": {
       "name": "Claude Opus 5",
       "sets": {
@@ -65,6 +33,73 @@
       "thinking": {
         "standard": 21048,
         "hard": 52640
+      }
+    },
+    "effort-sweep/opus-4-8-low": {
+      "name": "Claude Opus 4.8",
+      "sets": {
+        "standard": {
+          "resolved": 48,
+          "cost": 8.734529499999997,
+          "steps": 560,
+          "out": 149850,
+          "failed": 0,
+          "ncc": 1120,
+          "cr": 3746509,
+          "cw": 497508,
+          "intot": 4245137,
+          "wall": 2514.329846382141,
+          "peak_ctx": 33593
+        },
+        "hard": {
+          "resolved": 30,
+          "cost": 22.83839925,
+          "steps": 1002,
+          "out": 372615,
+          "failed": 0,
+          "ncc": 2004,
+          "cr": 15981671,
+          "cw": 883547,
+          "intot": 16867222,
+          "wall": 5692.076584100723,
+          "peak_ctx": 87465
+        }
+      },
+      "thinking": null
+    },
+    "effort-sweep/sonnet-5-low": {
+      "name": "Claude Sonnet 5",
+      "sets": {
+        "standard": {
+          "resolved": 46,
+          "cost": 7.6578225,
+          "steps": 753,
+          "out": 186134,
+          "failed": 0,
+          "ncc": 1506,
+          "cr": 8222515,
+          "cw": 638544,
+          "intot": 8862565,
+          "wall": 2613.97283911705,
+          "peak_ctx": 46164
+        },
+        "hard": {
+          "resolved": 21,
+          "cost": 12.919183050000003,
+          "steps": 1036,
+          "out": 300715,
+          "failed": 0,
+          "ncc": 2072,
+          "cr": 16071086,
+          "cw": 954911,
+          "intot": 17028069,
+          "wall": 4028.004587650299,
+          "peak_ctx": 61314
+        }
+      },
+      "thinking": {
+        "standard": 56285,
+        "hard": 79063
       }
     }
   }

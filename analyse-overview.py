@@ -85,7 +85,10 @@ DATASETS = [
 
 # Column order: the main-experiment models first, in the report's order.
 # Latest generation only — the lineages compete on their own cards
-COLUMNS = ["fable-5", "opus-5", "opus-4-8", "sonnet-5", "haiku-4-5"]
+# The contenders, in roster order; columns with no data are pruned below.
+COLUMNS = [m["dir"] for m in json.load(open(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "models.json"),
+))["models"] if m.get("contender")]
 
 sections = []
 seen = set()

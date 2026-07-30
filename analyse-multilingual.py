@@ -138,7 +138,11 @@ def leg(model_dir, decl):
 
 # Latest-generation column order; a model appears when its runs exist (Haiku
 # joins automatically once it competes here).
-LATEST = ["fable-5", "opus-4-8", "sonnet-5", "haiku-4-5"]
+# The contenders, in roster order. This IS a filter, so every model with
+# data here must carry `contender` in models.json or its column disappears.
+LATEST = [m["dir"] for m in json.load(open(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "models.json"),
+))["models"] if m.get("contender")]
 
 def find_models():
     models = set()

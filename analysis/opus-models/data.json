@@ -32,41 +32,6 @@
       },
       "thinking": null
     },
-    "fable-5-high-2026-07-02": {
-      "name": "Claude Fable 5 (2 Jul)",
-      "sets": {
-        "standard": {
-          "resolved": 57,
-          "cost": 28.511357000000004,
-          "steps": 647,
-          "out": 282221,
-          "failed": 0,
-          "ncc": 1294,
-          "cr": 5502642,
-          "cw": 710778,
-          "intot": 6214714,
-          "wall": 5622.118144273758,
-          "peak_ctx": 34144
-        },
-        "hard": {
-          "resolved": 40,
-          "cost": 54.7905965,
-          "steps": 796,
-          "out": 525014,
-          "failed": 0,
-          "ncc": 1592,
-          "cr": 14035664,
-          "cw": 1159065,
-          "intot": 15196321,
-          "wall": 9031.30515050888,
-          "peak_ctx": 66112
-        }
-      },
-      "thinking": {
-        "standard": 135256,
-        "hard": 283150
-      }
-    },
     "opus-5": {
       "name": "Claude Opus 5",
       "sets": {
@@ -130,6 +95,73 @@
           "intot": 24672168,
           "wall": 8278.917766809464,
           "peak_ctx": 85104
+        }
+      },
+      "thinking": null
+    },
+    "sonnet-5": {
+      "name": "Claude Sonnet 5",
+      "sets": {
+        "standard": {
+          "resolved": 51,
+          "cost": 17.339538299999997,
+          "steps": 1383,
+          "out": 387978,
+          "failed": 0,
+          "ncc": 2766,
+          "cr": 22385601,
+          "cw": 1278904,
+          "intot": 23667271,
+          "wall": 7276.355935573578,
+          "peak_ctx": 62304
+        },
+        "hard": {
+          "resolved": 34,
+          "cost": 39.629120700000016,
+          "steps": 2206,
+          "out": 725351,
+          "failed": 0,
+          "ncc": 4412,
+          "cr": 69775124,
+          "cw": 2080822,
+          "intot": 71860358,
+          "wall": 12420.108799934387,
+          "peak_ctx": 133796
+        }
+      },
+      "thinking": {
+        "standard": 185698,
+        "hard": 368302
+      }
+    },
+    "haiku-4-5": {
+      "name": "Claude Haiku 4.5",
+      "sets": {
+        "standard": {
+          "resolved": 38,
+          "cost": 17.904680299999995,
+          "steps": 3663,
+          "out": 980062,
+          "failed": 0,
+          "ncc": 656017,
+          "cr": 91458783,
+          "cw": 2561980,
+          "intot": 94676780,
+          "wall": 12620.937545537949,
+          "peak_ctx": 107307
+        },
+        "hard": {
+          "resolved": 13,
+          "cost": 21.4145229,
+          "steps": 3832,
+          "out": 1052574,
+          "failed": 0,
+          "ncc": 497446,
+          "cr": 123322969,
+          "cw": 2657528,
+          "intot": 126477943,
+          "wall": 12467.654060125351,
+          "peak_ctx": 100537
         }
       },
       "thinking": null
@@ -236,72 +268,40 @@
       },
       "thinking": null
     },
-    "sonnet-5": {
-      "name": "Claude Sonnet 5",
+    "fable-5-high-2026-07-02": {
+      "name": "Claude Fable 5 (2 Jul)",
       "sets": {
         "standard": {
-          "resolved": 51,
-          "cost": 17.339538299999997,
-          "steps": 1383,
-          "out": 387978,
+          "resolved": 57,
+          "cost": 28.511357000000004,
+          "steps": 647,
+          "out": 282221,
           "failed": 0,
-          "ncc": 2766,
-          "cr": 22385601,
-          "cw": 1278904,
-          "intot": 23667271,
-          "wall": 7276.355935573578,
-          "peak_ctx": 62304
+          "ncc": 1294,
+          "cr": 5502642,
+          "cw": 710778,
+          "intot": 6214714,
+          "wall": 5622.118144273758,
+          "peak_ctx": 34144
         },
         "hard": {
-          "resolved": 34,
-          "cost": 39.629120700000016,
-          "steps": 2206,
-          "out": 725351,
+          "resolved": 40,
+          "cost": 54.7905965,
+          "steps": 796,
+          "out": 525014,
           "failed": 0,
-          "ncc": 4412,
-          "cr": 69775124,
-          "cw": 2080822,
-          "intot": 71860358,
-          "wall": 12420.108799934387,
-          "peak_ctx": 133796
+          "ncc": 1592,
+          "cr": 14035664,
+          "cw": 1159065,
+          "intot": 15196321,
+          "wall": 9031.30515050888,
+          "peak_ctx": 66112
         }
       },
       "thinking": {
-        "standard": 185698,
-        "hard": 368302
+        "standard": 135256,
+        "hard": 283150
       }
-    },
-    "haiku-4-5": {
-      "name": "Claude Haiku 4.5",
-      "sets": {
-        "standard": {
-          "resolved": 38,
-          "cost": 17.904680299999995,
-          "steps": 3663,
-          "out": 980062,
-          "failed": 0,
-          "ncc": 656017,
-          "cr": 91458783,
-          "cw": 2561980,
-          "intot": 94676780,
-          "wall": 12620.937545537949,
-          "peak_ctx": 107307
-        },
-        "hard": {
-          "resolved": 13,
-          "cost": 21.4145229,
-          "steps": 3832,
-          "out": 1052574,
-          "failed": 0,
-          "ncc": 497446,
-          "cr": 123322969,
-          "cw": 2657528,
-          "intot": 126477943,
-          "wall": 12467.654060125351,
-          "peak_ctx": 100537
-        }
-      },
-      "thinking": null
     }
   }
 }

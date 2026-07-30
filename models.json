@@ -1,0 +1,14 @@
+{
+  "_comment": "The model roster, declared once. Array order is display order. `dir` is the run directory (runs/<combo>/<dir>) and the key every analyser uses. Three independent flags, because they answer different questions: `latest` = the current-generation division on the verified card; `contender` = appears on the cross-meet cards and the overview (Opus 4.8 stays a contender while it is still the only Opus with data in multi/multilingual/pro); `effort` = supports adaptive thinking, so can carry an effort sweep. `tier` groups a lineage curve.",
+  "models": [
+    { "dir": "fable-5", "name": "Claude Fable 5", "tier": "fable", "latest": true, "contender": true, "effort": true },
+    { "dir": "opus-5", "name": "Claude Opus 5", "tier": "opus", "latest": true, "contender": true, "effort": true },
+    { "dir": "opus-4-8", "name": "Claude Opus 4.8", "tier": "opus", "contender": true, "effort": true },
+    { "dir": "sonnet-5", "name": "Claude Sonnet 5", "tier": "sonnet", "latest": true, "contender": true, "effort": true },
+    { "dir": "haiku-4-5", "name": "Claude Haiku 4.5", "tier": "haiku", "latest": true, "contender": true, "effort": false },
+    { "dir": "opus-4-7", "name": "Claude Opus 4.7", "tier": "opus", "effort": false },
+    { "dir": "opus-4-6", "name": "Claude Opus 4.6", "tier": "opus", "effort": false },
+    { "dir": "sonnet-4-6", "name": "Claude Sonnet 4.6", "tier": "sonnet", "effort": false },
+    { "dir": "fable-5-high-2026-07-02", "name": "Claude Fable 5 (2 Jul)", "tier": "fable", "effort": false }
+  ]
+}

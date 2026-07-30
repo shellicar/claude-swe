@@ -19,17 +19,18 @@ import os
 
 from analysis_output import _medal_row, emit
 
-MODELS = [  # display name -> dir
-    ("Claude Fable 5", "fable-5"),
-    ("Claude Fable 5 (2 Jul)", "fable-5-high-2026-07-02"),
-    ("Claude Opus 5", "opus-5"),
-    ("Claude Opus 4.8", "opus-4-8"),
-    ("Claude Opus 4.7", "opus-4-7"),
-    ("Claude Opus 4.6", "opus-4-6"),
-    ("Claude Sonnet 4.6", "sonnet-4-6"),
-    ("Claude Sonnet 5", "sonnet-5"),
-    ("Claude Haiku 4.5", "haiku-4-5"),
-]
+# The roster is declared once, in models.json — adding a model used to mean
+# editing four analysers plus the overview, and one of them silently omitted it.
+ROSTER = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                    "models.json")))["models"]
+MODELS = [(m["name"], m["dir"]) for m in ROSTER]
+LATEST = [m["dir"] for m in ROSTER if m.get("latest")]
+
+
+def lineage(tier):
+    """A tier's models oldest-first, so the row reads as an improvement curve."""
+    return [m["dir"] for m in reversed(ROSTER) if m["tier"] == tier
+            and not m["dir"].endswith("2026-07-02")]
 SETS = [("standard", 60), ("hard", 45)]
 ROOT = os.path.dirname(os.path.abspath(__file__))  # was hardcoded to the old machine's path
 
@@ -246,12 +247,9 @@ NOTE = "Verdicts from the pinned swebench judges. Full caveats in report.md."
 # and the two lineages read left-to-right as improvement curves. The verified
 # data.json keeps EVERY model — grouping is presentation, not data loss.
 GROUPS = [
-    ("verified", "SWE-bench Verified — latest-generation division",
-     ["fable-5", "opus-5", "sonnet-5", "haiku-4-5"]),
-    ("opus-models", "Opus division — the lineage (SWE-bench Verified)",
-     ["opus-4-6", "opus-4-7", "opus-4-8", "opus-5"]),
-    ("sonnet-models", "Sonnet division — the lineage (SWE-bench Verified)",
-     ["sonnet-4-6", "sonnet-5"]),
+    ("verified", "SWE-bench Verified — latest-generation division", LATEST),
+    ("opus-models", "Opus division — the lineage (SWE-bench Verified)", lineage("opus")),
+    ("sonnet-models", "Sonnet division — the lineage (SWE-bench Verified)", lineage("sonnet")),
 ]
 
 for card, heading, dirs in GROUPS:
@@ -273,7 +271,7 @@ for card, heading, dirs in GROUPS:
 # the extra spend ever buy the cheapest solve? An effort level that resolves
 # more but never places is paying for results it could have had for less.
 EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"]
-EFFORT_MODELS = ["opus-4-8", "opus-5", "sonnet-5", "fable-5"]
+EFFORT_MODELS = [m["dir"] for m in ROSTER if m.get("effort")]
 
 
 def effort_base(model, level):

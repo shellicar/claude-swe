@@ -682,6 +682,9 @@ async function analyse({ ds, selections }) {
   // The overview joins every dataset's json into one card; regenerating it
   // here means it can never be staler than the analysis it summarises.
   await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, 'analyse-overview.py')]);
+  // Coverage is cross-dataset like the overview: what ran where, at which
+  // effort, generated from the record so it can never be stale.
+  await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, 'analyse-coverage.py')]);
 }
 
 // ---- main ----------------------------------------------------------------------
