@@ -1,0 +1,164 @@
+{
+  "models": {
+    "effort-sweep/opus-4-8-low": {
+      "name": "low",
+      "sets": {
+        "standard": {
+          "resolved": 48,
+          "cost": 8.734529499999997,
+          "steps": 560,
+          "out": 149850,
+          "failed": 0,
+          "ncc": 1120,
+          "cr": 3746509,
+          "cw": 497508,
+          "intot": 4245137,
+          "wall": 2514.329846382141,
+          "peak_ctx": 33593
+        },
+        "hard": {
+          "resolved": 30,
+          "cost": 22.83839925,
+          "steps": 1002,
+          "out": 372615,
+          "failed": 0,
+          "ncc": 2004,
+          "cr": 15981671,
+          "cw": 883547,
+          "intot": 16867222,
+          "wall": 5692.076584100723,
+          "peak_ctx": 87465
+        }
+      },
+      "thinking": null
+    },
+    "effort-sweep/opus-4-8-medium": {
+      "name": "medium",
+      "sets": {
+        "standard": {
+          "resolved": 48,
+          "cost": 15.298577999999997,
+          "steps": 746,
+          "out": 280924,
+          "failed": 0,
+          "ncc": 1492,
+          "cr": 7787611,
+          "cw": 699874,
+          "intot": 8488977,
+          "wall": 7874.77447104454,
+          "peak_ctx": 49110
+        },
+        "hard": {
+          "resolved": 28,
+          "cost": 30.340206000000002,
+          "steps": 1090,
+          "out": 541506,
+          "failed": 0,
+          "ncc": 2180,
+          "cr": 19310737,
+          "cw": 1141806,
+          "intot": 20454723,
+          "wall": 7882.888103961945,
+          "peak_ctx": 72808
+        }
+      },
+      "thinking": null
+    },
+    "main/opus-4-8": {
+      "name": "high",
+      "sets": {
+        "standard": {
+          "resolved": 51,
+          "cost": 21.002607750000006,
+          "steps": 887,
+          "out": 400111,
+          "failed": 1,
+          "ncc": 1772,
+          "cr": 11212608,
+          "cw": 861547,
+          "intot": 12075927,
+          "wall": 7385.718563318253,
+          "peak_ctx": 63238
+        },
+        "hard": {
+          "resolved": 32,
+          "cost": 33.967708,
+          "steps": 1217,
+          "out": 578261,
+          "failed": 1,
+          "ncc": 2432,
+          "cr": 23423796,
+          "cw": 1245940,
+          "intot": 24672168,
+          "wall": 8278.917766809464,
+          "peak_ctx": 85104
+        }
+      },
+      "thinking": null
+    },
+    "effort-sweep/opus-4-8-xhigh": {
+      "name": "xhigh",
+      "sets": {
+        "standard": {
+          "resolved": 52,
+          "cost": 54.9118185,
+          "steps": 1453,
+          "out": 995532,
+          "failed": 0,
+          "ncc": 2906,
+          "cr": 36723302,
+          "cw": 1863574,
+          "intot": 38589782,
+          "wall": 14155.870906352997,
+          "peak_ctx": 156446
+        },
+        "hard": {
+          "resolved": 31,
+          "cost": 80.8791245,
+          "steps": 1801,
+          "out": 1337055,
+          "failed": 0,
+          "ncc": 3602,
+          "cr": 63720829,
+          "cw": 2491892,
+          "intot": 66216323,
+          "wall": 17854.396713256836,
+          "peak_ctx": 141405
+        }
+      },
+      "thinking": null
+    },
+    "effort-sweep/opus-4-8-max": {
+      "name": "max",
+      "sets": {
+        "standard": {
+          "resolved": 53,
+          "cost": 124.01702500000002,
+          "steps": 2103,
+          "out": 2245988,
+          "failed": 0,
+          "ncc": 4206,
+          "cr": 89854490,
+          "cw": 3667048,
+          "intot": 93525744,
+          "wall": 28703.015696763992,
+          "peak_ctx": 239948
+        },
+        "hard": {
+          "resolved": 30,
+          "cost": 203.65055500000003,
+          "steps": 2643,
+          "out": 3295918,
+          "failed": 0,
+          "ncc": 5286,
+          "cr": 180774825,
+          "cw": 4934202,
+          "intot": 185714313,
+          "wall": 42308.152988910675,
+          "peak_ctx": 432609
+        }
+      },
+      "thinking": null
+    }
+  }
+}

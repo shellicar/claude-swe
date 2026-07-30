@@ -1,0 +1,179 @@
+{
+  "models": {
+    "effort-sweep/opus-5-low": {
+      "name": "low",
+      "sets": {
+        "standard": {
+          "resolved": 48,
+          "cost": 5.49738525,
+          "steps": 393,
+          "out": 84201,
+          "failed": 0,
+          "ncc": 786,
+          "cr": 1936848,
+          "cw": 387201,
+          "intot": 2324835,
+          "wall": 1241.0862228870392,
+          "peak_ctx": 26180
+        },
+        "hard": {
+          "resolved": 26,
+          "cost": 9.226831749999999,
+          "steps": 461,
+          "out": 156666,
+          "failed": 0,
+          "ncc": 922,
+          "cr": 3786706,
+          "cw": 545955,
+          "intot": 4333583,
+          "wall": 2178.9325098991394,
+          "peak_ctx": 27804
+        }
+      },
+      "thinking": {
+        "standard": 21048,
+        "hard": 52640
+      }
+    },
+    "effort-sweep/opus-5-medium": {
+      "name": "medium",
+      "sets": {
+        "standard": {
+          "resolved": 55,
+          "cost": 9.418335499999998,
+          "steps": 523,
+          "out": 159786,
+          "failed": 0,
+          "ncc": 1046,
+          "cr": 3783236,
+          "cw": 564294,
+          "intot": 4348576,
+          "wall": 2294.058153152466,
+          "peak_ctx": 35561
+        },
+        "hard": {
+          "resolved": 33,
+          "cost": 16.25450425,
+          "steps": 669,
+          "out": 270584,
+          "failed": 0,
+          "ncc": 1338,
+          "cr": 8621491,
+          "cw": 827595,
+          "intot": 9450424,
+          "wall": 3743.925595998764,
+          "peak_ctx": 42521
+        }
+      },
+      "thinking": {
+        "standard": 68436,
+        "hard": 136525
+      }
+    },
+    "main/opus-5": {
+      "name": "high",
+      "sets": {
+        "standard": {
+          "resolved": 56,
+          "cost": 18.8134755,
+          "steps": 795,
+          "out": 325841,
+          "failed": 0,
+          "ncc": 1590,
+          "cr": 9485001,
+          "cw": 946720,
+          "intot": 10433311,
+          "wall": 4581.504316806793,
+          "peak_ctx": 61872
+        },
+        "hard": {
+          "resolved": 38,
+          "cost": 37.64664075,
+          "steps": 1131,
+          "out": 594764,
+          "failed": 0,
+          "ncc": 2262,
+          "cr": 27061149,
+          "cw": 1477705,
+          "intot": 28541116,
+          "wall": 8189.523367643356,
+          "peak_ctx": 107438
+        }
+      },
+      "thinking": {
+        "standard": 150534,
+        "hard": 320895
+      }
+    },
+    "effort-sweep/opus-5-xhigh": {
+      "name": "xhigh",
+      "sets": {
+        "standard": {
+          "resolved": 58,
+          "cost": 36.759806000000005,
+          "steps": 1171,
+          "out": 635506,
+          "failed": 1,
+          "ncc": 2340,
+          "cr": 22345562,
+          "cw": 1550028,
+          "intot": 23897930,
+          "wall": 8584.774913311005,
+          "peak_ctx": 71608
+        },
+        "hard": {
+          "resolved": 41,
+          "cost": 70.13504024999999,
+          "steps": 1585,
+          "out": 1026707,
+          "failed": 1,
+          "ncc": 3168,
+          "cr": 59484113,
+          "cw": 2353515,
+          "intot": 61840796,
+          "wall": 13414.321832895279,
+          "peak_ctx": 134515
+        }
+      },
+      "thinking": {
+        "standard": 360995,
+        "hard": 602127
+      }
+    },
+    "effort-sweep/opus-5-max": {
+      "name": "max",
+      "sets": {
+        "standard": {
+          "resolved": 59,
+          "cost": 64.38244875000001,
+          "steps": 1619,
+          "out": 1093498,
+          "failed": 0,
+          "ncc": 3238,
+          "cr": 44347930,
+          "cw": 2376775,
+          "intot": 46727943,
+          "wall": 14019.435772180557,
+          "peak_ctx": 159196
+        },
+        "hard": {
+          "resolved": 44,
+          "cost": 96.03321050000001,
+          "steps": 1891,
+          "out": 1422720,
+          "failed": 0,
+          "ncc": 3782,
+          "cr": 82198826,
+          "cw": 3095502,
+          "intot": 85298110,
+          "wall": 18049.767729997635,
+          "peak_ctx": 134471
+        }
+      },
+      "thinking": {
+        "standard": 661444,
+        "hard": 899307
+      }
+    }
+  }
+}

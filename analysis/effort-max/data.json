@@ -1,0 +1,71 @@
+{
+  "models": {
+    "effort-sweep/opus-4-8-max": {
+      "name": "Claude Opus 4.8",
+      "sets": {
+        "standard": {
+          "resolved": 53,
+          "cost": 124.01702500000002,
+          "steps": 2103,
+          "out": 2245988,
+          "failed": 0,
+          "ncc": 4206,
+          "cr": 89854490,
+          "cw": 3667048,
+          "intot": 93525744,
+          "wall": 28703.015696763992,
+          "peak_ctx": 239948
+        },
+        "hard": {
+          "resolved": 30,
+          "cost": 203.65055500000003,
+          "steps": 2643,
+          "out": 3295918,
+          "failed": 0,
+          "ncc": 5286,
+          "cr": 180774825,
+          "cw": 4934202,
+          "intot": 185714313,
+          "wall": 42308.152988910675,
+          "peak_ctx": 432609
+        }
+      },
+      "thinking": null
+    },
+    "effort-sweep/opus-5-max": {
+      "name": "Claude Opus 5",
+      "sets": {
+        "standard": {
+          "resolved": 59,
+          "cost": 64.38244875000001,
+          "steps": 1619,
+          "out": 1093498,
+          "failed": 0,
+          "ncc": 3238,
+          "cr": 44347930,
+          "cw": 2376775,
+          "intot": 46727943,
+          "wall": 14019.435772180557,
+          "peak_ctx": 159196
+        },
+        "hard": {
+          "resolved": 44,
+          "cost": 96.03321050000001,
+          "steps": 1891,
+          "out": 1422720,
+          "failed": 0,
+          "ncc": 3782,
+          "cr": 82198826,
+          "cw": 3095502,
+          "intot": 85298110,
+          "wall": 18049.767729997635,
+          "peak_ctx": 134471
+        }
+      },
+      "thinking": {
+        "standard": 661444,
+        "hard": 899307
+      }
+    }
+  }
+}

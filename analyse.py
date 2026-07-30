@@ -43,16 +43,18 @@ THINKING_LEGACY = {
 }
 
 
-def wire_thinking(dirn):
+def wire_thinking(dirn, base=None):
     """Per-set thinking tokens from the leg's own proxy capture, attributed to
     instances by first-user-message fingerprint (same hash the proxy uses).
-    Returns None when the leg has no capture."""
-    timing = f"{ROOT}/runs/main/{dirn}/api-timing.jsonl"
+    Returns None when the leg has no capture. `base` is the run out-path,
+    defaulting to the model's main leg."""
+    base = base or f"main/{dirn}"
+    timing = f"{ROOT}/runs/{base}/api-timing.jsonl"
     if not os.path.exists(timing):
         return THINKING_LEGACY.get(dirn)
     conv2set = {}
     for s, _ in SETS:
-        for tf in glob.glob(f"{ROOT}/runs/main/{dirn}/{s}/*/*.traj.json"):
+        for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
             t = json.load(open(tf))
             first = next((m for m in t["messages"] if m.get("role") == "user"), None)
             c = first["content"]
@@ -259,6 +261,107 @@ for card, heading, dirs in GROUPS:
         payload["covers"] = ["standard", "hard"]
     emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload,
          medals=instance_medals([f"main/{d}" for d in dirs]))
+
+
+# Effort divisions: one card per model, read left-to-right as the effort curve.
+# `high` is the model's DEFAULT-effort leg in main — the sweep deliberately
+# omits it rather than running the same configuration twice. A model appears
+# only once at least two of its levels have been run and marked, so a sweep in
+# progress produces a partial curve instead of an error.
+#
+# The per-instance medals answer the question the aggregate rows cannot: does
+# the extra spend ever buy the cheapest solve? An effort level that resolves
+# more but never places is paying for results it could have had for less.
+EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"]
+EFFORT_MODELS = ["opus-4-8", "opus-5", "sonnet-5", "fable-5"]
+
+
+def effort_base(model, level):
+    return f"main/{model}" if level == "high" else f"effort-sweep/{model}-{level}"
+
+
+def _try_leg(base, s):
+    try:
+        return leg(base, s)
+    except (IndexError, FileNotFoundError):
+        return None
+
+
+def effort_card(card, heading, entries):
+    """One card from (label, base, thinking-dir) triples. Bases with no marked
+    leg are dropped, so a sweep in progress yields a partial card rather than
+    an error; fewer than two survivors means no contest and no card."""
+    bases, labels, edata, think = [], [], {}, {}
+    for label, base, tdir in entries:
+        sets = {s: _try_leg(base, s) for s, _n in SETS}
+        if all(sets.values()):
+            bases.append(base)
+            labels.append(label)
+            edata[base] = sets
+            think[base] = wire_thinking(tdir, base)
+    if len(bases) < 2:
+        return
+
+    def esection(getter, n, tset):
+        body = []
+        for lab, fn in rows:
+            if fn is None:  # thinking row
+                cells = []
+                for b in bases:
+                    v = think.get(b)
+                    if not v:
+                        cells.append("—")
+                    elif tset is None:
+                        cells.append(tok(v["standard"] + v["hard"]))
+                    else:
+                        cells.append(tok(v[tset]))
+                body.append((lab, cells))
+                continue
+            body.append((lab.format(n=n) if "{n}" in lab else lab,
+                         [fn(getter(b), n) for b in bases]))
+        return body
+
+    def ecombined(b):
+        c = {}
+        for k in edata[b]["standard"]:
+            if k == "peak_ctx":
+                c[k] = max(edata[b]["standard"][k], edata[b]["hard"][k])
+            else:
+                c[k] = edata[b]["standard"][k] + edata[b]["hard"][k]
+        return c
+
+    sections = [
+        ("Standard — 60 *Python* events (<1 h human effort)",
+         esection(lambda b: edata[b]["standard"], 60, "standard")),
+        ("Hard — 45 *Python* events (1+ h human effort)",
+         esection(lambda b: edata[b]["hard"], 45, "hard")),
+        ("Combined — 105 *Python* events",
+         esection(lambda b: ecombined(b), 105, None)),
+    ]
+    emit(card, heading, labels, sections, NOTE,
+         {"models": {b: {"name": lv, "sets": edata[b], "thinking": think.get(b)}
+                     for b, lv in zip(bases, labels)}},
+         medals=instance_medals(bases))
+
+
+# Per model: the effort curve, read left-to-right.
+for _model in EFFORT_MODELS:
+    effort_card(
+        f"effort-{_model}",
+        f"Effort division — {NAME[_model]} (SWE-bench Verified)",
+        [(lv, effort_base(_model, lv), _model) for lv in EFFORT_LEVELS],
+    )
+
+# Per effort level: every contender at the SAME setting. Comparing models at
+# their defaults was fine while effort bought nothing (Opus 4.8), but Opus 5
+# converts effort into resolves, so a single-level comparison now depends on
+# which level you pick — these cards make the choice explicit instead.
+for _lv in EFFORT_LEVELS:
+    effort_card(
+        f"effort-{_lv}",
+        f"{_lv.capitalize()}-effort division — every contender (SWE-bench Verified)",
+        [(NAME[m], effort_base(m, _lv), m) for m in EFFORT_MODELS],
+    )
 
 
 # Prompt-scaffolding division: does the imperative "MUST" scaffolding earn its

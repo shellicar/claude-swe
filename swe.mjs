@@ -105,8 +105,22 @@ const readManifest = () => {
   return entries;
 };
 
+// --model does one of two jobs depending on whether a combination was named:
+// with one it FILTERS that combination's legs (a substring of the model id, so
+// `--model opus-5` picks every effort leg of one model out of a big sweep);
+// without one it declares the model for an ad-hoc run.
 const legs = ({ combo, ds }, flags) => {
-  if (combo) return combo.legs;
+  if (combo) {
+    if (!flags.model) return combo.legs;
+    const wanted = combo.legs.filter((l) => l.model.includes(flags.model));
+    if (wanted.length === 0) {
+      throw new Error(
+        `--model ${flags.model} matches no leg in ${combo.name} `
+        + `(has ${[...new Set(combo.legs.map((l) => l.model))].join(', ')})`,
+      );
+    }
+    return wanted;
+  }
   if (!flags.model) throw new Error('no combination set and no --model: nothing to run');
   const short = flags.model.split('/').pop().replace(/^claude-/, '');
   return [{ model: flags.model, effort: flags.effort, out: `runs/adhoc/${ds.name}-${short}` }];
@@ -709,7 +723,8 @@ const printHelp = () => {
     }
   }).join('; ')}`);
   console.log('');
-  console.log('flags: --model <m> --effort <e> --workers <n>   (ad-hoc runs without a combination)');
+  console.log('flags: --model <m>   with a combination: run/mark only its matching legs (substring)');
+  console.log('       --model <m> --effort <e> --workers <n>   (ad-hoc runs without a combination)');
   console.log('');
   console.log('examples:');
   console.log('  ./swe.mjs                        the dashboard: status of every meet');

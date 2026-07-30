@@ -67,6 +67,6 @@
 | 🥇 gold | 4 | 13 | 46 | 35 |
 | 🥈 silver | 12 | 25 | 26 | 24 |
 | 🥉 bronze | 21 | 22 | 6 | 23 |
-| medals total | 37 | 60 | 78 | 82 |
+| placing | 4 | 🥉 **3** | 🥇 **1** | 🥈 **2** |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.

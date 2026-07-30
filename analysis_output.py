@@ -127,10 +127,26 @@ def emit(name, heading, columns, sections, note, payload, medals=None):
     # own event, resolving is the entry ticket, cheapest finisher takes gold.
     if medals:
         counts, unsolved, total = medals
+        keys = list(counts)
         body = []
         for i, (m, word) in enumerate(zip(MEDALS, ("gold", "silver", "bronze"))):
-            body.append((f"{m} {word}", [str(counts[d][i]) for d in counts]))
-        body.append(("medals total", [str(sum(counts[d])) for d in counts]))
+            body.append((f"{m} {word}", [str(counts[d][i]) for d in keys]))
+        # Placing by the Olympic rule: golds first, silvers then bronzes only
+        # as tie-breakers — one gold outranks any number of silvers. Gold here
+        # means "solved it cheapest", so it is the column that carries the
+        # contest; a total-medals count would mostly restate Resolved.
+        order = sorted(keys, key=lambda d: tuple(-n for n in counts[d]))
+        placing = {}
+        rank = 0
+        for i, d in enumerate(order):
+            if i and counts[d] != counts[order[i - 1]]:
+                rank = i
+            placing[d] = rank
+        body.append(("placing", [
+            f"{MEDALS[placing[d]]}\u00a0**{placing[d] + 1}**" if placing[d] < 3
+            else str(placing[d] + 1)
+            for d in keys
+        ]))
         heading_row = (
             f"Medal tally — per instance ({total} events, "
             f"{unsolved} unsolved by every model)"
