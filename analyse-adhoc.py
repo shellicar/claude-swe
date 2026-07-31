@@ -9,6 +9,7 @@ baseline, and a cell is only comparable because it is the same event.
 Rows are instances, columns are contenders. Each cell is verdict and cost.
 """
 import glob
+import hashlib
 import json
 import os
 
@@ -47,12 +48,57 @@ def cell(base, rid, sel, instance):
     return f"{mark} ${c:.3f}"
 
 
+def thinking_tokens(usage):
+    """Reasoning tokens under whichever name the provider uses — Anthropic's
+    output_tokens_details.thinking_tokens or OpenAI-shaped
+    completion_tokens_details.reasoning_tokens."""
+    return (
+        (usage.get("output_tokens_details") or {}).get("thinking_tokens")
+        or (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
+        or 0
+    )
+
+
+def wire_totals(leg, program):
+    """Thinking tokens and call count for ONE program of a leg.
+
+    A leg writes a single api-timing.jsonl across every program it ran, so
+    totalling the file would report the same numbers under each — double
+    counting. Calls carry the proxy's `conv` fingerprint (sha256 of the first
+    user message), and each trajectory contains that same message, so the two
+    can be matched back to the program that produced them.
+    """
+    timing = f"{ADHOC}/{leg}/api-timing.jsonl"
+    if not os.path.exists(timing):
+        return None
+    mine = set()
+    for tf in glob.glob(f"{ADHOC}/{leg}/{program}/*/*.traj.json"):
+        t = json.load(open(tf))
+        first = next((m for m in t["messages"] if m.get("role") == "user"), None)
+        if not first:
+            continue
+        c = first["content"]
+        text = c if isinstance(c, str) else "\n".join(b.get("text", "") for b in c)
+        mine.add(hashlib.sha256(text.encode()).hexdigest()[:12])
+    calls = think = 0
+    for line in open(timing):
+        d = json.loads(line)
+        if d.get("status") != 200 or d.get("conv") not in mine:
+            continue
+        calls += 1
+        think += thinking_tokens(d.get("usage") or {})
+    return {"calls": calls, "thinking": think} if calls else None
+
+
 def model_of(preds_path):
-    """The leg's own model, from what it recorded rather than its directory."""
+    """The leg's own model, from what it recorded rather than its directory.
+    Run directories drop the vendor's `claude-` prefix, so the recorded name
+    has to be normalised the same way or the roster lookup misses and the
+    column shows a raw model id."""
     data = json.load(open(preds_path))
     for v in data.values():
         name = v.get("model_name_or_path", "")
-        return name.split("/")[-1]
+        return name.split("/")[-1].removeprefix("claude-")
     return None
 
 
@@ -127,6 +173,11 @@ if sections:
                   "|" + "---|" * (len(columns) + 1)]
         for label, cells in body:
             lines.append(f"| {label} | " + " | ".join(cells) + " |")
+        w = wire_totals(*title.split(" / "))
+        if w:
+            lines.append(f"| _wire capture_ | {w['calls']} calls, "
+                         f"{w['thinking']:,} thinking tokens |"
+                         + " |" * (len(columns) - 1))
         lines.append("")
     lines += ["", "Same event, so the cells compare directly; the ad-hoc leg's own "
               "program is not a meet's full program, so its RATE does not."]

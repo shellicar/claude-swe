@@ -162,9 +162,26 @@ export function startTimingProxy({
             // Trust the response, not the request: a provider may stream when
             // asked to, or not, and the content-type is what actually arrived.
             ...extractResult(raw, (up.headers['content-type'] ?? '').includes('text/event-stream')),
+            // A bare status cannot be diagnosed after the fact: a 429 is
+            // rate limiting, an exhausted balance, or a quota, and they need
+            // opposite responses (wait / pay / reduce concurrency). Keep the
+            // provider's own words for anything that failed, plus the
+            // rate-limit headers that say which budget was hit.
+            ...(up.statusCode >= 400
+              ? {
+                error_body: raw.slice(0, 2000),
+                rate_limit: Object.fromEntries(
+                  Object.entries(up.headers).filter(([k]) => (
+                    k.startsWith('x-ratelimit') || k.startsWith('anthropic-ratelimit')
+                      || k === 'retry-after'
+                  )),
+                ),
+              }
+              : {}),
           };
           appendFileSync(timingLog, JSON.stringify(line) + '\n');
-          console.log(`${pre}# ${n} ${meta.model ?? '?'} conv=${meta.conv ?? '?'} msgs=${meta.n_messages ?? '?'} ${up.statusCode} ttfb=${line.ttfb_ms}ms total=${line.total_ms}ms`);
+          const why = up.statusCode >= 400 ? ` ${raw.slice(0, 200).replace(/\s+/g, ' ')}` : '';
+          console.log(`${pre}# ${n} ${meta.model ?? '?'} conv=${meta.conv ?? '?'} msgs=${meta.n_messages ?? '?'} ${up.statusCode} ttfb=${line.ttfb_ms}ms total=${line.total_ms}ms${why}`);
         });
       });
 

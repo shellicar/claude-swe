@@ -45,6 +45,18 @@ THINKING_LEGACY = {
 }
 
 
+def thinking_tokens(usage):
+    """Reasoning tokens, whichever name the provider gives them. The proxy
+    records `usage` raw so the wire shape is preserved; naming them is the
+    analysis's job. Anthropic: output_tokens_details.thinking_tokens.
+    OpenAI-shaped (Moonshot): completion_tokens_details.reasoning_tokens."""
+    return (
+        (usage.get("output_tokens_details") or {}).get("thinking_tokens")
+        or (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
+        or 0
+    )
+
+
 def wire_thinking(dirn, base=None):
     """Per-set thinking tokens from the leg's own proxy capture, attributed to
     instances by first-user-message fingerprint (same hash the proxy uses).
@@ -65,11 +77,9 @@ def wire_thinking(dirn, base=None):
     totals = {s: 0 for s, _ in SETS}
     for line in open(timing):
         d = json.loads(line)
-        u = d.get("usage") or {}
-        th = (u.get("output_tokens_details") or {}).get("thinking_tokens") or 0
         s = conv2set.get(d.get("conv"))
         if s is not None:
-            totals[s] += th
+            totals[s] += thinking_tokens(d.get("usage") or {})
     return totals
 
 
