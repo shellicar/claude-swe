@@ -19,6 +19,10 @@
     "configExceptions": {
       "haiku": [
         "swebench-local.yaml"
+      ],
+      "kimi": [
+        "swebench-local.yaml",
+        "swebench-kimi.yaml"
       ]
     },
     "subset": "datasets/swe-bench-verified.jsonl"
@@ -34,7 +38,7 @@
     },
     "micro": {
       "file": "instances-micro.txt",
-      "expected": 3,
+      "expected": 4,
       "analyse": false
     }
   }

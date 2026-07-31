@@ -23,7 +23,11 @@ import { createHash } from 'node:crypto';
 import { appendFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-const TARGET = 'api.anthropic.com';
+// The upstream host. The proxy itself stays provider-neutral — it forwards
+// bytes and records `usage` raw, leaving the analysis to interpret whichever
+// shape came back — so the host is the only thing a non-Anthropic contender
+// changes. Default keeps every existing caller working unchanged.
+const TARGET = process.env.TIMING_PROXY_TARGET ?? 'api.anthropic.com';
 
 const fingerprint = (body) => {
   try {
@@ -45,13 +49,63 @@ const fingerprint = (body) => {
   }
 };
 
-// Non-streaming JSON responses only (litellm/mini do not stream). A streamed
-// response still gets full timing; usage/stop_reason are simply left null.
-const extractResult = (raw, streamed) => {
+/** Splits an SSE body into its `data:` payloads. Frames end at a blank line,
+ * which may be LF or CRLF; `data:` may repeat within one frame and a leading
+ * space after the colon is not part of the value. Comments (`:`) and the
+ * OpenAI `[DONE]` sentinel carry nothing. */
+const sseData = (raw) => {
+  const out = [];
+  for (const block of raw.split(/\r?\n\r?\n/)) {
+    const lines = [];
+    for (const line of block.split(/\r?\n/)) {
+      if (!line.startsWith('data:')) continue;
+      const v = line.slice(5);
+      lines.push(v.startsWith(' ') ? v.slice(1) : v);
+    }
+    const data = lines.join('\n');
+    if (data && data !== '[DONE]') out.push(data);
+  }
+  return out;
+};
+
+/** Usage from a streamed response. The two wire shapes report it differently:
+ * Anthropic SPLITS it — input and cache counts arrive on `message_start`,
+ * output tokens and stop_reason on `message_delta` — while OpenAI-shaped
+ * providers put a complete `usage` object on the final chunk. Reconstructing
+ * both keeps the timing log identical whether or not the leg streamed. */
+const fromStream = (raw) => {
+  let usage = null;
+  let stop_reason = null;
+  for (const data of sseData(raw)) {
+    let e;
+    try {
+      e = JSON.parse(data);
+    } catch {
+      continue;
+    }
+    if (e.type === 'message_start' && e.message?.usage) {
+      usage = { ...e.message.usage };
+    } else if (e.type === 'message_delta') {
+      stop_reason = e.delta?.stop_reason ?? stop_reason;
+      if (e.usage) usage = { ...(usage ?? {}), ...e.usage };
+    } else if (e.usage) {
+      usage = { ...(usage ?? {}), ...e.usage }; // OpenAI-shaped final chunk
+    }
+    stop_reason = e.choices?.[0]?.finish_reason ?? stop_reason;
+  }
+  return { stop_reason, usage };
+};
+
+export const extractResult = (raw, streamed) => {
   try {
-    if (streamed) return { stop_reason: null, usage: null };
+    if (streamed) return fromStream(raw);
     const j = JSON.parse(raw);
-    return { stop_reason: j.stop_reason ?? null, usage: j.usage ?? null };
+    // stop_reason is Anthropic's name for it; OpenAI-shaped providers put the
+    // same fact in choices[].finish_reason.
+    return {
+      stop_reason: j.stop_reason ?? j.choices?.[0]?.finish_reason ?? null,
+      usage: j.usage ?? null,
+    };
   } catch {
     return { stop_reason: null, usage: null };
   }
@@ -68,6 +122,8 @@ export function startTimingProxy({
   port = Number(process.env.PORT ?? 18899),
   timingLog = process.env.TIMING_LOG ?? new URL('./api-timing.jsonl', import.meta.url).pathname,
   label,
+  // Per-leg, because parallel legs may target different providers.
+  target = TARGET,
 } = {}) {
   let counter = 0;
   // Console prefix so parallel proxies' lines are attributable to their leg.
@@ -82,10 +138,10 @@ export function startTimingProxy({
       const tStart = Date.now();
       let tFirst = null;
 
-      const headers = { ...req.headers, host: TARGET };
+      const headers = { ...req.headers, host: target };
       delete headers['accept-encoding']; // identity response so we can parse it
 
-      const fwd = https.request({ hostname: TARGET, path: req.url, method: req.method, headers }, (up) => {
+      const fwd = https.request({ hostname: target, path: req.url, method: req.method, headers }, (up) => {
         res.writeHead(up.statusCode, up.headers);
         let raw = '';
         up.on('data', (c) => {
@@ -103,7 +159,9 @@ export function startTimingProxy({
             status: up.statusCode,
             ttfb_ms: tFirst === null ? null : tFirst - tStart,
             total_ms: tEnd - tStart,
-            ...extractResult(raw, meta.stream),
+            // Trust the response, not the request: a provider may stream when
+            // asked to, or not, and the content-type is what actually arrived.
+            ...extractResult(raw, (up.headers['content-type'] ?? '').includes('text/event-stream')),
           };
           appendFileSync(timingLog, JSON.stringify(line) + '\n');
           console.log(`${pre}# ${n} ${meta.model ?? '?'} conv=${meta.conv ?? '?'} msgs=${meta.n_messages ?? '?'} ${up.statusCode} ttfb=${line.ttfb_ms}ms total=${line.total_ms}ms`);
@@ -126,7 +184,7 @@ export function startTimingProxy({
     server.once('error', reject); // e.g. EADDRINUSE
     server.listen(port, () => {
       server.off('error', reject);
-      console.log(`${pre}# timing-proxy on :${port} -> ${TARGET}, logging to ${timingLog}`);
+      console.log(`${pre}# timing-proxy on :${port} -> ${target}, logging to ${timingLog}`);
       resolve({
         baseUrl: `http://localhost:${port}`,
         port,

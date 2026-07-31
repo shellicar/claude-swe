@@ -5,7 +5,7 @@
 //
 // This is the entire orchestration. A run script is just config: it calls
 // runExperiment() with parameters and nothing else.
-import { mkdirSync, openSync, closeSync } from 'node:fs';
+import { mkdirSync, openSync, closeSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { startTimingProxy } from '../mitm/timing-mitm.mjs';
 import { spawnAwait, instanceFilter, onShutdown, isDraining, repoRoot } from './harness.mjs';
@@ -51,16 +51,39 @@ export async function runExperiment({
   // The proxy appends here on first request, so the dir must exist first.
   mkdirSync(join(repoRoot, out), { recursive: true });
 
-  const proxy = await startTimingProxy({ port, timingLog: join(repoRoot, out, 'api-timing.jsonl'), label });
+  // Which upstream the proxy forwards to, and which variable tells litellm
+  // where the API lives, both follow from the model's provider prefix. The
+  // proxy stays provider-neutral; only the host and the variable's name differ.
+  const provider = model.includes('/') ? model.split('/')[0] : 'anthropic';
+  const PROVIDERS = {
+    anthropic: { host: 'api.anthropic.com', baseUrlVar: 'ANTHROPIC_BASE_URL' },
+    moonshot: { host: 'api.moonshot.ai', baseUrlVar: 'MOONSHOT_API_BASE' },
+  };
+  const upstream = PROVIDERS[provider];
+  if (!upstream) {
+    throw new Error(
+      `no proxy upstream declared for provider '${provider}' (model ${model}) `
+      + `— add it to PROVIDERS in orchestration/experiment.mjs`,
+    );
+  }
+
+  const proxy = await startTimingProxy({
+    port, timingLog: join(repoRoot, out, 'api-timing.jsonl'), label, target: upstream.host,
+  });
   console.log(`[${tag}] proxy up at ${proxy.baseUrl}, timing -> ${out}/api-timing.jsonl`);
 
   // Route the run's API traffic through the proxy. Retry for ~an hour
   // (60 attempts, 60s backoff cap) instead of the scaffold's ~8-minute
   // default, so instances sleep through API instability rather than dying
   // as InternalServerError — the container idles alive and waiting is free.
+  const rig = JSON.parse(readFileSync(join(repoRoot, 'rig.json'), 'utf8'));
+  const retries = ['xhigh', 'max'].includes(effort)
+    ? rig.retryAttemptsHighEffort
+    : rig.retryAttempts;
   const env = {
-    ANTHROPIC_BASE_URL: proxy.baseUrl,
-    MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT: '60',
+    [upstream.baseUrlVar]: proxy.baseUrl
+      + (upstream.baseUrlVar === 'MOONSHOT_API_BASE' ? '/v1' : ''),
+    MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT: String(retries),
   };
 
   // Track the live leg so Ctrl-C kills it and the proxy together.

@@ -4,5 +4,8 @@
   "markWorkers": 14,
   "replayParallel": 24,
   "basePort": 19180,
-  "replayStepTimeoutS": 90
+  "replayStepTimeoutS": 90,
+  "_retry": "How long a leg waits out API rate limiting before an instance dies with RateLimitError and an empty patch. Backoff caps at 60s, so attempts are roughly minutes. High-effort legs get far longer: their requests are large and slow, they burn a token-per-minute budget faster, and a fable-5 max leg lost 80 of 105 instances this way — the run is void, not just delayed, so waiting is always cheaper than re-running.",
+  "retryAttempts": 60,
+  "retryAttemptsHighEffort": 480
 }

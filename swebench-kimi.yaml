@@ -1,0 +1,41 @@
+# Kimi (Moonshot) overlay — merge AFTER swebench-local.yaml, INSTEAD of
+# thinking-adaptive.yaml.
+#
+# swebench-local.yaml is Anthropic-shaped: it sends an anthropic-beta OAuth
+# header and a 64k max_tokens, and the adaptive-thinking overlay sends
+# `thinking: {type: adaptive}` — all Anthropic-only. Merging them into a
+# Moonshot request either errors or silently sends nonsense, so a Kimi leg
+# takes this overlay and the dataset's configExceptions routes it here.
+#
+# `drop_params: true` is inherited and does much of the work: litellm drops
+# parameters the provider rejects rather than failing the call. The header is
+# still cleared explicitly, because a stray vendor header is the kind of thing
+# that produces an ambiguous 4xx hours into a run.
+model:
+  model_kwargs:
+    drop_params: true
+    # Kimi bounds OUTPUT with max_completion_tokens, and enforces
+    #   input + max_completion_tokens <= context window
+    # or the request fails outright. Context is 1M (k3) but only 262k
+    # (k2.7-code), and a trajectory's input grows every turn — so a generous
+    # value would work early and then start failing mid-run, the worst shape
+    # of bug. 32k leaves 230k of input headroom on the smaller model while
+    # sitting far above this rig's observed per-turn output (600-1,500).
+    # Both spellings are set: swebench-local.yaml's max_tokens is inherited
+    # and would otherwise stay at 64000, and drop_params discards whichever
+    # the provider does not accept.
+    max_completion_tokens: 32000
+    max_tokens: 32000
+    extra_headers: {}
+    parallel_tool_calls: true
+    # Moonshot calls stream=true a must: a long non-streaming generation holds
+    # an idle connection that firewalls, NAT and load balancers kill, and they
+    # report far higher failure rates without it. Nothing is lost by it — the
+    # scaffold rebuilds one response from the chunks and the proxy reassembles
+    # usage from the SSE frames — and ttfb becomes a real measurement instead
+    # of a copy of total time.
+    stream: true
+    # Without this an OpenAI-shaped stream omits usage entirely, and a missing
+    # usage silently costs nothing, which would disarm the cost_limit guard.
+    stream_options:
+      include_usage: true

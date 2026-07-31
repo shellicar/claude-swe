@@ -685,6 +685,9 @@ async function analyse({ ds, selections }) {
   // Coverage is cross-dataset like the overview: what ran where, at which
   // effort, generated from the record so it can never be stale.
   await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, 'analyse-coverage.py')]);
+  // Ad-hoc legs (--model, outside a combination) still cost money and still
+  // get marked, so their figures come from the pipeline too.
+  await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, 'analyse-adhoc.py')]);
 }
 
 // ---- main ----------------------------------------------------------------------

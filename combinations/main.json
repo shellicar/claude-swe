@@ -12,6 +12,7 @@
     { "model": "anthropic/claude-haiku-4-5", "out": "runs/main/haiku-4-5" },
     { "model": "anthropic/claude-sonnet-4-6", "out": "runs/main/sonnet-4-6" },
     { "model": "anthropic/claude-sonnet-5", "out": "runs/main/sonnet-5" },
-    { "model": "anthropic/claude-opus-5", "out": "runs/main/opus-5" }
+    { "model": "anthropic/claude-opus-5", "out": "runs/main/opus-5" },
+    { "model": "moonshot/kimi-k2.7-code", "out": "runs/main/kimi-k2.7-code" }
   ]
 }

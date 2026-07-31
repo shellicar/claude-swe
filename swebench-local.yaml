@@ -187,3 +187,21 @@ model:
     extra_headers:
       anthropic-beta: oauth-2025-04-20
     parallel_tool_calls: true
+    # Transport only — same tokens, same sampling, same results (verified
+    # 2026-07-31 against the four micro instances: turn counts and cost within
+    # a percent on the three solvable ones, the outlier being the instance no
+    # model resolves, where variance is unbounded because nothing in the
+    # prompt tells an agent when to give up).
+    #
+    # What it buys is measurement, not speed: ttfb was previously a copy of
+    # total time, because "first byte" of a buffered response is the whole
+    # response. Streaming splits a call into prefill (network + queue + KV
+    # rehydration, ~32% of a call) and decode (~68%), so cache effectiveness
+    # and a provider's tokens/sec become observable per call.
+    #
+    # The risk that had to be cleared first was thinking-block signatures:
+    # Anthropic requires the exact block echoed back on the next turn, the
+    # signature arrives as signature_delta events, and litellm's
+    # stream_chunk_builder has to reassemble it. It does — but a 400 on turn 2
+    # of every trajectory is the symptom if that ever regresses.
+    stream: true

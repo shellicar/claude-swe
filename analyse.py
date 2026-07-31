@@ -24,13 +24,14 @@ from analysis_output import _medal_row, emit
 ROSTER = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                     "models.json")))["models"]
 MODELS = [(m["name"], m["dir"]) for m in ROSTER]
-LATEST = [m["dir"] for m in ROSTER if m.get("latest")]
+_LATEST_DECLARED = [m["dir"] for m in ROSTER if m.get("latest")]
 
 
 def lineage(tier):
-    """A tier's models oldest-first, so the row reads as an improvement curve."""
+    """A tier's models oldest-first, so the row reads as an improvement curve.
+    Only those with data — see `data` below."""
     return [m["dir"] for m in reversed(ROSTER) if m["tier"] == tier
-            and not m["dir"].endswith("2026-07-02")]
+            and not m["dir"].endswith("2026-07-02") and m["dir"] in data]
 SETS = [("standard", 60), ("hard", 45)]
 ROOT = os.path.dirname(os.path.abspath(__file__))  # was hardcoded to the old machine's path
 
@@ -177,8 +178,18 @@ def think(dirn, s):
     return tok(v[s]) if v else "—"
 
 
-# gather: data[dirn][set] = leg dict
-data = {d: {s: leg(f"main/{d}", s) for s, n in SETS} for _, d in MODELS}
+# gather: data[dirn][set] = leg dict. A contender may be DECLARED before it
+# has run — models.json is the roster, not the record — so a model with no
+# marked main leg is simply absent here and drops out of the cards below
+# rather than failing the whole analysis.
+def _main_leg(d):
+    try:
+        return {s: leg(f"main/{d}", s) for s, _n in SETS}
+    except (IndexError, FileNotFoundError):
+        return None
+
+
+data = {d: v for _, d in MODELS if (v := _main_leg(d)) is not None}
 
 rows = [
     ("## Results", lambda L, n: ""),
@@ -246,6 +257,8 @@ NOTE = "Verdicts from the pinned swebench judges. Full caveats in report.md."
 # groups, like an athlete in two events): the latest generation of each tier,
 # and the two lineages read left-to-right as improvement curves. The verified
 # data.json keeps EVERY model — grouping is presentation, not data loss.
+LATEST = [d for d in _LATEST_DECLARED if d in data]
+
 GROUPS = [
     ("verified", "SWE-bench Verified — latest-generation division", LATEST),
     ("opus-models", "Opus division — the lineage (SWE-bench Verified)", lineage("opus")),
@@ -254,7 +267,7 @@ GROUPS = [
 
 for card, heading, dirs in GROUPS:
     payload = {"models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
-                          for name, d in MODELS}}
+                          for name, d in MODELS if d in data}}
     if card == "verified":
         payload["covers"] = ["standard", "hard"]
     emit(card, heading, [NAME[d] for d in dirs], sections_for(dirs), NOTE, payload,
@@ -342,24 +355,15 @@ def effort_card(card, heading, entries):
          medals=instance_medals(bases))
 
 
-# Per model: the effort curve, read left-to-right.
-for _model in EFFORT_MODELS:
-    effort_card(
-        f"effort-{_model}",
-        f"Effort division — {NAME[_model]} (SWE-bench Verified)",
-        [(lv, effort_base(_model, lv), _model) for lv in EFFORT_LEVELS],
-    )
-
-# Per effort level: every contender at the SAME setting. Comparing models at
-# their defaults was fine while effort bought nothing (Opus 4.8), but Opus 5
-# converts effort into resolves, so a single-level comparison now depends on
-# which level you pick — these cards make the choice explicit instead.
-for _lv in EFFORT_LEVELS:
-    effort_card(
-        f"effort-{_lv}",
-        f"{_lv.capitalize()}-effort division — every contender (SWE-bench Verified)",
-        [(NAME[m], effort_base(m, _lv), m) for m in EFFORT_MODELS],
-    )
+# The meet's own card, with one column per contender AT EACH EFFORT it has
+# been run at — same rows as before, more columns. A contender with no sweep
+# contributes only its default column, and unmarked levels are dropped, so
+# the card widens as the sweeps land rather than needing its own file.
+effort_card(
+    "verified",
+    "SWE-bench Verified — latest-generation division",
+    [(f"{NAME[m]} {lv}", effort_base(m, lv), m) for m in LATEST for lv in EFFORT_LEVELS],
+)
 
 
 # Prompt-scaffolding division: does the imperative "MUST" scaffolding earn its
