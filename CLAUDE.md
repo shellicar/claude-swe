@@ -28,6 +28,16 @@ uv pip install sb-cli swebench
 
 Note: an editable install (`-e`) means the submodule's source is used live. To change the scaffold, edit in the submodule, commit/push to the fork, then bump the submodule pointer here.
 
+**A scaffold change is one unit of work, not three.** Editing in the submodule takes effect immediately for you (editable install) and for nobody else, so a half-finished sequence is worse than not starting: this repo's configs assume scaffold behaviour that no other clone has. Do all of it, in order, without stopping in between:
+
+```sh
+git -C vendor/mini-swe-agent add <files> && git -C vendor/mini-swe-agent commit
+git -C vendor/mini-swe-agent push origin feature/claude-swe-patches
+git add vendor/mini-swe-agent   # the pointer, committed with the changes that need it
+```
+
+The order matters and only that order is safe. Bumping the pointer before the push records a commit nobody can fetch, so a fresh clone fails at `git submodule update`. Pushing without bumping leaves this repo on the old scaffold while its configs expect the new one — which is exactly how a leg dies at turn 2 with a 400 rather than at startup with an obvious error.
+
 `.env`:
 
 ```env
