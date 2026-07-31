@@ -1,4 +1,19 @@
 agent:
+  # Upstream added this in #863 with a default of 3: stop after N replies in a
+  # row that carried no usable tool call. Set explicitly here because 3 is
+  # wrong for this rig in both directions, and the trajectories say so.
+  #
+  # A cap catches genuine death spirals — Haiku 4.5 produced runs of 48, 61,
+  # 77, 88, 92 and 117 consecutive no-tool-call replies, every one of them
+  # burning 250 calls and resolving nothing.
+  #
+  # But a MALFORMED tool call raises the same error, and those recover: 32
+  # exec-arm-5 trajectories bounced past 3 (streaks up to 100) and 21 of them
+  # RESOLVED. A cap of 3 would have destroyed those results — and the exec
+  # grammar arms exist precisely to study rejected tool calls.
+  #
+  # 40 sits above every observed recovery and well below the spirals.
+  max_consecutive_format_errors: 40
   system_identity: |
     You are a Claude agent, built on Anthropic's Claude Agent SDK.
 
