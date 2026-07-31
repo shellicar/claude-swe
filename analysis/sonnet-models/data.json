@@ -166,6 +166,41 @@
       },
       "thinking": null
     },
+    "kimi-k2.7-code": {
+      "name": "Kimi k2.7-code",
+      "sets": {
+        "standard": {
+          "resolved": 47,
+          "cost": 13.57945016,
+          "steps": 2401,
+          "out": 710682,
+          "failed": 2,
+          "ncc": 48821992,
+          "cr": 0,
+          "cw": 0,
+          "intot": 48821992,
+          "wall": 24380.818489551544,
+          "peak_ctx": 75997
+        },
+        "hard": {
+          "resolved": 21,
+          "cost": 20.96962395,
+          "steps": 2798,
+          "out": 917868,
+          "failed": 0,
+          "ncc": 81578821,
+          "cr": 0,
+          "cw": 0,
+          "intot": 81578821,
+          "wall": 27171.670715093613,
+          "peak_ctx": 126349
+        }
+      },
+      "thinking": {
+        "standard": 460774,
+        "hard": 746124
+      }
+    },
     "opus-4-7": {
       "name": "Claude Opus 4.7",
       "sets": {

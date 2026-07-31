@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { extractResult } from './timing-mitm.mjs';
+import { extractResult, fingerprint } from './timing-mitm.mjs';
 
 const anthropicStream = [
   'event: message_start',
@@ -30,6 +30,41 @@ const openaiStream = [
   'data: [DONE]',
   '',
 ].join('\r\n');
+
+test('the request knobs are recorded, so a dropped parameter is visible', () => {
+  // The case this exists for: a leg configured for reasoning_effort=low where
+  // litellm removed the parameter before sending. Only the wire can show it.
+  const body = JSON.stringify({
+    model: 'kimi-k3',
+    messages: [{ role: 'user', content: 'fix the bug' }],
+    tools: [{ name: 'bash', description: 'x'.repeat(5000) }],
+    max_completion_tokens: 32000,
+    stream: true,
+    extra_body: { reasoning_effort: 'low' },
+  });
+
+  const actual = fingerprint(body).request_params;
+
+  assert.deepEqual(actual, {
+    model: 'kimi-k3',
+    max_completion_tokens: 32000,
+    stream: true,
+    extra_body: { reasoning_effort: 'low' },
+  });
+});
+
+test('a bulky parameter is truncated to a string, not mangled into invalid json', () => {
+  const body = JSON.stringify({
+    model: 'm',
+    messages: [],
+    output_config: { effort: 'max', padding: 'y'.repeat(500) },
+  });
+
+  const actual = fingerprint(body).request_params.output_config;
+
+  assert.equal(typeof actual, 'string');
+  assert.match(actual, /^\{"effort":"max"/);
+});
 
 test('anthropic stream: usage is reassembled from both events', () => {
   const expected = {

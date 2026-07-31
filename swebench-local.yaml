@@ -182,7 +182,14 @@ model:
     submit your solution (you will not be able to continue working on this task after that).
   model_name: "anthropic/claude-sonnet-4-5-20250929"
   model_kwargs:
-    drop_params: true
+    # OFF deliberately. Dropping unsupported parameters silently is worse than
+    # failing: a Kimi K3 leg was configured for reasoning_effort=low, litellm
+    # did not list that parameter as supported for Moonshot, and it was removed
+    # without a word — so the leg ran at the model's default (max), billed at
+    # max rates, and would have been recorded and charted as "low". A loud
+    # error at startup costs one run; a silently wrong parameter costs the
+    # experiment's conclusions.
+    drop_params: false
     max_tokens: 64000
     extra_headers:
       anthropic-beta: oauth-2025-04-20

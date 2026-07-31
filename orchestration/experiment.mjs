@@ -56,8 +56,22 @@ export async function runExperiment({
   // proxy stays provider-neutral; only the host and the variable's name differ.
   const provider = model.includes('/') ? model.split('/')[0] : 'anthropic';
   const PROVIDERS = {
-    anthropic: { host: 'api.anthropic.com', baseUrlVar: 'ANTHROPIC_BASE_URL' },
-    moonshot: { host: 'api.moonshot.ai', baseUrlVar: 'MOONSHOT_API_BASE' },
+    anthropic: {
+      host: 'api.anthropic.com',
+      baseUrlVar: 'ANTHROPIC_BASE_URL',
+      effortKey: 'model.model_kwargs.output_config.effort',
+    },
+    moonshot: {
+      host: 'api.moonshot.ai',
+      baseUrlVar: 'MOONSHOT_API_BASE',
+      // Kimi takes reasoning_effort at the TOP LEVEL of the request, but
+      // litellm does not list it among Moonshot's supported params, so passing
+      // it as an ordinary kwarg gets it validated away. extra_body is
+      // forwarded verbatim, which is the only route that actually reaches the
+      // API. Verified by scripts/check_moonshot_params.py — worth re-checking
+      // when litellm updates, since a native param would be preferable.
+      effortKey: 'model.model_kwargs.extra_body.reasoning_effort',
+    },
   };
   const upstream = PROVIDERS[provider];
   if (!upstream) {
@@ -94,7 +108,7 @@ export async function runExperiment({
   });
 
   const cfgArgs = configs.flatMap((c) => ['-c', c]);
-  if (effort) cfgArgs.push('-c', `model.model_kwargs.output_config.effort=${effort}`);
+  if (effort) cfgArgs.push('-c', `${upstream.effortKey}=${effort}`);
 
   // Per-leg log file so parallel legs don't interleave on one console.
   const logFd = log ? openSync(join(repoRoot, log), 'a') : null;

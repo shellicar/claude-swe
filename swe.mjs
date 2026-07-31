@@ -19,9 +19,10 @@
 //
 // Records: runs/ (patches, trajectories, wire captures), evals/ (verdicts),
 // analysis/ (derived figures). Paths come from the declarations.
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { basename, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { runExperiment } from './orchestration/experiment.mjs';
 import { spawnAwait, onShutdown, repoRoot } from './orchestration/harness.mjs';
 
@@ -111,15 +112,24 @@ const readManifest = () => {
 // without one it declares the model for an ad-hoc run.
 const legs = ({ combo, ds }, flags) => {
   if (combo) {
-    if (!flags.model) return combo.legs;
-    const wanted = combo.legs.filter((l) => l.model.includes(flags.model));
+    let wanted = combo.legs;
+    if (flags.model) wanted = wanted.filter((l) => l.model.includes(flags.model));
+    // --effort narrows further, so one rung of a model's ladder can be run
+    // on its own: the cheapest level first tells you whether the rest is
+    // worth paying for.
+    if (flags.effort) wanted = wanted.filter((l) => l.effort === flags.effort);
     if (wanted.length === 0) {
+      const shown = [flags.model && `--model ${flags.model}`,
+        flags.effort && `--effort ${flags.effort}`].filter(Boolean).join(' ');
       throw new Error(
-        `--model ${flags.model} matches no leg in ${combo.name} `
-        + `(has ${[...new Set(combo.legs.map((l) => l.model))].join(', ')})`,
+        `${shown} matches no leg in ${combo.name} `
+        + `(has ${[...new Set(combo.legs.map(
+          (l) => l.model + (l.effort ? ` @${l.effort}` : ''),
+        ))].join(', ')})`,
       );
     }
-    return wanted;
+    if (flags.model || flags.effort) return wanted;
+    return combo.legs;
   }
   if (!flags.model) throw new Error('no combination set and no --model: nothing to run');
   const short = flags.model.split('/').pop().replace(/^claude-/, '');
@@ -334,6 +344,55 @@ async function run(target, flags) {
   console.log(`[run] ${results.length} legs complete`);
 }
 
+// What produced a verdict, beyond the patch itself. A verdict can change
+// without the patch changing: the marker is an EDITABLE install of
+// vendor/swebench, the dataset snapshot pins the tests, and the image manifest
+// pins what they run against. CLAUDE.md notes the harness version is silently
+// part of any experiment — this is what stops it being silent, so a card built
+// from legs marked by different graders can be spotted rather than trusted.
+const sha256 = (p) => (existsSync(p)
+  ? createHash('sha256').update(readFileSync(p)).digest('hex').slice(0, 16)
+  : null);
+
+const gitDescribe = (dir) => {
+  const at = join(repoRoot, dir);
+  if (!existsSync(at)) return null;
+  const run = (args) => {
+    const r = spawnSync('git', ['-C', at, ...args], { encoding: 'utf8' });
+    return r.status === 0 ? r.stdout.trim() : null;
+  };
+  return {
+    commit: run(['rev-parse', 'HEAD']),
+    // A dirty marker means the verdicts came from code that exists nowhere
+    // else — not reproducible, and worth seeing in the record.
+    dirty: run(['status', '--porcelain']) !== '',
+  };
+};
+
+function writeProvenance(ds, leg, sel, extra) {
+  const marker = ds.marker.type === 'swebench' ? 'vendor/swebench'
+    : ds.marker.type === 'scale' ? ds.marker.harness
+      : ds.marker.harness ?? 'vendor/multi-swe-bench';
+  const record = {
+    marked_at: new Date().toISOString(),
+    leg: leg.out,
+    selection: sel,
+    marker: { type: ds.marker.type, path: marker, ...gitDescribe(marker) },
+    dataset: { snapshot: ds.snapshot, sha256: sha256(join(repoRoot, ds.snapshot)) },
+    image_manifest_sha256: sha256(MANIFEST),
+    rig: gitDescribe('.'),
+    mark_workers: markWorkers(),
+    ...extra,
+  };
+  const path = join(EVALS_DIR, 'provenance',
+    `${leg.out.replaceAll('/', '_')}_${sel}.json`);
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, JSON.stringify(record, null, 2));
+  const m = record.marker;
+  console.log(`[mark] provenance: ${ds.marker.type} @ ${m.commit?.slice(0, 8) ?? '?'}`
+    + `${m.dirty ? ' (DIRTY)' : ''} -> ${path.slice(repoRoot.length + 1)}`);
+}
+
 async function mark(target, flags) {
   const { ds, selections } = target;
   const theLegs = legs(target, flags);
@@ -374,6 +433,7 @@ async function mark(target, flags) {
           '--namespace', 'swebench',
           '--run_id', runId,
         ], { cwd: EVALS_DIR, onChild: (c) => { current = c; } });
+        writeProvenance(ds, leg, sel, { run_id: runId });
       } else if (ds.marker.type === 'scale') {
         const outDir = scaleOutDir(ds, leg, sel);
         mkdirSync(outDir, { recursive: true });
@@ -393,6 +453,7 @@ async function mark(target, flags) {
           '--docker_platform', 'linux/amd64',
           '--num_workers', markWorkers(),
         ], { cwd: join(repoRoot, ds.marker.harness), onChild: (c) => { current = c; } });
+        writeProvenance(ds, leg, sel, { output_dir: outDir.slice(repoRoot.length + 1) });
       } else if (ds.marker.type === 'multi-swe') {
         const outDir = multiSweOutDir(ds, leg, sel);
         const scratch = join(EVALS_DIR, 'logs', 'multi-swe', `${basename(leg.out)}-${sel}`);
@@ -448,6 +509,7 @@ async function mark(target, flags) {
           '-m', 'multi_swe_bench.harness.run_evaluation',
           '--config', cfgPath,
         ], { onChild: (c) => { current = c; } });
+        writeProvenance(ds, leg, sel, { output_dir: outDir.slice(repoRoot.length + 1) });
       } else {
         throw new Error(`unknown marker type: ${ds.marker.type}`);
       }

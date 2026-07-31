@@ -23,6 +23,8 @@ GLYPH = {"marked": "#", "run": "~", "none": "."}
 
 ROSTER = json.load(open(f"{ROOT}/models.json"))["models"]
 COLUMNS = [m for m in ROSTER if m.get("contender")]
+# A model's own ladder — a slot it cannot have is not a gap in coverage.
+LEVELS_BY_MODEL = {m["dir"]: m.get("effortLevels", LEVELS) for m in ROSTER}
 
 
 # Verdict locations, listed once: globbing per cell made this card take two
@@ -91,8 +93,12 @@ for (kind, label), legs in sorted(rows.items(), key=lambda kv: (ORDER[kv[0][0]],
     cells = []
     selection = label.split("/")[-1]
     for m in COLUMNS:
+        mine = LEVELS_BY_MODEL[m["dir"]]
         strip = ""
         for lv in LEVELS:
+            if lv not in mine:
+                strip += " "  # the model has no such level; not a gap
+                continue
             out = legs.get((m["dir"], lv))
             strip += GLYPH[leg_state(out, selection)] if out else GLYPH["none"]
         cells.append(f"`{strip}`")

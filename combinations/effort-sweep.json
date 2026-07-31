@@ -20,6 +20,8 @@
     { "model": "anthropic/claude-fable-5", "effort": "low", "out": "runs/effort-sweep/fable-5-low" },
     { "model": "anthropic/claude-fable-5", "effort": "medium", "out": "runs/effort-sweep/fable-5-medium" },
     { "model": "anthropic/claude-fable-5", "effort": "xhigh", "out": "runs/effort-sweep/fable-5-xhigh" },
-    { "model": "anthropic/claude-fable-5", "effort": "max", "out": "runs/effort-sweep/fable-5-max" }
+    { "model": "anthropic/claude-fable-5", "effort": "max", "out": "runs/effort-sweep/fable-5-max" },
+    { "model": "moonshot/kimi-k3", "effort": "low", "out": "runs/effort-sweep/kimi-k3-low" },
+    { "model": "moonshot/kimi-k3", "effort": "high", "out": "runs/effort-sweep/kimi-k3-high" }
   ]
 }

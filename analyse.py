@@ -295,10 +295,19 @@ for card, heading, dirs in GROUPS:
 # more but never places is paying for results it could have had for less.
 EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"]
 EFFORT_MODELS = [m["dir"] for m in ROSTER if m.get("effort")]
+# The ladder a model actually has: Anthropic's five, but Kimi K3 has three.
+EFFORT_BY_MODEL = {m["dir"]: m.get("effortLevels", EFFORT_LEVELS) for m in ROSTER}
+# The level a model's main leg runs at when nothing is pinned. Anthropic
+# defaults to `high`; Kimi K3 defaults to `max`, so "main == high" is not
+# universal and assuming it would mislabel a whole curve.
+DEFAULT_EFFORT = {m["dir"]: m.get("defaultEffort", "high") for m in ROSTER}
 
 
 def effort_base(model, level):
-    return f"main/{model}" if level == "high" else f"effort-sweep/{model}-{level}"
+    """Where a model-at-effort leg lives. The default level IS the main leg —
+    the sweep omits it rather than running the same configuration twice."""
+    return (f"main/{model}" if level == DEFAULT_EFFORT.get(model, "high")
+            else f"effort-sweep/{model}-{level}")
 
 
 def _try_leg(base, s):
@@ -372,7 +381,8 @@ def effort_card(card, heading, entries):
 effort_card(
     "verified",
     "SWE-bench Verified — latest-generation division",
-    [(f"{NAME[m]} {lv}", effort_base(m, lv), m) for m in LATEST for lv in EFFORT_LEVELS],
+    [(f"{NAME[m]} {lv}", effort_base(m, lv), m)
+     for m in LATEST for lv in EFFORT_BY_MODEL[m]],
 )
 
 

@@ -1,0 +1,18 @@
+{
+  "marked_at": "2026-07-30T11:33:34.431810+00:00",
+  "inferred": true,
+  "inferred_note": "Reconstructed from repository history, not recorded at mark time. The marker is certain (its pointer never moved and predates every verdict); dataset and manifest hashes are taken from the commit current when the verdict file was written; dirtiness is unknowable.",
+  "selection": "standard",
+  "marker": {
+    "type": "swebench",
+    "path": "vendor/swebench",
+    "commit": "bd1ecccd8a30da93be49fe662e3922df29aa70a4",
+    "dirty": null
+  },
+  "repo_commit_at_mark_time": "cb601a2966a90db24c19cdab03c29e57e88f67cb",
+  "dataset": {
+    "snapshot": "datasets/swe-bench-verified.jsonl",
+    "sha256": "8f8c8fee718e37d7"
+  },
+  "image_manifest_sha256": "ecca49b1482d69a9"
+}

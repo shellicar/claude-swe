@@ -13,7 +13,9 @@
 # that produces an ambiguous 4xx hours into a run.
 model:
   model_kwargs:
-    drop_params: true
+    # See swebench-local.yaml: silently dropped parameters cost more than they
+    # save. Anything Moonshot will not accept should fail here, loudly.
+    drop_params: false
     # Kimi bounds OUTPUT with max_completion_tokens, and enforces
     #   input + max_completion_tokens <= context window
     # or the request fails outright. Context is 1M (k3) but only 262k

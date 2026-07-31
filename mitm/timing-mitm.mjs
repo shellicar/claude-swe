@@ -29,7 +29,28 @@ import { pathToFileURL } from 'node:url';
 // changes. Default keeps every existing caller working unchanged.
 const TARGET = process.env.TIMING_PROXY_TARGET ?? 'api.anthropic.com';
 
-const fingerprint = (body) => {
+// Everything in a request EXCEPT the bulk: the conversation itself, the tool
+// schemas, the system prompt. What is left is the knobs — effort, token caps,
+// sampling, cache settings — which is exactly what a config change is meant to
+// alter and the only place it can be proven to have arrived.
+//
+// This exists because a Kimi K3 leg was configured for reasoning_effort=low
+// and litellm removed the parameter before sending; the run looked correct at
+// every layer above the wire. Intent is not evidence.
+const BULK = new Set(['messages', 'tools', 'system', 'tool_choice']);
+const requestParams = (j) => Object.fromEntries(
+  Object.entries(j)
+    .filter(([k]) => !BULK.has(k))
+    .map(([k, v]) => {
+      if (typeof v !== 'object' || v === null) return [k, v];
+      // Keep nested objects whole when small; a large one becomes a truncated
+      // STRING rather than a sliced-and-reparsed object, which would throw.
+      const s = JSON.stringify(v);
+      return [k, s.length <= 300 ? v : `${s.slice(0, 300)}\u2026`];
+    }),
+);
+
+export const fingerprint = (body) => {
   try {
     const j = JSON.parse(body);
     const first = (j.messages ?? []).find((m) => m.role === 'user');
@@ -43,9 +64,10 @@ const fingerprint = (body) => {
         .update(typeof first?.content === 'string' ? first.content : (first?.content ?? []).map((b) => b.text ?? '').join('\n'))
         .digest('hex')
         .slice(0, 12),
+      request_params: requestParams(j),
     };
   } catch {
-    return { model: null, stream: false, n_messages: null, conv: null };
+    return { model: null, stream: false, n_messages: null, conv: null, request_params: null };
   }
 };
 
