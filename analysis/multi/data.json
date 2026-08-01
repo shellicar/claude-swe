@@ -135,6 +135,68 @@
         }
       }
     },
+    "opus-5": {
+      "*C++* control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 35.0962,
+        "steps": 695,
+        "out": 526697,
+        "ncc": 1368,
+        "cr": 19911214,
+        "cw": 1827932,
+        "intot": 21740514,
+        "wall": 24968.016419649124,
+        "thinking": 419137,
+        "resolved": null,
+        "by_repo": null
+      },
+      "*Rust* control": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 18.23520725,
+        "steps": 549,
+        "out": 311528,
+        "ncc": 1090,
+        "cr": 10908008,
+        "cw": 765447,
+        "intot": 11674545,
+        "wall": 8381.72622013092,
+        "thinking": 222342,
+        "resolved": null,
+        "by_repo": null
+      },
+      "*C++* variation (verify + 900s \u2014 exhibition)": {
+        "instances": 0,
+        "empty": 0,
+        "cost": 0,
+        "steps": 0,
+        "out": 0,
+        "ncc": 0,
+        "cr": 0,
+        "cw": 0,
+        "intot": 0,
+        "wall": 0.0,
+        "thinking": null,
+        "resolved": null,
+        "by_repo": null
+      },
+      "tokio stack \u2014 *Rust* (org tokio-rs)": {
+        "instances": 20,
+        "empty": 0,
+        "cost": 23.627715249999998,
+        "steps": 572,
+        "out": 496041,
+        "ncc": 1136,
+        "cr": 13558017,
+        "cw": 684861,
+        "intot": 14244014,
+        "wall": 6383.55575299263,
+        "thinking": 371299,
+        "resolved": null,
+        "by_repo": null
+      }
+    },
     "opus-4-8": {
       "*C++* control": {
         "instances": 20,

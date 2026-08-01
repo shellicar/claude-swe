@@ -63,6 +63,33 @@ Off the corporate network, none of this is needed — and the `.env` lines must 
 
 All scripts assume cwd = this directory and call `.venv/bin/` binaries directly — no venv activation needed.
 
+## Running and reporting
+
+When something needs running, give three things: **the command, what it does,
+and where its results appear.** Then stop — running it is not yours, and the
+figures are in the file, not in the reply.
+
+> Marks every unmarked leg, checks the record is complete, regenerates the
+> cards.
+>
+> ```sh
+> node swe.mjs mark main audit analyse
+> ```
+>
+> Results: `analysis/verified/table.md`, `analysis/coverage/table.md`
+
+This covers `swe.mjs`, the analysers, and any script just written — read-only
+ones included.
+
+If answering needs a figure the pipeline cannot produce, change the analyser
+that should produce it and point at the card. Not a script on the side.
+
+Why: `swe.mjs` and the cards in `analysis/*/` exist because this was once done
+ad-hoc — one-off scripts, numbers quoted from nowhere, nothing regenerable. A
+number in prose is indistinguishable from a generated one, so it cannot be
+checked, diffed, or trusted a week later. Investigating with a scratch script
+is fine; quoting its output as a result is what recreates the problem.
+
 ## Workflow
 
 One entry point: `./swe.mjs [verb...] [target...] [flags]` — verbs × targets given in any order (each token is classified as a verb or a target), either axis omitted meaning all of it. Verbs `draw resolve ensure run mark status audit analyse` run in the order given, per target; targets are `combinations/*.json` names or `dataset[/selection]`. Bare `./swe.mjs` is the whole dashboard; `./swe.mjs analyse` analyses everything; `./swe.mjs exec-arm-2 run mark` runs then marks that combination. Every verb resumes; `audit` blocks `analyse` on incomplete records. Conceptual model: `docs/diagrams/operations.d2`. Superseded per-experiment scripts live in `archive/` for reference.

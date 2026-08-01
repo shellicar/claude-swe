@@ -113,7 +113,8 @@ for title, body in (("Meets — contenders on the medal table", bodies["meet"]),
                     ("Fixtures — scaffolding and tools, not contenders", bodies["fixture"])):
     if not body:
         continue
-    lines.append(f"| **{title}** |" + " |" * len(columns))
+    # Repeat the column names per section, so a section reads on its own.
+    lines.append(f"| **{title}** | " + " | ".join(f"**{c}**" for c in columns) + " |")
     for label, cells in body:
         lines.append(f"| {label} | " + " | ".join(cells) + " |")
 lines.append(f"| **Legend** |" + " |" * len(columns))

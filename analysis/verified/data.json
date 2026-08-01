@@ -1,77 +1,11 @@
 {
+  "covers": [
+    "standard",
+    "hard"
+  ],
   "models": {
-    "effort-sweep/fable-5-low": {
-      "name": "Claude Fable 5 low",
-      "sets": {
-        "standard": {
-          "resolved": 52,
-          "cost": 14.515220000000005,
-          "steps": 451,
-          "out": 115088,
-          "failed": 0,
-          "ncc": 902,
-          "cr": 2307875,
-          "cw": 515514,
-          "intot": 2824291,
-          "wall": 5536.927034854889,
-          "peak_ctx": 37533
-        },
-        "hard": {
-          "resolved": 32,
-          "cost": 21.3997135,
-          "steps": 495,
-          "out": 204449,
-          "failed": 0,
-          "ncc": 990,
-          "cr": 4088126,
-          "cw": 566339,
-          "intot": 4655455,
-          "wall": 2704.5017030239105,
-          "peak_ctx": 38081
-        }
-      },
-      "thinking": {
-        "standard": 35381,
-        "hard": 80161
-      }
-    },
-    "effort-sweep/fable-5-medium": {
-      "name": "Claude Fable 5 medium",
-      "sets": {
-        "standard": {
-          "resolved": 57,
-          "cost": 20.077446,
-          "steps": 571,
-          "out": 187118,
-          "failed": 0,
-          "ncc": 1142,
-          "cr": 3818351,
-          "cw": 551342,
-          "intot": 4370835,
-          "wall": 2705.850237607956,
-          "peak_ctx": 27095
-        },
-        "hard": {
-          "resolved": 38,
-          "cost": 36.131351,
-          "steps": 684,
-          "out": 338940,
-          "failed": 0,
-          "ncc": 1368,
-          "cr": 8766771,
-          "cw": 832312,
-          "intot": 9600451,
-          "wall": 4549.936597585678,
-          "peak_ctx": 46392
-        }
-      },
-      "thinking": {
-        "standard": 79639,
-        "hard": 167988
-      }
-    },
-    "main/fable-5": {
-      "name": "Claude Fable 5 high",
+    "fable-5": {
+      "name": "Claude Fable 5",
       "sets": {
         "standard": {
           "resolved": 55,
@@ -102,148 +36,8 @@
       },
       "thinking": null
     },
-    "effort-sweep/fable-5-xhigh": {
-      "name": "Claude Fable 5 xhigh",
-      "sets": {
-        "standard": {
-          "resolved": 57,
-          "cost": 62.5235575,
-          "steps": 803,
-          "out": 487840,
-          "failed": 0,
-          "ncc": 1606,
-          "cr": 8229210,
-          "cw": 2390903,
-          "intot": 10621719,
-          "wall": 143084.7896478176,
-          "peak_ctx": 50484
-        },
-        "hard": {
-          "resolved": 44,
-          "cost": 85.2569155,
-          "steps": 1008,
-          "out": 817255,
-          "failed": 0,
-          "ncc": 2016,
-          "cr": 24617368,
-          "cw": 1580531,
-          "intot": 26199915,
-          "wall": 11228.704324007034,
-          "peak_ctx": 86985
-        }
-      },
-      "thinking": {
-        "standard": 259772,
-        "hard": 489020
-      }
-    },
-    "effort-sweep/fable-5-max": {
-      "name": "Claude Fable 5 max",
-      "sets": {
-        "standard": {
-          "resolved": 58,
-          "cost": 96.85959749999996,
-          "steps": 1195,
-          "out": 962728,
-          "failed": 0,
-          "ncc": 2390,
-          "cr": 25559535,
-          "cw": 1851181,
-          "intot": 27413106,
-          "wall": 12296.292160749435,
-          "peak_ctx": 96236
-        },
-        "hard": {
-          "resolved": 44,
-          "cost": 162.95311850000002,
-          "steps": 1516,
-          "out": 1413905,
-          "failed": 0,
-          "ncc": 3032,
-          "cr": 59735161,
-          "cw": 2599391,
-          "intot": 62337584,
-          "wall": 16572.043317079544,
-          "peak_ctx": 166327
-        }
-      },
-      "thinking": {
-        "standard": 713354,
-        "hard": 897677
-      }
-    },
-    "effort-sweep/opus-5-low": {
-      "name": "Claude Opus 5 low",
-      "sets": {
-        "standard": {
-          "resolved": 48,
-          "cost": 5.49738525,
-          "steps": 393,
-          "out": 84201,
-          "failed": 0,
-          "ncc": 786,
-          "cr": 1936848,
-          "cw": 387201,
-          "intot": 2324835,
-          "wall": 1241.0862228870392,
-          "peak_ctx": 26180
-        },
-        "hard": {
-          "resolved": 26,
-          "cost": 9.226831749999999,
-          "steps": 461,
-          "out": 156666,
-          "failed": 0,
-          "ncc": 922,
-          "cr": 3786706,
-          "cw": 545955,
-          "intot": 4333583,
-          "wall": 2178.9325098991394,
-          "peak_ctx": 27804
-        }
-      },
-      "thinking": {
-        "standard": 21048,
-        "hard": 52640
-      }
-    },
-    "effort-sweep/opus-5-medium": {
-      "name": "Claude Opus 5 medium",
-      "sets": {
-        "standard": {
-          "resolved": 55,
-          "cost": 9.418335499999998,
-          "steps": 523,
-          "out": 159786,
-          "failed": 0,
-          "ncc": 1046,
-          "cr": 3783236,
-          "cw": 564294,
-          "intot": 4348576,
-          "wall": 2294.058153152466,
-          "peak_ctx": 35561
-        },
-        "hard": {
-          "resolved": 33,
-          "cost": 16.25450425,
-          "steps": 669,
-          "out": 270584,
-          "failed": 0,
-          "ncc": 1338,
-          "cr": 8621491,
-          "cw": 827595,
-          "intot": 9450424,
-          "wall": 3743.925595998764,
-          "peak_ctx": 42521
-        }
-      },
-      "thinking": {
-        "standard": 68436,
-        "hard": 136525
-      }
-    },
-    "main/opus-5": {
-      "name": "Claude Opus 5 high",
+    "opus-5": {
+      "name": "Claude Opus 5",
       "sets": {
         "standard": {
           "resolved": 56,
@@ -277,148 +71,40 @@
         "hard": 320895
       }
     },
-    "effort-sweep/opus-5-xhigh": {
-      "name": "Claude Opus 5 xhigh",
+    "opus-4-8": {
+      "name": "Claude Opus 4.8",
       "sets": {
         "standard": {
-          "resolved": 58,
-          "cost": 36.759806000000005,
-          "steps": 1171,
-          "out": 635506,
+          "resolved": 51,
+          "cost": 21.002607750000006,
+          "steps": 887,
+          "out": 400111,
           "failed": 1,
-          "ncc": 2340,
-          "cr": 22345562,
-          "cw": 1550028,
-          "intot": 23897930,
-          "wall": 8584.774913311005,
-          "peak_ctx": 71608
+          "ncc": 1772,
+          "cr": 11212608,
+          "cw": 861547,
+          "intot": 12075927,
+          "wall": 7385.718563318253,
+          "peak_ctx": 63238
         },
         "hard": {
-          "resolved": 41,
-          "cost": 70.13504024999999,
-          "steps": 1585,
-          "out": 1026707,
+          "resolved": 32,
+          "cost": 33.967708,
+          "steps": 1217,
+          "out": 578261,
           "failed": 1,
-          "ncc": 3168,
-          "cr": 59484113,
-          "cw": 2353515,
-          "intot": 61840796,
-          "wall": 13414.321832895279,
-          "peak_ctx": 134515
+          "ncc": 2432,
+          "cr": 23423796,
+          "cw": 1245940,
+          "intot": 24672168,
+          "wall": 8278.917766809464,
+          "peak_ctx": 85104
         }
       },
-      "thinking": {
-        "standard": 360995,
-        "hard": 602127
-      }
+      "thinking": null
     },
-    "effort-sweep/opus-5-max": {
-      "name": "Claude Opus 5 max",
-      "sets": {
-        "standard": {
-          "resolved": 59,
-          "cost": 64.38244875000001,
-          "steps": 1619,
-          "out": 1093498,
-          "failed": 0,
-          "ncc": 3238,
-          "cr": 44347930,
-          "cw": 2376775,
-          "intot": 46727943,
-          "wall": 14019.435772180557,
-          "peak_ctx": 159196
-        },
-        "hard": {
-          "resolved": 44,
-          "cost": 96.03321050000001,
-          "steps": 1891,
-          "out": 1422720,
-          "failed": 0,
-          "ncc": 3782,
-          "cr": 82198826,
-          "cw": 3095502,
-          "intot": 85298110,
-          "wall": 18049.767729997635,
-          "peak_ctx": 134471
-        }
-      },
-      "thinking": {
-        "standard": 661444,
-        "hard": 899307
-      }
-    },
-    "effort-sweep/sonnet-5-low": {
-      "name": "Claude Sonnet 5 low",
-      "sets": {
-        "standard": {
-          "resolved": 46,
-          "cost": 7.6578225,
-          "steps": 753,
-          "out": 186134,
-          "failed": 0,
-          "ncc": 1506,
-          "cr": 8222515,
-          "cw": 638544,
-          "intot": 8862565,
-          "wall": 2613.97283911705,
-          "peak_ctx": 46164
-        },
-        "hard": {
-          "resolved": 21,
-          "cost": 12.919183050000003,
-          "steps": 1036,
-          "out": 300715,
-          "failed": 0,
-          "ncc": 2072,
-          "cr": 16071086,
-          "cw": 954911,
-          "intot": 17028069,
-          "wall": 4028.004587650299,
-          "peak_ctx": 61314
-        }
-      },
-      "thinking": {
-        "standard": 56285,
-        "hard": 79063
-      }
-    },
-    "effort-sweep/sonnet-5-medium": {
-      "name": "Claude Sonnet 5 medium",
-      "sets": {
-        "standard": {
-          "resolved": 46,
-          "cost": 11.311214999999999,
-          "steps": 991,
-          "out": 263939,
-          "failed": 0,
-          "ncc": 1982,
-          "cr": 13461730,
-          "cw": 882044,
-          "intot": 14345756,
-          "wall": 3658.925053358078,
-          "peak_ctx": 67138
-        },
-        "hard": {
-          "resolved": 31,
-          "cost": 24.254650649999995,
-          "steps": 1666,
-          "out": 456171,
-          "failed": 0,
-          "ncc": 3332,
-          "cr": 38931753,
-          "cw": 1526017,
-          "intot": 40461102,
-          "wall": 6600.751863241196,
-          "peak_ctx": 91015
-        }
-      },
-      "thinking": {
-        "standard": 84274,
-        "hard": 141215
-      }
-    },
-    "main/sonnet-5": {
-      "name": "Claude Sonnet 5 high",
+    "sonnet-5": {
+      "name": "Claude Sonnet 5",
       "sets": {
         "standard": {
           "resolved": 51,
@@ -452,78 +138,8 @@
         "hard": 368302
       }
     },
-    "effort-sweep/sonnet-5-xhigh": {
-      "name": "Claude Sonnet 5 xhigh",
-      "sets": {
-        "standard": {
-          "resolved": 54,
-          "cost": 26.38775309999999,
-          "steps": 1884,
-          "out": 549299,
-          "failed": 0,
-          "ncc": 3768,
-          "cr": 39909447,
-          "cw": 1643768,
-          "intot": 41556983,
-          "wall": 7997.281079292297,
-          "peak_ctx": 75300
-        },
-        "hard": {
-          "resolved": 39,
-          "cost": 49.837049250000014,
-          "steps": 2529,
-          "out": 793434,
-          "failed": 0,
-          "ncc": 5058,
-          "cr": 94999430,
-          "cw": 2512143,
-          "intot": 97516631,
-          "wall": 10990.932572126389,
-          "peak_ctx": 188985
-        }
-      },
-      "thinking": {
-        "standard": 247329,
-        "hard": 356359
-      }
-    },
-    "effort-sweep/sonnet-5-max": {
-      "name": "Claude Sonnet 5 max",
-      "sets": {
-        "standard": {
-          "resolved": 58,
-          "cost": 83.8237326,
-          "steps": 3494,
-          "out": 1487343,
-          "failed": 0,
-          "ncc": 6988,
-          "cr": 159064537,
-          "cw": 3672870,
-          "intot": 162744395,
-          "wall": 19028.169082164764,
-          "peak_ctx": 212793
-        },
-        "hard": {
-          "resolved": 41,
-          "cost": 138.6964233,
-          "steps": 4201,
-          "out": 1930251,
-          "failed": 0,
-          "ncc": 8402,
-          "cr": 299169966,
-          "cw": 5324390,
-          "intot": 304502758,
-          "wall": 29243.638717651367,
-          "peak_ctx": 284631
-        }
-      },
-      "thinking": {
-        "standard": 886405,
-        "hard": 1205284
-      }
-    },
-    "main/haiku-4-5": {
-      "name": "Claude Haiku 4.5 high",
+    "haiku-4-5": {
+      "name": "Claude Haiku 4.5",
       "sets": {
         "standard": {
           "resolved": 38,
@@ -554,8 +170,8 @@
       },
       "thinking": null
     },
-    "main/kimi-k2.7-code": {
-      "name": "Kimi k2.7-code high",
+    "kimi-k2.7-code": {
+      "name": "Kimi k2.7-code",
       "sets": {
         "standard": {
           "resolved": 47,
@@ -587,6 +203,143 @@
       "thinking": {
         "standard": 460774,
         "hard": 746124
+      }
+    },
+    "opus-4-7": {
+      "name": "Claude Opus 4.7",
+      "sets": {
+        "standard": {
+          "resolved": 50,
+          "cost": 25.89907275,
+          "steps": 1179,
+          "out": 408827,
+          "failed": 0,
+          "ncc": 1479,
+          "cr": 18679643,
+          "cw": 1012989,
+          "intot": 19694111,
+          "wall": 6203.258330821991,
+          "peak_ctx": 73479
+        },
+        "hard": {
+          "resolved": 25,
+          "cost": 51.92385350000002,
+          "steps": 1718,
+          "out": 702504,
+          "failed": 0,
+          "ncc": 1943,
+          "cr": 48921902,
+          "cw": 1582494,
+          "intot": 50506339,
+          "wall": 10540.833700180054,
+          "peak_ctx": 117236
+        }
+      },
+      "thinking": {
+        "standard": 190279,
+        "hard": 345513
+      }
+    },
+    "opus-4-6": {
+      "name": "Claude Opus 4.6",
+      "sets": {
+        "standard": {
+          "resolved": 46,
+          "cost": 24.475726000000012,
+          "steps": 1236,
+          "out": 327306,
+          "failed": 0,
+          "ncc": 669411,
+          "cr": 15505042,
+          "cw": 830960,
+          "intot": 17005413,
+          "wall": 6628.997032880783,
+          "peak_ctx": 72919
+        },
+        "hard": {
+          "resolved": 18,
+          "cost": 52.13816749999998,
+          "steps": 1799,
+          "out": 676049,
+          "failed": 0,
+          "ncc": 309373,
+          "cr": 48392055,
+          "cw": 1519048,
+          "intot": 50220476,
+          "wall": 13448.092520475388,
+          "peak_ctx": 128595
+        }
+      },
+      "thinking": {
+        "standard": 127114,
+        "hard": 298606
+      }
+    },
+    "sonnet-4-6": {
+      "name": "Claude Sonnet 4.6",
+      "sets": {
+        "standard": {
+          "resolved": 44,
+          "cost": 35.582577300000004,
+          "steps": 1953,
+          "out": 953975,
+          "failed": 0,
+          "ncc": 2073,
+          "cr": 47978036,
+          "cw": 1832886,
+          "intot": 49812995,
+          "wall": 17479.251358747482,
+          "peak_ctx": 95776
+        },
+        "hard": {
+          "resolved": 21,
+          "cost": 105.44785245,
+          "steps": 3025,
+          "out": 2064553,
+          "failed": 0,
+          "ncc": 3115,
+          "cr": 192881529,
+          "cw": 4428201,
+          "intot": 197312845,
+          "wall": 37291.97737169266,
+          "peak_ctx": 437540
+        }
+      },
+      "thinking": null
+    },
+    "fable-5-high-2026-07-02": {
+      "name": "Claude Fable 5 (2 Jul)",
+      "sets": {
+        "standard": {
+          "resolved": 57,
+          "cost": 28.511357000000004,
+          "steps": 647,
+          "out": 282221,
+          "failed": 0,
+          "ncc": 1294,
+          "cr": 5502642,
+          "cw": 710778,
+          "intot": 6214714,
+          "wall": 5622.118144273758,
+          "peak_ctx": 34144
+        },
+        "hard": {
+          "resolved": 40,
+          "cost": 54.7905965,
+          "steps": 796,
+          "out": 525014,
+          "failed": 0,
+          "ncc": 1592,
+          "cr": 14035664,
+          "cw": 1159065,
+          "intot": 15196321,
+          "wall": 9031.30515050888,
+          "peak_ctx": 66112
+        }
+      },
+      "thinking": {
+        "standard": 135256,
+        "hard": 283150
       }
     }
   }

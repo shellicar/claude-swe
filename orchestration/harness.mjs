@@ -61,14 +61,14 @@ export const onShutdown = (cleanup) => {
   if (handlerInstalled) return;
   handlerInstalled = true;
   let firing = false;
-  const hardStop = async (sig) => {
+  const hardStop = async (sig, code = 130) => {
     if (firing) return;
     firing = true;
     console.error(`\n[run] ${sig} — hard stop, tearing down...`);
     try {
       await Promise.allSettled(cleanups.map((fn) => fn()));
     } finally {
-      process.exit(130);
+      process.exit(code);
     }
   };
   process.on('SIGINT', () => {
@@ -80,4 +80,20 @@ export const onShutdown = (cleanup) => {
     hardStop('SIGINT (second)');
   });
   process.on('SIGTERM', () => hardStop('SIGTERM'));
+  // A crash is not a signal, so none of the above fires for one — Node runs
+  // its default handler and exits, the cleanups never run, and every spawned
+  // child is reparented and left alive. That is worse than a Ctrl-C: the
+  // children outlive the proxy they were talking to, so with a long retry
+  // budget they sit hammering a closed port for days. It happened: an
+  // ERR_HTTP_HEADERS_SENT in the proxy orphaned two runs and twelve
+  // containers, and only the containers' CPU gave it away.
+  //
+  // The exception is still fatal — continuing after an unknown fault means
+  // running in an undefined state — but the children go down with it.
+  for (const event of ['uncaughtException', 'unhandledRejection']) {
+    process.on(event, (err) => {
+      console.error(`\n[run] ${event}:`, err?.stack ?? err);
+      hardStop(event, 1); // 130 means interrupted; a crash is not that
+    });
+  }
 };

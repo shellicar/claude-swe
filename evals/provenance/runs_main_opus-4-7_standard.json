@@ -1,18 +1,22 @@
 {
-  "marked_at": "2026-07-29T08:57:56.211807+00:00",
-  "inferred": true,
-  "inferred_note": "Reconstructed from repository history, not recorded at mark time. The marker is certain (its pointer never moved and predates every verdict); dataset and manifest hashes are taken from the commit current when the verdict file was written; dirtiness is unknowable.",
+  "marked_at": "2026-07-31T17:53:32.072Z",
+  "leg": "runs/main/opus-4-7",
   "selection": "standard",
   "marker": {
     "type": "swebench",
     "path": "vendor/swebench",
-    "commit": "bd1ecccd8a30da93be49fe662e3922df29aa70a4",
-    "dirty": null
+    "commit": "ce082a98d1e7daa3ebe194e41dfdf47978ae558f",
+    "dirty": false
   },
-  "repo_commit_at_mark_time": "73d08eb505488d4615e1e39bfbd34c870e55731a",
   "dataset": {
     "snapshot": "datasets/swe-bench-verified.jsonl",
-    "sha256": "8f8c8fee718e37d7"
+    "sha256": "7303cc5795e37071"
   },
-  "image_manifest_sha256": "ecca49b1482d69a9"
+  "image_manifest_sha256": "ecca49b1482d69a9",
+  "rig": {
+    "commit": "e945ce69a34893aa9ff3b6c699081701e7e6ab6a",
+    "dirty": true
+  },
+  "mark_workers": "14",
+  "run_id": "runs_main_opus-4-7_standard"
 }

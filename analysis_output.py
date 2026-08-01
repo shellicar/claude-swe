@@ -36,6 +36,8 @@ import re
 import shutil
 import subprocess
 
+import analysis_html
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Medals mark contest outcomes: only Resolved (and its % twin) medal. Cost
@@ -178,15 +180,9 @@ def emit(name, heading, columns, sections, note, payload, medals=None):
                 body.append((f"{m} {word}", [str(n) for n in tally["Resolved"][m]]))
             sections = sections + [("Medal tally — counted in events", body)]
 
-    # markdown
-    lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
-    for title, body in sections:
-        lines.append(f"| **{title}** |" + " |" * len(columns))
-        for label, cells in body:
-            lines.append(render_row(label, cells))
-    lines += ["", note]
+    # HTML, not a markdown table — see analysis_html for why.
     with open(f"{outdir}/table.md", "w") as f:
-        f.write("\n".join(lines) + "\n")
+        f.write(analysis_html.table(heading, columns, sections, note) + "\n")
 
     # d2 (intermediate) -> <name>.svg. One md table per section: a single long
     # table gets mis-measured and clipped; the blank last row is sacrificial.

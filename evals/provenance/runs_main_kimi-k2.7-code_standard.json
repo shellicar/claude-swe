@@ -1,0 +1,22 @@
+{
+  "marked_at": "2026-08-01T05:26:20.932Z",
+  "leg": "runs/main/kimi-k2.7-code",
+  "selection": "standard",
+  "marker": {
+    "type": "swebench",
+    "path": "vendor/swebench",
+    "commit": "ce082a98d1e7daa3ebe194e41dfdf47978ae558f",
+    "dirty": false
+  },
+  "dataset": {
+    "snapshot": "datasets/swe-bench-verified.jsonl",
+    "sha256": "7303cc5795e37071"
+  },
+  "image_manifest_sha256": "ecca49b1482d69a9",
+  "rig": {
+    "commit": "e945ce69a34893aa9ff3b6c699081701e7e6ab6a",
+    "dirty": true
+  },
+  "mark_workers": "14",
+  "run_id": "runs_main_kimi-k2.7-code_standard"
+}

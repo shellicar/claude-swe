@@ -269,8 +269,11 @@ NOTE = "Verdicts from the pinned swebench judges. Full caveats in report.md."
 # data.json keeps EVERY model — grouping is presentation, not data loss.
 LATEST = [d for d in _LATEST_DECLARED if d in data]
 
+# `verified` is NOT here: it is emitted below with a column per contender per
+# effort. Listing it here too wrote the card twice from two different
+# generators — one column per model, then one per model-and-effort — so the
+# file's shape depended on which ran last.
 GROUPS = [
-    ("verified", "SWE-bench Verified — latest-generation division", LATEST),
     ("opus-models", "Opus division — the lineage (SWE-bench Verified)", lineage("opus")),
     ("sonnet-models", "Sonnet division — the lineage (SWE-bench Verified)", lineage("sonnet")),
 ]
@@ -295,8 +298,17 @@ for card, heading, dirs in GROUPS:
 # more but never places is paying for results it could have had for less.
 EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"]
 EFFORT_MODELS = [m["dir"] for m in ROSTER if m.get("effort")]
-# The ladder a model actually has: Anthropic's five, but Kimi K3 has three.
-EFFORT_BY_MODEL = {m["dir"]: m.get("effortLevels", EFFORT_LEVELS) for m in ROSTER}
+# The ladder a model actually has: Anthropic's five, Kimi K3's three, and for a
+# model with no effort control at all (Haiku 4.5, kimi-k2.7-code) exactly one
+# configuration — not the five-rung default, which produced columns labelled
+# "Kimi k2.7-code high" for a model that has no such setting.
+EFFORT_BY_MODEL = {
+    m["dir"]: m.get(
+        "effortLevels",
+        EFFORT_LEVELS if m.get("effort") else [m.get("defaultEffort", "high")],
+    )
+    for m in ROSTER
+}
 # The level a model's main leg runs at when nothing is pinned. Anthropic
 # defaults to `high`; Kimi K3 defaults to `max`, so "main == high" is not
 # universal and assuming it would mislabel a whole curve.
@@ -317,10 +329,17 @@ def _try_leg(base, s):
         return None
 
 
-def effort_card(card, heading, entries):
+def effort_card(card, heading, entries, payload=None):
     """One card from (label, base, thinking-dir) triples. Bases with no marked
     leg are dropped, so a sweep in progress yields a partial card rather than
-    an error; fewer than two survivors means no contest and no card."""
+    an error; fewer than two survivors means no contest and no card.
+
+    `payload` overrides what lands in data.json. The table's shape and the
+    machine layer's shape are independent: analyse-overview.py reads
+    data["models"] keyed by MODEL, and swe.mjs reads `covers` from it, so a
+    card whose columns are model-and-effort must still publish the
+    model-keyed structure or both silently break.
+    """
     bases, labels, edata, think = [], [], {}, {}
     for label, base, tdir in entries:
         sets = {s: _try_leg(base, s) for s, _n in SETS}
@@ -369,6 +388,7 @@ def effort_card(card, heading, entries):
          esection(lambda b: ecombined(b), 105, None)),
     ]
     emit(card, heading, labels, sections, NOTE,
+         payload if payload is not None else
          {"models": {b: {"name": lv, "sets": edata[b], "thinking": think.get(b)}
                      for b, lv in zip(bases, labels)}},
          medals=instance_medals(bases))
@@ -378,11 +398,27 @@ def effort_card(card, heading, entries):
 # been run at — same rows as before, more columns. A contender with no sweep
 # contributes only its default column, and unmarked levels are dropped, so
 # the card widens as the sweeps land rather than needing its own file.
+# _LATEST_DECLARED, not LATEST: the latter is filtered to models with a marked
+# MAIN leg, which silently drops a contender that has only been swept. Kimi K3
+# has an effort-sweep leg and no default-effort run, and vanished from the card
+# entirely rather than showing the one column it has. effort_card already drops
+# individual levels that are unmarked, so widening here costs nothing.
+def effort_label(model, level):
+    """A level is only worth naming when the model has more than one."""
+    return f"{NAME[model]} {level}" if len(EFFORT_BY_MODEL[model]) > 1 else NAME[model]
+
+
 effort_card(
     "verified",
     "SWE-bench Verified — latest-generation division",
-    [(f"{NAME[m]} {lv}", effort_base(m, lv), m)
-     for m in LATEST for lv in EFFORT_BY_MODEL[m]],
+    [(effort_label(m, lv), effort_base(m, lv), m)
+     for m in _LATEST_DECLARED for lv in EFFORT_BY_MODEL[m]],
+    # Model-keyed, with covers: what the overview and the coverage gate read.
+    payload={
+        "covers": ["standard", "hard"],
+        "models": {d: {"name": name, "sets": data[d], "thinking": THINKING.get(d)}
+                   for name, d in MODELS if d in data},
+    },
 )
 
 
@@ -480,7 +516,9 @@ def experiment_table(heading, entries):
         ))
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
     for title, body in sections_:
-        lines.append(f"| **{title}** |" + " |" * len(columns))
+        # Repeat the column names per section — the table is too wide to read
+        # a section against a header row that has scrolled away.
+        lines.append(f"| **{title}** | " + " | ".join(f"**{c}**" for c in columns) + " |")
         for label, cells in body:
             if label.startswith("## "):
                 lines.append(f"| **{label[3:]}** |" + " |" * len(columns))

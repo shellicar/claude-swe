@@ -10,6 +10,10 @@
   "basePort": 19150,
   "legs": [
     {
+      "model": "anthropic/claude-opus-5",
+      "out": "runs/multi/opus-5"
+    },
+    {
       "model": "anthropic/claude-opus-4-8",
       "out": "runs/multi/opus-4-8"
     },

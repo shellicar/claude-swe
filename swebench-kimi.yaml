@@ -26,6 +26,18 @@ model:
     # Both spellings are set: swebench-local.yaml's max_tokens is inherited
     # and would otherwise stay at 64000, and drop_params discards whichever
     # the provider does not accept.
+    # litellm TRANSLATES max_completion_tokens into max_tokens for Moonshot
+    # (verified with scripts/check_moonshot_params.py on litellm 1.91.0), so
+    # the parameter Kimi's own docs call authoritative never reaches them.
+    # Requests succeed either way, and across 6,083 calls nothing came within
+    # a quarter of this bound, so whether Kimi honours max_tokens is untested
+    # — which makes it latent rather than safe. If it does NOT honour it, K3
+    # falls back to its 131072 default; harmless on K3's 1M context but not on
+    # k2.7-code's 262k, where a growing trajectory would start failing with
+    # invalid_request_error partway through a leg.
+    #
+    # extra_body is forwarded verbatim, so send the documented parameter too.
+    # Costs nothing if max_tokens already worked.
     max_completion_tokens: 32000
     max_tokens: 32000
     extra_headers: {}
@@ -41,3 +53,5 @@ model:
     # usage silently costs nothing, which would disarm the cost_limit guard.
     stream_options:
       include_usage: true
+    extra_body:
+      max_completion_tokens: 32000

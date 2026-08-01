@@ -152,6 +152,12 @@ export function startTimingProxy({
   const pre = label ? `[${label}] ` : '';
 
   const server = http.createServer((req, res) => {
+    // Nothing about one proxied call may take the process down. Streaming
+    // keeps connections open for minutes, so a client vanishing or a socket
+    // dying mid-body is ordinary — and an unhandled 'error' on either side
+    // becomes an uncaught exception, which is how a run gets orphaned.
+    req.on('error', (e) => console.error(`${pre}# request error:`, e.message));
+    res.on('error', (e) => console.error(`${pre}# response error:`, e.message));
     let body = '';
     req.on('data', (c) => (body += c));
     req.on('end', () => {
@@ -207,11 +213,29 @@ export function startTimingProxy({
         });
       });
 
+      // A failed upstream call must never be fatal: the agent's own retry
+      // handles it, and killing the proxy kills a multi-hour run.
+      //
+      // Once the response has begun there is no status line left to write —
+      // under streaming, headers go out the moment the upstream responds, so
+      // a mid-body ETIMEDOUT arrives long after. Calling writeHead then throws
+      // ERR_HTTP_HEADERS_SENT, which took down two runs in flight and
+      // orphaned their containers. All that can be done at that point is cut
+      // the connection so the client sees a broken response and retries.
       fwd.on('error', (e) => {
         appendFileSync(timingLog, JSON.stringify({ n, ts: new Date(tStart).toISOString(), ...meta, status: null, error: e.message, total_ms: Date.now() - tStart }) + '\n');
         console.error(`${pre}# ${n} forward error:`, e.message);
-        res.writeHead(502);
-        res.end('Bad Gateway');
+        if (res.headersSent) res.destroy(e);
+        else {
+          res.writeHead(502);
+          res.end('Bad Gateway');
+        }
+      });
+
+      // The client giving up mid-stream should abandon the upstream call
+      // rather than leave it writing into a closed socket.
+      res.on('close', () => {
+        if (!res.writableEnded) fwd.destroy();
       });
 
       fwd.write(body);

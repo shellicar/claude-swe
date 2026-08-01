@@ -720,8 +720,15 @@ async function status(target, flags) {
   }
 }
 
+// An analyser rebuilds every card for its dataset, so running it once per
+// TARGET rebuilt `verified` twenty-odd times in one invocation — every arm and
+// variation shares that dataset. Once per dataset per invocation is enough.
+const analysedDatasets = new Set();
+
 async function analyse({ ds, selections }) {
   if (!ds.analyser) throw new Error(`dataset ${ds.name} declares no analyser yet`);
+  if (analysedDatasets.has(ds.name)) return;
+  analysedDatasets.add(ds.name);
   // The audit gate: a chain places audit before analyse; running analyse alone
   // is allowed but the analyser only sees what exists — verdicts it cannot
   // find render as "—" in its output, never as invented numbers.
