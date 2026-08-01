@@ -369,15 +369,37 @@ const gitDescribe = (dir) => {
   };
 };
 
+// Where a marker package ACTUALLY lives, asked of the interpreter rather than
+// assumed from pyproject.toml. The venv drifted once: pyproject declared
+// swebench editable from vendor/, the venv held PyPI 4.1.0, and provenance
+// dutifully recorded the submodule's commit for grading that commit never did.
+// Only the installed module knows.
+const installedAt = (module_) => {
+  const r = spawnSync(join(repoRoot, '.venv/bin/python'), [
+    '-c', `import ${module_},os;print(os.path.dirname(os.path.dirname(${module_}.__file__)))`,
+  ], { encoding: 'utf8' });
+  if (r.status !== 0) return null;
+  const at = r.stdout.trim();
+  return at.startsWith(repoRoot) ? at.slice(repoRoot.length + 1) : at;
+};
+
 function writeProvenance(ds, leg, sel, extra) {
-  const marker = ds.marker.type === 'swebench' ? 'vendor/swebench'
-    : ds.marker.type === 'scale' ? ds.marker.harness
-      : ds.marker.harness ?? 'vendor/multi-swe-bench';
+  const module_ = ds.marker.type === 'swebench' ? 'swebench'
+    : ds.marker.type === 'scale' ? null : 'multi_swe_bench';
+  const marker = (module_ && installedAt(module_))
+    ?? (ds.marker.harness ?? `vendor/${ds.marker.type}`);
   const record = {
     marked_at: new Date().toISOString(),
     leg: leg.out,
     selection: sel,
-    marker: { type: ds.marker.type, path: marker, ...gitDescribe(marker) },
+    // `vendored` false means the package came from an index, so the commit
+    // below is null and the fork's patches are NOT what graded this.
+    marker: {
+      type: ds.marker.type,
+      path: marker,
+      vendored: marker.startsWith('vendor/'),
+      ...gitDescribe(marker),
+    },
     dataset: { snapshot: ds.snapshot, sha256: sha256(join(repoRoot, ds.snapshot)) },
     image_manifest_sha256: sha256(MANIFEST),
     rig: gitDescribe('.'),
@@ -393,8 +415,30 @@ function writeProvenance(ds, leg, sel, extra) {
     + `${m.dirty ? ' (DIRTY)' : ''} -> ${path.slice(repoRoot.length + 1)}`);
 }
 
+// pyproject.toml declares every marker as an editable install from vendor/,
+// but a venv can drift from its declaration and nothing complains: swebench
+// sat as PyPI 4.1.0 for weeks while the fork's fixes went unused and every
+// verdict was attributed to a commit that never ran. Check before grading,
+// because a wrong marker produces plausible verdicts, not errors.
+function requireVendoredMarker(ds) {
+  const module_ = ds.marker.type === 'swebench' ? 'swebench'
+    : ds.marker.type === 'scale' ? null : 'multi_swe_bench';
+  if (!module_) return;
+  const at = installedAt(module_);
+  if (!at) throw new Error(`${module_} is not installed — run \`uv sync\``);
+  if (!at.startsWith('vendor/')) {
+    throw new Error(
+      `${module_} resolves to ${at}, not the vendored fork in vendor/.\n`
+      + '       Verdicts would come from an unpatched package while provenance\n'
+      + '       claims the submodule. Run `uv sync` to restore the declared\n'
+      + '       editable installs, then re-mark.',
+    );
+  }
+}
+
 async function mark(target, flags) {
   const { ds, selections } = target;
+  requireVendoredMarker(ds);
   const theLegs = legs(target, flags);
   mkdirSync(EVALS_DIR, { recursive: true });
   let current = null;
