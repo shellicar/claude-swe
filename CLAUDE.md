@@ -63,6 +63,26 @@ Off the corporate network, none of this is needed — and the `.env` lines must 
 
 All scripts assume cwd = this directory and call `.venv/bin/` binaries directly — no venv activation needed.
 
+## Long jobs need the machine awake
+
+Runs, marking and replay take hours. If the machine sleeps, the Docker VM
+suspends with it and the harness is left waiting on containers that no longer
+exist — it does not error, it hangs, and its progress bar keeps showing the
+last frame it drew. A full re-mark once sat at "41 seconds remaining" for
+thirteen hours.
+
+Prefix anything long-running:
+
+```sh
+caffeinate -s node swe.mjs mark analyse
+```
+
+`-s` prevents system sleep while on mains power. Closing the lid still sleeps
+regardless, so an unattended overnight job wants the lid open.
+
+`mark` also prints a warning every five minutes when nothing new has been
+graded, so a stall announces itself rather than being discovered the next day.
+
 ## Running and reporting
 
 When something needs running, give three things: **the command, what it does,

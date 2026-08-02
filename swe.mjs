@@ -133,7 +133,11 @@ const legs = ({ combo, ds }, flags) => {
   }
   if (!flags.model) throw new Error('no combination set and no --model: nothing to run');
   const short = flags.model.split('/').pop().replace(/^claude-/, '');
-  return [{ model: flags.model, effort: flags.effort, out: `runs/adhoc/${ds.name}-${short}` }];
+  // Effort is part of the path: without it, `--model X --effort low` and
+  // `--model X --effort max` share one directory, so the second silently
+  // overwrites the first's preds.json and both claim one provenance record.
+  const suffix = flags.effort ? `${short}-${flags.effort}` : short;
+  return [{ model: flags.model, effort: flags.effort, out: `runs/adhoc/${ds.name}-${suffix}` }];
 };
 
 // Scale-marker output dir for one leg × selection. The 'pro' selection keeps
@@ -259,11 +263,24 @@ async function ensure({ ds, selections }) {
     if (!row) continue;
     const { repo, tag } = imageRef(ds, row);
     const named = `${repo.replace('docker.io/', '')}:${tag}`;
+    // The tag must point at the DIGEST the manifest pins, not merely exist. A
+    // tag left by an earlier pull resolves fine and silently shadows the pin,
+    // so instances get graded against different bytes while provenance records
+    // the manifest sha — wrong verdicts that look entirely normal. Compare ids
+    // and retag when they differ.
+    let current = null;
     try {
-      execFileSync('docker', ['image', 'inspect', named], { stdio: 'ignore' });
+      current = execFileSync('docker', ['image', 'inspect', named, '--format', '{{.Id}}'],
+        { encoding: 'utf8' }).trim();
     } catch {
+      current = null;
+    }
+    const pinned = execFileSync('docker', ['image', 'inspect', ref, '--format', '{{.Id}}'],
+      { encoding: 'utf8' }).trim();
+    if (current !== pinned) {
       execFileSync('docker', ['tag', ref, named], { stdio: 'ignore' });
       tagged++;
+      if (current) console.log(`[ensure] ${named} pointed elsewhere — retagged to the pinned digest`);
     }
   }
   console.log(`[ensure] ok — ${present} present, ${missing.length} pulled, ${tagged} tagged`);
@@ -436,13 +453,53 @@ function requireVendoredMarker(ds) {
   }
 }
 
+// Marking writes one log directory per graded instance, so that count only
+// stops rising when nothing is happening. A stall is otherwise silent: the
+// harness's progress bar keeps displaying its last frame, so a laptop that
+// slept mid-run showed "41 seconds remaining" for thirteen hours.
+function watchProgress(label, everyMs = 5 * 60_000) {
+  // The most recent write anywhere under evals/, which covers every marker:
+  // multi-swe and Scale write their own directories and never touch
+  // evals/logs, so watching only that reports a stall through an hour of
+  // healthy work. An mtime is the right signal — an earlier version compared
+  // the character length of a `find` listing, which is equal for two
+  // different sets of equal-length paths, and walked 111k entries
+  // synchronously on the event loop every tick.
+  const newest = () => {
+    try {
+      const out = execFileSync('find', [EVALS_DIR, '-newermt', '-10 minutes',
+        '-type', 'f', '-print', '-quit'], { encoding: 'utf8' });
+      return out.trim() ? Date.now() : 0;
+    } catch {
+      return 0;
+    }
+  };
+  let since = Date.now();
+  const timer = setInterval(() => {
+    if (newest()) {
+      since = Date.now();
+      return;
+    }
+    console.error(
+      `[mark] ${label}: nothing written under evals/ for `
+      + `${Math.round((Date.now() - since) / 60_000)} min — stalled? A slept`
+      + ' machine leaves the harness waiting on a container that no longer'
+      + ' exists. Stop and re-run: marking resumes from what is already graded.');
+  }, everyMs);
+  timer.unref?.();
+  return () => clearInterval(timer);
+}
+
 async function mark(target, flags) {
   const { ds, selections } = target;
   requireVendoredMarker(ds);
   const theLegs = legs(target, flags);
   mkdirSync(EVALS_DIR, { recursive: true });
+  const stopWatch = watchProgress(ds.name);
+  onShutdown(async () => stopWatch());
   let current = null;
   onShutdown(async () => current?.kill('SIGTERM'));
+  try {
   for (const leg of theLegs) {
     for (const sel of selections) {
       const preds = join(repoRoot, leg.out, sel, 'preds.json');
@@ -558,6 +615,11 @@ async function mark(target, flags) {
         throw new Error(`unknown marker type: ${ds.marker.type}`);
       }
     }
+  }
+  } finally {
+    // Without this the watcher outlives mark and warns about stalled marking
+    // all the way through whatever verb runs next.
+    stopWatch();
   }
   console.log('[mark] done');
 }
@@ -771,27 +833,44 @@ const analysedDatasets = new Set();
 
 async function analyse({ ds, selections }) {
   if (!ds.analyser) throw new Error(`dataset ${ds.name} declares no analyser yet`);
-  if (analysedDatasets.has(ds.name)) return;
-  analysedDatasets.add(ds.name);
-  // The audit gate: a chain places audit before analyse; running analyse alone
-  // is allowed but the analyser only sees what exists — verdicts it cannot
-  // find render as "—" in its output, never as invented numbers.
-  await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, ds.analyser)]);
   // Coverage check: each analyser declares which selections its sections
   // cover. A selection missing from the list means the tables just silently
   // omitted it (how element/tokio briefly vanished, 2026-07-12) — fail loudly.
   // Selections declared `"analyse": false` are smoke/utility sets (micro), not
   // experiments: nobody wants a table of three instances, so they are exempt
   // rather than crying wolf on every run.
-  const dataPath = join(repoRoot, 'analysis', ds.name, 'data.json');
-  const covers = JSON.parse(readFileSync(dataPath, 'utf8')).covers;
-  if (covers) {
+  //
+  // This runs for EVERY target even though the analyser itself runs once per
+  // dataset: the de-dup below is about not rebuilding the same cards twenty
+  // times, and folding the gate into it meant only the first target's
+  // selections were ever checked.
+  const checkCoverage = () => {
+    const dataPath = join(repoRoot, 'analysis', ds.name, 'data.json');
+    const { covers } = JSON.parse(readFileSync(dataPath, 'utf8'));
+    // Absent `covers` disables the gate that exists to catch silent omissions,
+    // which is how it sat switched off unnoticed. Missing is a failure.
+    if (!covers) {
+      throw new Error(
+        `analysis/${ds.name}/data.json has no "covers" — ${ds.analyser} must`
+        + ' declare which selections it covers, or the completeness gate is off');
+    }
     const analysed = selections.filter((s) => ds.selections?.[s]?.analyse !== false);
     const missing = analysed.filter((s) => !covers.includes(s));
     if (missing.length > 0) {
       throw new Error(`${ds.analyser} does not cover selection(s) ${missing.join(', ')} — extend its sections`);
     }
+  };
+
+  if (analysedDatasets.has(ds.name)) {
+    checkCoverage();
+    return;
   }
+  analysedDatasets.add(ds.name);
+  // The audit gate: a chain places audit before analyse; running analyse alone
+  // is allowed but the analyser only sees what exists — verdicts it cannot
+  // find render as "—" in its output, never as invented numbers.
+  await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, ds.analyser)]);
+  checkCoverage();
   // The overview joins every dataset's json into one card; regenerating it
   // here means it can never be staler than the analysis it summarises.
   await spawnAwait(join(repoRoot, '.venv/bin/python'), [join(repoRoot, 'analyse-overview.py')]);
@@ -892,6 +971,52 @@ for (const name of targetNames) {
     console.error(`run './swe.mjs --help' for the full grammar`);
     process.exit(2);
   }
+}
+
+// Keep the machine awake for as long as this process lives. A sleeping host
+// suspends the Docker VM under a run, and the harness does not fail — it waits
+// forever on containers that no longer exist, progress bar frozen on its last
+// frame.
+//
+// All three flags, because each covers a different way it sleeps and -s alone
+// is not enough: -s holds system sleep but ONLY on mains power, so a run died
+// after ten seconds on battery; -i holds idle sleep whatever the power source;
+// -d keeps the display awake, which is what stops clamshell and idle-display
+// sleep from taking the system with it. `-w` ties the reprieve to this pid, so
+// it lifts on exit, crash or kill with no cleanup to forget.
+// Spawned directly, not through `sh -c '... &'`: the shell exits 0 the moment
+// it forks, so its status says nothing about caffeinate, and the rig printed
+// "holding the machine awake" on a box where caffeinate had failed — the exact
+// reassurance that makes a mid-run sleep baffling.
+let awake = null;
+if (process.platform === 'darwin') {
+  try {
+    awake = spawn('caffeinate', ['-dis', '-w', String(process.pid)],
+      { stdio: 'ignore', detached: true });
+    awake.on('error', (e) => {
+      console.error(`[swe] caffeinate failed (${e.message}) — the machine may sleep mid-run`);
+      awake = null;
+    });
+    awake.unref();
+  } catch (e) {
+    console.error(`[swe] caffeinate failed (${e.message}) — the machine may sleep mid-run`);
+    awake = null;
+  }
+}
+// The assertion, not the process: caffeinate can be running and still not
+// holding, so ask the system what it thinks.
+if (awake) {
+  const held = spawnSync('pmset', ['-g', 'assertions'], { encoding: 'utf8' });
+  const holding = /PreventSystemSleep\s+1/.test(held.stdout ?? '');
+  console.log(holding
+    ? '[swe] holding the machine awake while this runs'
+    : '[swe] WARNING: sleep is NOT held — a mid-run sleep will hang the harness');
+}
+// Closing the lid still sleeps: no assertion overrides clamshell on battery,
+// and on mains it needs an external display attached. Nothing here can fix
+// that, so say it rather than let a lid-close look like a hang.
+if (awake && verbs.some((v) => ['run', 'mark', 'ensure'].includes(v))) {
+  console.log('[swe] leave the lid open — closing it sleeps regardless');
 }
 
 try {

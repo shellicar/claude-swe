@@ -119,6 +119,13 @@ def leg(base, s):
                     wall += ts - prev
             if ts:
                 prev = ts
+    # Zero cost on a leg that made calls is a missing price entry, not a
+    # bargain: it would win every cost medal, and the same gap disarms the
+    # cost_limit guard during the run. Never render it as a figure.
+    if steps and not cost:
+        raise SystemExit(
+            f"{base}/{s}: {steps} api calls but zero cost — the model is probably"
+            " missing from fable-5.litellm.json, so litellm priced it at nothing")
     return dict(resolved=resolved, cost=cost, steps=steps, out=out, failed=failed,
                ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, peak_ctx=peak_ctx)
 
@@ -126,8 +133,10 @@ def leg(base, s):
 def per_instance(base, s):
     """{instance_id: (resolved, cost)} — the granularity leg() aggregates away."""
     rid = base.replace("/", "_")
-    rep = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")[0]
-    resolved = set(json.load(open(rep))["resolved_ids"])
+    reps = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")
+    if len(reps) != 1:
+        raise SystemExit(f"{base}/{s}: expected exactly 1 report, found {len(reps)}")
+    resolved = set(json.load(open(reps[0]))["resolved_ids"])
     out = {}
     for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
         t = json.load(open(tf))

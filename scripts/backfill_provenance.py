@@ -27,6 +27,9 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from report_name import split_report  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MARKER = "vendor/swebench"
 WRITE = "--write" in sys.argv
@@ -59,8 +62,7 @@ os.makedirs(out_dir, exist_ok=True)
 written = skipped = 0
 for report in sorted(glob.glob(os.path.join(ROOT, "evals", "*.json"))):
     name = os.path.basename(report)
-    # <model>.<run_id>.json — the run id is what provenance is keyed by.
-    run_id = name[name.index(".") + 1:-len(".json")]
+    _model, run_id = split_report(name)
     target = os.path.join(out_dir, f"{run_id}.json")
     if os.path.exists(target):
         skipped += 1

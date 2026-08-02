@@ -19,6 +19,11 @@ Both raise FormatError, so both would count toward a cap.
 import collections
 import glob
 import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from report_name import split_report  # noqa: E402
 
 CAP = 3
 
@@ -29,7 +34,7 @@ for rep in glob.glob("evals/*.json"):
     except Exception:
         continue
     name = rep.split("/")[-1]
-    run_id = name[name.index(".") + 1:-len(".json")]
+    _model, run_id = split_report(name)
     for iid in d.get("resolved_ids", []):
         verdicts[(run_id, iid)] = "RESOLVED"
     for iid in d.get("unresolved_ids", []):

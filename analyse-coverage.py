@@ -19,7 +19,7 @@ import os
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 LEVELS = ["low", "medium", "high", "xhigh", "max"]
-GLYPH = {"marked": "#", "run": "~", "none": "."}
+GLYPH = {"marked": "#", "part": "½", "run": "~", "none": "."}
 
 ROSTER = json.load(open(f"{ROOT}/models.json"))["models"]
 COLUMNS = [m for m in ROSTER if m.get("contender")]
@@ -38,13 +38,26 @@ for sub in ("multi", "pro"):
         MARKER_DIRS |= {f"{sub}/{d}" for d in os.listdir(p)}
 
 
-def leg_state(out, selection):
-    """none / run / marked for one leg × selection."""
+def leg_state(out, selection, expected=None):
+    """none / run / part / marked for one leg × selection.
+
+    A report EXISTING is not the same as a leg being fully graded: a scoped
+    `--instance_ids` run rewrites the aggregate down to just those instances,
+    and an interrupted mark leaves a partial one. Both used to read as `#`,
+    which is how the card claimed complete coverage of work that was not.
+    """
     if not glob.glob(f"{ROOT}/{out}/{selection}/*/*.traj.json"):
         return "none"
     # `out` is runs/<combo>/<leg>; the report id drops the runs/ prefix.
     rid = out.split("/", 1)[1].replace("/", "_")
-    if any(f.endswith(f".runs_{rid}_{selection}.json") for f in SWEBENCH_REPORTS):
+    for f in SWEBENCH_REPORTS:
+        if not f.endswith(f".runs_{rid}_{selection}.json"):
+            continue
+        if expected:
+            d = json.load(open(f"{ROOT}/evals/{f}"))
+            graded = d.get("completed_instances", 0) + d.get("empty_patch_instances", 0)
+            if graded < expected:
+                return "part"
         return "marked"
     combo, legdir = out.split("/")[1], out.split("/")[2]
     if any(d.endswith(f"/{combo}-{legdir}-{selection}") or d.endswith(f"/{legdir}-{selection}")
@@ -87,21 +100,35 @@ for d, ds in combos():
             label = f"{d['dataset']}/{sel}" if kind == "meet" else f"{d['name']}/{sel}"
             rows.setdefault((kind, label), {})[(model, effort)] = leg["out"]
 
+# How many instances a selection should have, so a partly-graded leg reads as
+# partial rather than done.
+EXPECTED = {}
+for _f in glob.glob(f"{ROOT}/datasets/*.json"):
+    _ds = json.load(open(_f))
+    for _sel, _cfg in _ds["selections"].items():
+        EXPECTED[_sel] = _cfg.get("expected")
+
+
+def strip_for(model, legs, selection):
+    """One model's five effort slots for a row. A level the model does not have
+    is a space, not a gap: absence of a rung is not missing work."""
+    mine = LEVELS_BY_MODEL[model["dir"]]
+    out = ""
+    for lv in LEVELS:
+        if lv not in mine:
+            out += " "
+            continue
+        leg_out = legs.get((model["dir"], lv))
+        out += (GLYPH[leg_state(leg_out, selection, EXPECTED.get(selection))]
+                if leg_out else GLYPH["none"])
+    return out
+
+
 ORDER = {"meet": 0, "variation": 1, "fixture": 2}
 bodies = {k: [] for k in ORDER}
 for (kind, label), legs in sorted(rows.items(), key=lambda kv: (ORDER[kv[0][0]], kv[0][1])):
-    cells = []
     selection = label.split("/")[-1]
-    for m in COLUMNS:
-        mine = LEVELS_BY_MODEL[m["dir"]]
-        strip = ""
-        for lv in LEVELS:
-            if lv not in mine:
-                strip += " "  # the model has no such level; not a gap
-                continue
-            out = legs.get((m["dir"], lv))
-            strip += GLYPH[leg_state(out, selection)] if out else GLYPH["none"]
-        cells.append(f"`{strip}`")
+    cells = [f"`{strip_for(m, legs, selection)}`" for m in COLUMNS]
     bodies[kind].append((label, cells))
 
 columns = [m["dir"] for m in COLUMNS]
@@ -119,18 +146,22 @@ for title, body in (("Meets — contenders on the medal table", bodies["meet"]),
         lines.append(f"| {label} | " + " | ".join(cells) + " |")
 lines.append(f"| **Legend** |" + " |" * len(columns))
 lines.append(f"| effort slots: low medium high xhigh max | "
-             + " | ".join(["`#` marked", "`~` run, unmarked", "`.` not run"]
-                          + [""] * (len(columns) - 3)) + " |")
+             + " | ".join(["`#` marked", "`½` partly marked", "`~` run, unmarked",
+                           "`.` not run"]
+                          + [""] * (len(columns) - 4)) + " |")
 
 outdir = f"{ROOT}/analysis/coverage"
 os.makedirs(outdir, exist_ok=True)
 with open(f"{outdir}/table.md", "w") as f:
     f.write("\n".join(lines) + "\n")
+# The same strips the table renders, so the machine layer cannot disagree with
+# it — it previously recorded "." (not run) for levels a model does not have,
+# showing gaps that were not gaps.
 payload = {"levels": LEVELS, "columns": columns,
-           "rows": {label: {m["dir"]: [
-               GLYPH[leg_state(legs[(m["dir"], lv)], label.split("/")[-1])]
-               if (m["dir"], lv) in legs else GLYPH["none"] for lv in LEVELS]
-               for m in COLUMNS} for (_k, label), legs in rows.items()}}
+           "legend": {v: k for k, v in GLYPH.items()} | {" ": "model has no such level"},
+           "rows": {label: {m["dir"]: list(strip_for(m, legs, label.split("/")[-1]))
+                            for m in COLUMNS}
+                    for (_k, label), legs in rows.items()}}
 with open(f"{outdir}/data.json", "w") as f:
     json.dump(payload, f, indent=2)
 print("wrote analysis/coverage/: data.json, table.md")
