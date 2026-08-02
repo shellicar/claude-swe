@@ -119,9 +119,38 @@ const discoverLegs = (ds, selections) => {
   const root = join(repoRoot, 'runs');
   const out = new Map();
   if (!existsSync(root)) return [];
+  // Only combinations belonging to THIS dataset. Selection names collide
+  // across datasets — `cpp` is 20 instances in multi and 11 fmtlib ones in
+  // multilingual — so matching on the directory name alone dragged seven
+  // multilingual legs into `status multi/cpp`, each reporting 0/20 against a
+  // selection they never ran, and failing the audit for it.
+  const mine = new Set(
+    readdirSync(join(repoRoot, 'combinations'))
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(readFileSync(join(repoRoot, 'combinations', f), 'utf8')))
+      .filter((c) => c.dataset === ds.name)
+      .map((c) => c.name),
+  );
   for (const combo of readdirSync(root)) {
     const comboDir = join(root, combo);
     if (!statSync(comboDir).isDirectory()) continue;
+    // `adhoc` holds `<dataset>-<model>` legs rather than a combination's.
+    if (combo === 'adhoc') {
+      for (const leg of readdirSync(comboDir)) {
+        if (!leg.startsWith(`${ds.name}-`)) continue;
+        for (const sel of selections) {
+          const preds = join(comboDir, leg, sel, 'preds.json');
+          if (!existsSync(preds)) continue;
+          const first = Object.values(JSON.parse(readFileSync(preds, 'utf8')))[0];
+          out.set(`runs/adhoc/${leg}`, {
+            model: first?.model_name_or_path ?? leg,
+            out: `runs/adhoc/${leg}`,
+          });
+        }
+      }
+      continue;
+    }
+    if (!mine.has(combo)) continue;
     for (const leg of readdirSync(comboDir)) {
       const legDir = join(comboDir, leg);
       if (!statSync(legDir).isDirectory()) continue;
@@ -205,8 +234,18 @@ const scaleOutDir = (ds, leg, sel) =>
 // basename — two combinations sharing dataset, selection and model (control vs
 // variation) collided on basename alone and the later mark overwrote the
 // earlier one's verdicts (2026-07-11).
-const multiSweOutDir = (ds, leg, sel) =>
-  join(EVALS_DIR, ds.name, `${leg.out.replace(/^runs\//, '').replaceAll('/', '-')}-${sel}`);
+const multiSweKey = (leg, sel) =>
+  `${leg.out.replace(/^runs\//, '').replaceAll('/', '-')}-${sel}`;
+
+const multiSweOutDir = (ds, leg, sel) => join(EVALS_DIR, ds.name, multiSweKey(leg, sel));
+
+// The harness's scratch, keyed the same way and for the same reason. It was
+// keyed on the model basename alone, so runs/multi/opus-4-8/cpp and
+// runs/cpp-variation/opus-4-8/cpp shared one directory: two legs writing over
+// each other's working state, and anything counting per-instance progress from
+// it saw one leg's work twice and reported an unmarked leg as complete.
+const multiSweScratch = (leg, sel) =>
+  join(EVALS_DIR, 'logs', 'multi-swe', multiSweKey(leg, sel));
 
 const legConfigs = (ds, model, combo) => {
   // A combination may override the dataset's config list — configs are a knob
@@ -609,7 +648,7 @@ async function mark(target, flags) {
         writeProvenance(ds, leg, sel, { output_dir: outDir.slice(repoRoot.length + 1) });
       } else if (ds.marker.type === 'multi-swe') {
         const outDir = multiSweOutDir(ds, leg, sel);
-        const scratch = join(EVALS_DIR, 'logs', 'multi-swe', `${basename(leg.out)}-${sel}`);
+        const scratch = multiSweScratch(leg, sel);
         mkdirSync(outDir, { recursive: true });
         // The harness validates these dirs at startup rather than creating them.
         for (const d of ['workdir', 'repos', 'logs']) mkdirSync(join(scratch, d), { recursive: true });

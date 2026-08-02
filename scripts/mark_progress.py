@@ -34,8 +34,11 @@ def graded_swebench(rid):
 
 
 def graded_multi_swe(combo, model, sel):
+    # Keyed on the FULL leg path, matching multiSweScratch in swe.mjs. Keyed on
+    # the model alone, runs/multi/opus-4-8/cpp and runs/cpp-variation/opus-4-8/
+    # cpp share one directory, so both legs count the same instances and an
+    # unmarked leg reports as complete.
     return len(glob.glob(
-        f"evals/logs/multi-swe/{model}-{sel}/workdir/*/*/evals/*")) or len(glob.glob(
         f"evals/logs/multi-swe/{combo}-{model}-{sel}/workdir/*/*/evals/*"))
 
 
