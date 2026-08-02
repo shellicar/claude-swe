@@ -21,7 +21,9 @@
 // analysis/ (derived figures). Paths come from the declarations.
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync,
+} from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { runExperiment } from './orchestration/experiment.mjs';
 import { spawnAwait, onShutdown, repoRoot } from './orchestration/harness.mjs';
@@ -110,7 +112,34 @@ const readManifest = () => {
 // with one it FILTERS that combination's legs (a substring of the model id, so
 // `--model opus-5` picks every effort leg of one model out of a big sweep);
 // without one it declares the model for an ad-hoc run.
-const legs = ({ combo, ds }, flags) => {
+// Legs already on disk for these selections, read from what each recorded
+// rather than guessed from its path: preds.json carries the model that
+// produced it.
+const discoverLegs = (ds, selections) => {
+  const root = join(repoRoot, 'runs');
+  const out = new Map();
+  if (!existsSync(root)) return [];
+  for (const combo of readdirSync(root)) {
+    const comboDir = join(root, combo);
+    if (!statSync(comboDir).isDirectory()) continue;
+    for (const leg of readdirSync(comboDir)) {
+      const legDir = join(comboDir, leg);
+      if (!statSync(legDir).isDirectory()) continue;
+      for (const sel of selections) {
+        const preds = join(legDir, sel, 'preds.json');
+        if (!existsSync(preds)) continue;
+        const first = Object.values(JSON.parse(readFileSync(preds, 'utf8')))[0];
+        out.set(`runs/${combo}/${leg}`, {
+          model: first?.model_name_or_path ?? leg,
+          out: `runs/${combo}/${leg}`,
+        });
+      }
+    }
+  }
+  return [...out.values()];
+};
+
+const legs = ({ combo, ds, selections }, flags, { forRun = false } = {}) => {
   if (combo) {
     let wanted = combo.legs;
     if (flags.model) wanted = wanted.filter((l) => l.model.includes(flags.model));
@@ -131,7 +160,30 @@ const legs = ({ combo, ds }, flags) => {
     if (flags.model || flags.effort) return wanted;
     return combo.legs;
   }
-  if (!flags.model) throw new Error('no combination set and no --model: nothing to run');
+  // A bare dataset target (`verified/micro`) names no combination, so there is
+  // no declared list of legs. --model supplies one for an ad-hoc RUN; without
+  // it, the legs are whatever has already been run — which is exactly what
+  // status, mark, audit and analyse want, and what --help has always said
+  // those targets do.
+  if (!flags.model) {
+    // Never for `run`. Discovery answers "what has been done", which is what
+    // the reading verbs want; handing that same list to `run` makes a bare
+    // dataset target start work on every leg it finds — it did, spending real
+    // calls on five walker legs before anyone asked for anything.
+    if (forRun) {
+      throw new Error(
+        `${ds.name}: run needs a combination or --model. A bare dataset target`
+        + ' reads (status, mark, audit, analyse); it does not decide what to run.');
+    }
+    const found = discoverLegs(ds, selections);
+    if (found.length === 0) {
+      throw new Error(
+        `no combination set, no --model, and nothing under runs/ for `
+        + `${ds.name}/${selections.join(',')} — name a combination, or pass`
+        + ' --model to start an ad-hoc run');
+    }
+    return found;
+  }
   const short = flags.model.split('/').pop().replace(/^claude-/, '');
   // Effort is part of the path: without it, `--model X --effort low` and
   // `--model X --effort max` share one directory, so the second silently
@@ -288,7 +340,7 @@ async function ensure({ ds, selections }) {
 
 async function run(target, flags) {
   const { combo, ds, selections } = target;
-  const theLegs = legs(target, flags);
+  const theLegs = legs(target, flags, { forRun: true });
   // Preflight: refuse to start when declared images are not local. Without
   // this, docker run's implicit pull races mini's 120s container-start
   // timeout and every instance dies as an empty preds entry (pro/go,
