@@ -26,7 +26,7 @@ import {
 } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { runExperiment } from './orchestration/experiment.mjs';
-import { spawnAwait, onShutdown, repoRoot } from './orchestration/harness.mjs';
+import { spawnAwait, stopChild, onShutdown, repoRoot } from './orchestration/harness.mjs';
 
 const MANIFEST = join(repoRoot, 'image-manifest.txt');
 const EVALS_DIR = join(repoRoot, 'evals');
@@ -581,15 +581,77 @@ function watchProgress(label, everyMs = 5 * 60_000) {
   return () => clearInterval(timer);
 }
 
+// Containers the markers leave behind. They belong to dockerd, not to the
+// process tree, so no signal reaches them: killing the harness kills the thing
+// that WOULD have removed them and nothing else. swebench names its own
+// `sweb.eval.<instance>.<run_id>`, and the run ids are ours; multi-swe takes
+// docker's random names, so it is identified by the image it runs.
+// `./swe.mjs cleanup` — for containers already stranded by an interrupted mark
+// before the reaping above existed, or by a crash that outran it. Lists what it
+// would remove and why, then removes it: eval containers are disposable, but a
+// container this rig did not start is left alone.
+let cleanedUp = false;
+
+async function cleanup() {
+  if (cleanedUp) return; // no target, so once per invocation, not once per target
+  cleanedUp = true;
+  const listed = spawnSync('docker', ['ps', '-a', '--format', '{{.Names}}\t{{.Image}}\t{{.Status}}'],
+    { encoding: 'utf8' });
+  if (listed.status !== 0) throw new Error('docker ps failed');
+  const rows = listed.stdout.trim().split('\n').filter(Boolean).map((l) => l.split('\t'));
+  // ONLY names this rig creates. Matching the multi-swe harness by image
+  // instead swept up its own tooling container (mswebench/nix_swe), which
+  // nothing here started — a container whose provenance is unclear is reported,
+  // never removed.
+  const ours = rows.filter(([name]) =>
+    name.startsWith('sweb.eval.') || name.startsWith('minisweagent-'));
+  const unattributable = rows.filter(([name, image]) =>
+    !ours.includes(name) && (image ?? '').includes('mswebench'));
+
+  if (ours.length === 0) console.log('[cleanup] nothing of ours to remove');
+  else {
+    for (const [name, image, status] of ours) {
+      console.log(`[cleanup] ${name}  ${status}  (${image})`);
+    }
+    spawnSync('docker', ['rm', '-f', ...ours.map(([n]) => n)], { stdio: 'ignore' });
+    console.log(`[cleanup] removed ${ours.length}`);
+  }
+
+  for (const [name, image, status] of unattributable) {
+    console.log(`[cleanup] left alone (not ours to judge): ${name}  ${status}  (${image})`);
+  }
+}
+
+function reapMarkerContainers(runIds) {
+  const listed = spawnSync('docker', ['ps', '-a', '--format', '{{.Names}}\t{{.Image}}'],
+    { encoding: 'utf8' });
+  if (listed.status !== 0) return;
+  // Names we created, for run ids we started. Not an image match: that swept
+  // up the multi-swe harness's own tooling container.
+  const doomed = listed.stdout.trim().split('\n').filter(Boolean)
+    .map((l) => l.split('\t'))
+    .filter(([name]) => runIds.some((id) => name.endsWith(`.${id}`)))
+    .map(([name]) => name);
+  if (doomed.length === 0) return;
+  console.error(`[mark] removing ${doomed.length} container(s) the marker left behind`);
+  spawnSync('docker', ['rm', '-f', ...doomed], { stdio: 'ignore' });
+}
+
 async function mark(target, flags) {
   const { ds, selections } = target;
   requireVendoredMarker(ds);
   const theLegs = legs(target, flags);
   mkdirSync(EVALS_DIR, { recursive: true });
   const stopWatch = watchProgress(ds.name);
-  onShutdown(async () => stopWatch());
+  const startedRunIds = [];
   let current = null;
-  onShutdown(async () => current?.kill('SIGTERM'));
+  // Order matters: stop the child and WAIT, then reap what it could not.
+  // Removing containers while the harness still holds them races it.
+  onShutdown(async () => {
+    stopWatch();
+    await stopChild(current);
+    reapMarkerContainers(startedRunIds);
+  });
   try {
   for (const leg of theLegs) {
     for (const sel of selections) {
@@ -600,6 +662,7 @@ async function mark(target, flags) {
       }
       if (ds.marker.type === 'swebench') {
         const runId = `${leg.out.replaceAll('/', '_')}_${sel}`;
+        startedRunIds.push(runId); // so an interrupted mark can reap its containers
         // Content-aware resume. swebench skips any instance whose log dir exists,
         // blind to whether the prediction changed — so a re-mark after fixing a
         // patch silently served the stale verdict (the recurring "re-mark did
@@ -978,7 +1041,9 @@ async function analyse({ ds, selections }) {
 }
 
 // ---- main ----------------------------------------------------------------------
-const VERBS = { draw, resolve, ensure, run, mark, status, audit, analyse };
+// `cleanup` takes no target — stranded containers belong to no dataset by the
+// time they are stranded.
+const VERBS = { draw, resolve, ensure, run, mark, status, audit, analyse, cleanup };
 
 const { readdirSync: readdir } = await import('node:fs');
 const listJson = (dir) => {

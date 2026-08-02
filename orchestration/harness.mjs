@@ -29,6 +29,24 @@ export const instanceFilter = (set, file) => {
 // log files instead of interleaving on one console.
 // onChild hands the live process back so the caller can kill it on shutdown.
 // Args are passed as an array (no shell), so the filter regex needs no escaping.
+// Stop a child and WAIT for it to be gone.
+//
+// SIGINT, not SIGTERM: python's default SIGTERM handler terminates the process
+// outright — no stack unwind, no finally blocks, no atexit — so a harness that
+// removes its containers in a finally never gets to. SIGINT raises
+// KeyboardInterrupt, which unwinds.
+//
+// And waiting matters: kill() only delivers the signal and returns, so exiting
+// straight afterwards gives the child no time to tear anything down. SIGKILL
+// only after the grace period, when it has had its chance.
+export const stopChild = (child, graceMs = 15_000) => new Promise((resolve) => {
+  if (!child || child.exitCode !== null || child.signalCode !== null) return resolve();
+  const done = () => { clearTimeout(timer); resolve(); };
+  const timer = setTimeout(() => { child.kill('SIGKILL'); done(); }, graceMs);
+  child.once('exit', done);
+  child.kill('SIGINT');
+});
+
 export const spawnAwait = (program, args, { env, onChild, stdio = 'inherit', cwd = repoRoot } = {}) =>
   new Promise((resolve, reject) => {
     const child = spawn(program, args, { cwd, env: { ...process.env, ...env }, stdio });
