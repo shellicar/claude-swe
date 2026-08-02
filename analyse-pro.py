@@ -49,13 +49,26 @@ def tok(x):
     return f"{x/1e6:.2f}M" if x >= 1e6 else f"{x/1e3:.0f}k"
 
 
+_SELECTIONS = json.load(open(f"{ROOT}/datasets/pro.json"))["selections"]
+
+
+def selection_ids(sel):
+    """The instances this selection declares, per the dataset's own file."""
+    return {l.strip() for l in open(f"{ROOT}/{_SELECTIONS[sel]['file']}") if l.strip()}
+
+
 def leg(model_dir, sel):
     decl = SELECTIONS[sel]
     cost = steps = out = cr = cw = ncc = 0
     wall = 0.0
     empty = 0
     runs_dir = decl["runs"].format(m=model_dir)
-    trajs = sorted(glob.glob(f"{ROOT}/{runs_dir}/*/*.traj.json"))
+    # Selection members only — see analyse-multi.py: a leg's cost is the cost
+    # of the instances that leg's selection declares, not of whatever
+    # directories happen to sit on disk beneath it.
+    ids = selection_ids(sel)
+    trajs = sorted(t for t in glob.glob(f"{ROOT}/{runs_dir}/*/*.traj.json")
+                   if os.path.basename(os.path.dirname(t)) in ids)
     for tf in trajs:
         t = json.load(open(tf))
         info = t["info"]

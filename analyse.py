@@ -83,6 +83,18 @@ def wire_thinking(dirn, base=None):
     return totals
 
 
+_SELECTIONS = json.load(open(f"{ROOT}/datasets/verified.json"))["selections"]
+
+
+def _selection_trajectories(base, s):
+    """Trajectories for the instances this selection declares, and no others.
+    The instance file comes from the dataset rather than the selection's name,
+    since the name is exactly what collided."""
+    ids = {l.strip() for l in open(f"{ROOT}/{_SELECTIONS[s]['file']}") if l.strip()}
+    return [t for t in sorted(glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"))
+            if os.path.basename(os.path.dirname(t)) in ids]
+
+
 def leg(base, s):
     # base is the run out path, e.g. "main/opus-4-8" or "exec-arm-1/sonnet-5".
     # Report is <model>.<run_id>.json; run_id = runs_<base-with-underscores>_<set>.
@@ -92,16 +104,28 @@ def leg(base, s):
     # disagree with the gate and build a normal-looking card from an arbitrary
     # one. This is the function every card's figures come from.
     reps = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")
-    if len(reps) != 1:
+    # None is ordinary — a declared leg that has not run yet — and callers
+    # already treat the miss as "no data, drop the column". SEVERAL is the
+    # bug: `audit` fails on it, so silently taking the first here let the
+    # analyser build a normal-looking card from an arbitrary one.
+    if len(reps) > 1:
         raise SystemExit(
-            f"{base}/{s}: expected exactly 1 report in evals/, found {len(reps)}"
-            + (f" ({', '.join(sorted(os.path.basename(r) for r in reps))})" if reps else ""))
-    rep = reps[0]
+            f"{base}/{s}: {len(reps)} reports match in evals/ "
+            f"({', '.join(sorted(os.path.basename(r) for r in reps))}) — remove the stale one")
+    rep = reps[0]  # IndexError when absent, which callers expect
     resolved = len(json.load(open(rep))["resolved_ids"])
     cost = steps = out = cr = cw = ncc = failed = 0
     wall = 0.0
     peak_ctx = 0  # largest single-turn context (prompt_tokens) seen, any instance
-    for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
+    # Selection members only. `resolved` comes from the report, which covers
+    # exactly the selection; cost and tokens came from every directory on disk.
+    # Those are the same set only while nothing extra lands there — and
+    # something did: two datasets both name a selection `cpp`, and runs wrote
+    # into the directory by that name, leaving 28 trajectories against 20
+    # predictions in six legs. Unscoped, that inflated cost by 20-32% depending
+    # on the model, which moves $/resolved unevenly and corrupts precisely the
+    # comparison the rig exists to make.
+    for tf in _selection_trajectories(base, s):
         t = json.load(open(tf))
         st = t["info"]["model_stats"]
         cost += st["instance_cost"]
@@ -143,8 +167,8 @@ def per_instance(base, s):
     """{instance_id: (resolved, cost)} — the granularity leg() aggregates away."""
     rid = base.replace("/", "_")
     reps = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")
-    if len(reps) != 1:
-        raise SystemExit(f"{base}/{s}: expected exactly 1 report, found {len(reps)}")
+    if len(reps) > 1:
+        raise SystemExit(f"{base}/{s}: {len(reps)} reports match in evals/ — remove the stale one")
     resolved = set(json.load(open(reps[0]))["resolved_ids"])
     out = {}
     for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):

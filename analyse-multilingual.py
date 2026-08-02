@@ -63,12 +63,29 @@ def test_outcomes(decl, model_dir):
     return dict(fixed=fixed, near=near, wrecked=wrecked)
 
 
+_SELECTIONS = json.load(open(f"{ROOT}/datasets/multilingual.json"))["selections"]
+
+
+def selection_ids(sel):
+    """The instances this selection declares. The dataset names the file; the
+    selection's own NAME is not usable, since names collide across datasets
+    (`cpp` is 11 fmtlib instances here and 20 different ones in multi)."""
+    return {l.strip() for l in open(f"{ROOT}/{_SELECTIONS[sel]['file']}") if l.strip()}
+
+
 def leg(model_dir, decl):
     cost = steps = out = cr = cw = ncc = 0
     wall = 0.0
     empty = 0
     runs_dir = f"{decl['runs']}/{model_dir}/{decl['sel']}"
-    trajs = sorted(glob.glob(f"{ROOT}/{runs_dir}/*/*.traj.json"))
+    # Selection members only: verdicts come from the report, which covers the
+    # selection, while cost came from whatever sat in the directory. Six legs
+    # already hold 28 trajectories against 20 predictions after two datasets
+    # both named a selection `cpp` — unscoped, that inflates cost unevenly per
+    # model and moves $/resolved, which is the comparison being made.
+    ids = selection_ids(decl["sel"])
+    trajs = sorted(t for t in glob.glob(f"{ROOT}/{runs_dir}/*/*.traj.json")
+                   if os.path.basename(os.path.dirname(t)) in ids)
     for tf in trajs:
         t = json.load(open(tf))
         info = t["info"]
