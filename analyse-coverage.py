@@ -98,18 +98,23 @@ for d, ds in combos():
             # A meet's rows are named for the meet and its program; a fixture
             # or exhibition is named for itself, since that IS the variable.
             label = f"{d['dataset']}/{sel}" if kind == "meet" else f"{d['name']}/{sel}"
-            rows.setdefault((kind, label), {})[(model, effort)] = leg["out"]
+            # The dataset travels with the row: the label alone cannot say
+            # which meet a fixture's selection belongs to.
+            rows.setdefault((kind, label, d["dataset"]), {})[(model, effort)] = leg["out"]
 
 # How many instances a selection should have, so a partly-graded leg reads as
-# partial rather than done.
+# partial rather than done. Keyed by (dataset, selection): the names collide
+# across datasets and mean different sizes — `cpp` is 20 in multi and 11 in
+# multilingual, `rust` 20 and 43, `go` 42 in multilingual and 25 in pro — so a
+# name-only key silently compares against another meet's program.
 EXPECTED = {}
 for _f in glob.glob(f"{ROOT}/datasets/*.json"):
     _ds = json.load(open(_f))
     for _sel, _cfg in _ds["selections"].items():
-        EXPECTED[_sel] = _cfg.get("expected")
+        EXPECTED[(_ds["name"], _sel)] = _cfg.get("expected")
 
 
-def strip_for(model, legs, selection):
+def strip_for(model, legs, dataset, selection):
     """One model's five effort slots for a row. A level the model does not have
     is a space, not a gap: absence of a rung is not missing work."""
     mine = LEVELS_BY_MODEL[model["dir"]]
@@ -119,16 +124,17 @@ def strip_for(model, legs, selection):
             out += " "
             continue
         leg_out = legs.get((model["dir"], lv))
-        out += (GLYPH[leg_state(leg_out, selection, EXPECTED.get(selection))]
+        out += (GLYPH[leg_state(leg_out, selection, EXPECTED.get((dataset, selection)))]
                 if leg_out else GLYPH["none"])
     return out
 
 
 ORDER = {"meet": 0, "variation": 1, "fixture": 2}
 bodies = {k: [] for k in ORDER}
-for (kind, label), legs in sorted(rows.items(), key=lambda kv: (ORDER[kv[0][0]], kv[0][1])):
+for (kind, label, dataset), legs in sorted(rows.items(),
+                                          key=lambda kv: (ORDER[kv[0][0]], kv[0][1])):
     selection = label.split("/")[-1]
-    cells = [f"`{strip_for(m, legs, selection)}`" for m in COLUMNS]
+    cells = [f"`{strip_for(m, legs, dataset, selection)}`" for m in COLUMNS]
     bodies[kind].append((label, cells))
 
 columns = [m["dir"] for m in COLUMNS]
@@ -159,9 +165,10 @@ with open(f"{outdir}/table.md", "w") as f:
 # showing gaps that were not gaps.
 payload = {"levels": LEVELS, "columns": columns,
            "legend": {v: k for k, v in GLYPH.items()} | {" ": "model has no such level"},
-           "rows": {label: {m["dir"]: list(strip_for(m, legs, label.split("/")[-1]))
+           "rows": {label: {m["dir"]: list(strip_for(m, legs, dataset,
+                                                     label.split("/")[-1]))
                             for m in COLUMNS}
-                    for (_k, label), legs in rows.items()}}
+                    for (_k, label, dataset), legs in rows.items()}}
 with open(f"{outdir}/data.json", "w") as f:
     json.dump(payload, f, indent=2)
 print("wrote analysis/coverage/: data.json, table.md")

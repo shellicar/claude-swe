@@ -87,7 +87,16 @@ def leg(base, s):
     # base is the run out path, e.g. "main/opus-4-8" or "exec-arm-1/sonnet-5".
     # Report is <model>.<run_id>.json; run_id = runs_<base-with-underscores>_<set>.
     rid = base.replace("/", "_")
-    rep = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")[0]
+    # Exactly one report, never "whichever glob returned first". `audit` already
+    # treats several matches as a failure; taking [0] here let the analyser
+    # disagree with the gate and build a normal-looking card from an arbitrary
+    # one. This is the function every card's figures come from.
+    reps = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{s}.json")
+    if len(reps) != 1:
+        raise SystemExit(
+            f"{base}/{s}: expected exactly 1 report in evals/, found {len(reps)}"
+            + (f" ({', '.join(sorted(os.path.basename(r) for r in reps))})" if reps else ""))
+    rep = reps[0]
     resolved = len(json.load(open(rep))["resolved_ids"])
     cost = steps = out = cr = cw = ncc = failed = 0
     wall = 0.0

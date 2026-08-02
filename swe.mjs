@@ -19,7 +19,7 @@
 //
 // Records: runs/ (patches, trajectories, wire captures), evals/ (verdicts),
 // analysis/ (derived figures). Paths come from the declarations.
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
