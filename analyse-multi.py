@@ -26,10 +26,16 @@ from analysis_output import emit
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # label -> (runs root, selection ids file, evals dir prefix)
+#
+# Programs only. The C++ variation used to sit here as a fourth section, which
+# put an experiment on a meet's card: its columns became models, so the pairing
+# that answers it — this contender under the control, the same contender under
+# the changed condition — was split across sections and its numbers joined a
+# podium that was never its question. It has its own card now
+# (analysis/experiment-cpp-variation), and analysis/README.md says why.
 SECTIONS = {
     "*C++* control": dict(runs="runs/multi/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/multi-{m}-cpp"),
     "*Rust* control": dict(runs="runs/multi/{m}/rust", ids="instances-multi-rust.txt", evals="evals/multi/multi-{m}-rust"),
-    "*C++* variation (verify + 900s — exhibition)": dict(runs="runs/cpp-variation/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/cpp-variation-{m}-cpp"),
     "tokio stack — *Rust* (org tokio-rs)": dict(runs="runs/multi/{m}/tokio", ids="instances-tokio-stack.txt", evals="evals/multi/multi-{m}-tokio"),
 }
 
@@ -217,7 +223,8 @@ for label, decl in SECTIONS.items():
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in section_rows]
     sections_out.append((f"{label} ({n} events)", body))
 
-sections_out.append(("TOTAL — controls (variation excluded)", total_section(["*C++* control", "*Rust* control", "tokio stack — *Rust* (org tokio-rs)"])))
+# Every section is a program now, so the total needs no exclusion clause.
+sections_out.append(("TOTAL", total_section(["*C++* control", "*Rust* control", "tokio stack — *Rust* (org tokio-rs)"])))
 
 emit("multi", "Multi-SWE-bench", models, sections_out, NOTE,
      {"covers": ["cpp", "rust", "tokio"], "models": data})

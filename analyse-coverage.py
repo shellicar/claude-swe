@@ -73,17 +73,19 @@ def combos():
         yield d, ds
 
 
-def kind_of(fixture):
-    """analysis/README.md's vocabulary: a MEET is a dataset with its own judges
-    and program (its primary contest, whose legs differ only by contender or
-    effort); a VARIATION is an exhibition — same program, altered rules, off
-    the medal table; everything else is a FIXTURE testing scaffolding or
-    tools rather than a contender."""
-    if fixture["name"].endswith("-variation"):
-        return "variation"
-    if fixture["name"] in ("main", "effort-sweep") or fixture["name"] == fixture["dataset"]:
+def kind_of(combo):
+    """analysis/README.md's vocabulary. A MEET varies the contender: same events,
+    same conditions, one column per model. An EXPERIMENT varies a condition and
+    holds the contenders, comparing each against itself.
+
+    An experiment says so in its combination file, rather than being recognised
+    by a suffix in its name — the name is a label, and a rename would silently
+    reclassify it."""
+    if combo.get("experiment"):
+        return "experiment"
+    if combo["name"] in ("main", "effort-sweep") or combo["name"] == combo["dataset"]:
         return "meet"
-    return "fixture"
+    return "experiment"
 
 
 # Every meet/program a contender could compete in, and every leg that exists
@@ -129,7 +131,7 @@ def strip_for(model, legs, dataset, selection):
     return out
 
 
-ORDER = {"meet": 0, "variation": 1, "fixture": 2}
+ORDER = {"meet": 0, "experiment": 1}
 bodies = {k: [] for k in ORDER}
 for (kind, label, dataset), legs in sorted(rows.items(),
                                           key=lambda kv: (ORDER[kv[0][0]], kv[0][1])):
@@ -141,9 +143,9 @@ columns = [m["dir"] for m in COLUMNS]
 heading = "Coverage — contender × meet × effort"
 lines = [f"| {heading} | " + " | ".join(columns) + " |",
          "|" + "---|" * (len(columns) + 1)]
-for title, body in (("Meets — contenders on the medal table", bodies["meet"]),
-                    ("Exhibitions — variations, off the medal table", bodies["variation"]),
-                    ("Fixtures — scaffolding and tools, not contenders", bodies["fixture"])):
+for title, body in (("Meets — the contender varies", bodies["meet"]),
+                    ("Experiments — a condition varies, contenders held",
+                     bodies["experiment"])):
     if not body:
         continue
     # Repeat the column names per section, so a section reads on its own.

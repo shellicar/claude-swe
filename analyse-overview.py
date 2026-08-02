@@ -59,7 +59,6 @@ def multilingual_rows(d):
         "*Rust* — 7 repos (43 events)": "*Rust* — 7 repos (43)",
         "fmtlib/fmt — *C++* (11 events)": "fmt — *C++* (11)",
         "*Go* — 5 repos (42 events)": "*Go* — 5 repos (42)",
-        "*C++* variation (verify + 900s, same 11 — exhibition)": "*C++* variation (11)",
     }
     for key, label in labels.items():
         yield label, {m: v.get(key) for m, v in d["models"].items()}
@@ -69,7 +68,6 @@ def multi_rows(d):
     labels = {
         "*C++* control": "*C++* control (20)",
         "*Rust* control": "*Rust* control (20)",
-        "*C++* variation (verify + 900s — exhibition)": "*C++* variation (20)",
         "tokio stack — *Rust* (org tokio-rs)": "tokio stack — *Rust* (20)",
     }
     for key, label in labels.items():
@@ -119,16 +117,19 @@ for title, name, rows_fn in DATASETS:
             if r is None or not n:
                 continue
             per_column[col] = (r, n, x)
-            if "variation" not in label:
-                accumulate(ds_totals, col, r, n, x)
-                accumulate(totals, col, r, n, x)
+            # No label sniffing: every row here is a program now. Experiments
+            # live on their own cards, so there is nothing to exclude — the
+            # old `"variation" not in label` test would have silently started
+            # counting anything renamed.
+            accumulate(ds_totals, col, r, n, x)
+            accumulate(totals, col, r, n, x)
         body.append((f"## {label}", [""] * len(COLUMNS)))
         body.extend(four_rows(per_column))
-    body.append(("## total (controls)", [""] * len(COLUMNS)))
+    body.append(("## total", [""] * len(COLUMNS)))
     body.extend(four_rows(ds_totals))
     sections.append((title, body))
 
-sections.append(("TOTAL — all controls (variations excluded)", four_rows(totals)))
+sections.append(("TOTAL — every meet", four_rows(totals)))
 
 # Drop columns no dataset ever populated.
 keep = [i for i, c in enumerate(COLUMNS) if c in seen]
