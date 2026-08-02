@@ -74,6 +74,7 @@ def card(exp):
     control = spec["control"]
     ds = json.load(open(f"{ROOT}/datasets/{exp['dataset']}.json"))
     sections = []
+    figures = {}  # the machine layer: same numbers the card renders
 
     for sel in exp["selections"]:
         ids = {l.strip() for l in open(f"{ROOT}/{ds['selections'][sel]['file']}")
@@ -116,6 +117,12 @@ def card(exp):
             row("delta", lambda p: f"${delta(p, 'cost')}".replace("$-", "-$").replace("$+", "+$")),
         ]
         sections.append((f"{sel} — {len(ids)} events", body))
+        for m in models:
+            figures.setdefault(m, {})[sel] = {
+                "events": len(ids),
+                "control": pairs[m]["control"],
+                "variation": pairs[m]["variation"],
+            }
 
     columns = [NAME.get(l["out"].split("/")[-1], l["out"].split("/")[-1])
                for l in exp["legs"]]
@@ -124,8 +131,10 @@ def card(exp):
         f"experiment-{exp['name']}",
         f"Experiment — {exp['name']} (control: {control})",
         columns, sections, note,
-        {"covers": exp["selections"], "experiment": spec,
-         "models": {m: {} for m in columns}},
+        # Figures, not an empty shell: a card whose numbers live only in its
+        # rendered HTML cannot be diffed, joined or checked.
+        {"covers": exp["selections"], "experiment": spec, "control": control,
+         "models": figures},
     )
 
 
