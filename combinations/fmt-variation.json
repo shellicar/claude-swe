@@ -2,6 +2,11 @@
   "name": "fmt-variation",
   "dataset": "multilingual",
   "selections": ["cpp"],
+  "experiment": {
+    "control": "multilingual",
+    "question": "Were the fmtlib failures the models' or the harness's? All three contenders wrecked roughly 5 of 11 with zero build attempts under the control's 60s timeout.",
+    "varies": "builds required, action timeout 60s → 900s"
+  },
   "parallel": true,
   "basePort": 19170,
   "configs": ["swebench-local.yaml", "swebench-fmt-variation.yaml", "thinking-adaptive.yaml"],

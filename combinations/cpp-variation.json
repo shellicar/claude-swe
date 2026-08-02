@@ -2,6 +2,12 @@
   "name": "cpp-variation",
   "dataset": "multi",
   "selections": ["cpp"],
+  "_experiment": "Declares this an EXPERIMENT rather than a meet: same events and same contenders as the control, one condition changed. It gets its own card, where the columns are the contenders and the rows are control/variation/delta — the comparison is each contender against ITSELF under the two conditions. On a meet's card the columns would be models, which asks a question nobody is asking here.",
+  "experiment": {
+    "control": "multi",
+    "question": "Were the C++ failures the models' or the harness's? The control gave 60s and never asked for a build, so patches that did not compile reached the marker uninspected.",
+    "varies": "builds required, action timeout 60s → 900s"
+  },
   "parallel": true,
   "basePort": 19160,
   "configs": ["swebench-local.yaml", "swebench-multi.yaml", "swebench-cpp-variation.yaml", "thinking-adaptive.yaml"],
