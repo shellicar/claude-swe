@@ -21,6 +21,7 @@ import hashlib
 import json
 import os
 
+import selections
 from analysis_output import emit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -62,14 +63,8 @@ def test_outcomes(decl, model_dir):
     return dict(fixed=fixed, near=near, wrecked=wrecked)
 
 
-_SELECTIONS = json.load(open(f"{ROOT}/datasets/multilingual.json"))["selections"]
-
-
 def selection_ids(sel):
-    """The instances this selection declares. The dataset names the file; the
-    selection's own NAME is not usable, since names collide across datasets
-    (`cpp` is 11 fmtlib instances here and 20 different ones in multi)."""
-    return {l.strip() for l in open(f"{ROOT}/{_SELECTIONS[sel]['file']}") if l.strip()}
+    return selections.ids("multilingual", sel)
 
 
 def leg(model_dir, decl):
@@ -142,7 +137,7 @@ def leg(model_dir, decl):
             for iid in rep["resolved_ids"]:
                 won[short(iid)] = won.get(short(iid), 0) + 1
             by_repo = {}
-            for iid in sorted(l.strip() for l in open(f"{ROOT}/{decl['ids']}") if l.strip()):
+            for iid in sorted(selection_ids(decl["sel"])):
                 r = short(iid)
                 t, _ = by_repo.get(r, (0, 0))
                 by_repo[r] = (t + 1, won.get(r, 0))

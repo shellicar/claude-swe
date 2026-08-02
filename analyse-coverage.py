@@ -17,6 +17,8 @@ import glob
 import json
 import os
 
+import selections
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 LEVELS = ["low", "medium", "high", "xhigh", "max"]
 GLYPH = {"marked": "#", "part": "½", "run": "~", "none": "."}
@@ -104,16 +106,7 @@ for d, ds in combos():
             # which meet a fixture's selection belongs to.
             rows.setdefault((kind, label, d["dataset"]), {})[(model, effort)] = leg["out"]
 
-# How many instances a selection should have, so a partly-graded leg reads as
-# partial rather than done. Keyed by (dataset, selection): the names collide
-# across datasets and mean different sizes — `cpp` is 20 in multi and 11 in
-# multilingual, `rust` 20 and 43, `go` 42 in multilingual and 25 in pro — so a
-# name-only key silently compares against another meet's program.
-EXPECTED = {}
-for _f in glob.glob(f"{ROOT}/datasets/*.json"):
-    _ds = json.load(open(_f))
-    for _sel, _cfg in _ds["selections"].items():
-        EXPECTED[(_ds["name"], _sel)] = _cfg.get("expected")
+
 
 
 def strip_for(model, legs, dataset, selection):
@@ -126,7 +119,7 @@ def strip_for(model, legs, dataset, selection):
             out += " "
             continue
         leg_out = legs.get((model["dir"], lv))
-        out += (GLYPH[leg_state(leg_out, selection, EXPECTED.get((dataset, selection)))]
+        out += (GLYPH[leg_state(leg_out, selection, selections.expected(dataset, selection))]
                 if leg_out else GLYPH["none"])
     return out
 

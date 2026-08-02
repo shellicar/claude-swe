@@ -21,6 +21,7 @@ import hashlib
 import json
 import os
 
+import selections
 from analysis_output import emit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -33,15 +34,17 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 # the changed condition — was split across sections and its numbers joined a
 # podium that was never its question. It has its own card now
 # (analysis/experiment-cpp-variation), and analysis/README.md says why.
+# `sel` names the dataset's selection; the instance file comes from the dataset
+# rather than being repeated here, so the declaration stays the one source.
 SECTIONS = {
-    "*C++* control": dict(runs="runs/multi/{m}/cpp", ids="instances-multi-cpp.txt", evals="evals/multi/multi-{m}-cpp"),
-    "*Rust* control": dict(runs="runs/multi/{m}/rust", ids="instances-multi-rust.txt", evals="evals/multi/multi-{m}-rust"),
-    "tokio stack — *Rust* (org tokio-rs)": dict(runs="runs/multi/{m}/tokio", ids="instances-tokio-stack.txt", evals="evals/multi/multi-{m}-tokio"),
+    "*C++* control": dict(sel="cpp", runs="runs/multi/{m}/cpp", evals="evals/multi/multi-{m}-cpp"),
+    "*Rust* control": dict(sel="rust", runs="runs/multi/{m}/rust", evals="evals/multi/multi-{m}-rust"),
+    "tokio stack — *Rust* (org tokio-rs)": dict(sel="tokio", runs="runs/multi/{m}/tokio", evals="evals/multi/multi-{m}-tokio"),
 }
 
 
 def selection(decl):
-    return {l.strip() for l in open(f"{ROOT}/{decl['ids']}") if l.strip()}
+    return selections.ids("multi", decl["sel"])
 
 
 def tok(x):

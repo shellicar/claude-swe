@@ -21,6 +21,7 @@ import json
 import os
 
 import analysis_output
+import selections
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ROSTER = json.load(open(f"{ROOT}/models.json"))["models"]
@@ -77,8 +78,7 @@ def card(exp):
     figures = {}  # the machine layer: same numbers the card renders
 
     for sel in exp["selections"]:
-        ids = {l.strip() for l in open(f"{ROOT}/{ds['selections'][sel]['file']}")
-               if l.strip()}
+        ids = selections.ids(exp["dataset"], sel)
         models = [l["out"].split("/")[-1] for l in exp["legs"]]
         marker = ds["marker"]["type"]
         pairs = {}

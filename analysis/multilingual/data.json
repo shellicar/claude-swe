@@ -49,9 +49,9 @@
             3
           ]
         },
-        "fixed": 40,
-        "near": 4,
-        "wrecked": 1
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -67,9 +67,9 @@
         "thinking": 50281,
         "resolved": 3,
         "by_repo": null,
-        "fixed": 4,
-        "near": 1,
-        "wrecked": 5
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "*Go* \u2014 5 repos (42 events)": {
         "instances": 42,
@@ -106,27 +106,9 @@
             6
           ]
         },
-        "fixed": 38,
-        "near": 1,
-        "wrecked": 1
-      },
-      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
-        "instances": 11,
-        "empty": 0,
-        "cost": 14.530776999999999,
-        "steps": 272,
-        "out": 127594,
-        "ncc": 544,
-        "cr": 4689012,
-        "cw": 276530,
-        "intot": 4966086,
-        "wall": 2635.895017147064,
-        "thinking": 68615,
-        "resolved": 4,
-        "by_repo": null,
-        "fixed": 4,
-        "near": 0,
-        "wrecked": 5
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       }
     },
     "opus-4-8": {
@@ -173,9 +155,9 @@
             2
           ]
         },
-        "fixed": 38,
-        "near": 5,
-        "wrecked": 2
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -191,9 +173,9 @@
         "thinking": 77110,
         "resolved": 4,
         "by_repo": null,
-        "fixed": 4,
-        "near": 0,
-        "wrecked": 5
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "*Go* \u2014 5 repos (42 events)": {
         "instances": 42,
@@ -230,27 +212,9 @@
             6
           ]
         },
-        "fixed": 30,
-        "near": 0,
-        "wrecked": 2
-      },
-      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
-        "instances": 11,
-        "empty": 0,
-        "cost": 10.817214499999999,
-        "steps": 361,
-        "out": 148779,
-        "ncc": 722,
-        "cr": 10146959,
-        "cw": 323304,
-        "intot": 10470985,
-        "wall": 2415.913137435913,
-        "thinking": 85529,
-        "resolved": 5,
-        "by_repo": null,
-        "fixed": 5,
-        "near": 0,
-        "wrecked": 5
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       }
     },
     "sonnet-5": {
@@ -297,9 +261,9 @@
             2
           ]
         },
-        "fixed": 37,
-        "near": 4,
-        "wrecked": 1
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -315,9 +279,9 @@
         "thinking": 63381,
         "resolved": 6,
         "by_repo": null,
-        "fixed": 6,
-        "near": 0,
-        "wrecked": 5
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "*Go* \u2014 5 repos (42 events)": {
         "instances": 42,
@@ -354,27 +318,9 @@
             7
           ]
         },
-        "fixed": 32,
-        "near": 1,
-        "wrecked": 1
-      },
-      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
-        "instances": 11,
-        "empty": 0,
-        "cost": 6.070757400000001,
-        "steps": 436,
-        "out": 113507,
-        "ncc": 872,
-        "cr": 9735363,
-        "cw": 385314,
-        "intot": 10121549,
-        "wall": 1677.8709259033203,
-        "thinking": 47966,
-        "resolved": 6,
-        "by_repo": null,
-        "fixed": 6,
-        "near": 0,
-        "wrecked": 5
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       }
     },
     "haiku-4-5": {
@@ -421,9 +367,9 @@
             2
           ]
         },
-        "fixed": 26,
-        "near": 5,
-        "wrecked": 6
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "fmtlib/fmt \u2014 *C++* (11 events)": {
         "instances": 11,
@@ -439,9 +385,9 @@
         "thinking": 0,
         "resolved": 5,
         "by_repo": null,
-        "fixed": 5,
-        "near": 0,
-        "wrecked": 5
+        "fixed": null,
+        "near": null,
+        "wrecked": null
       },
       "*Go* \u2014 5 repos (42 events)": {
         "instances": 42,
@@ -478,24 +424,6 @@
             5
           ]
         },
-        "fixed": 26,
-        "near": 1,
-        "wrecked": 1
-      },
-      "*C++* variation (verify + 900s, same 11 \u2014 exhibition)": {
-        "instances": 0,
-        "empty": 0,
-        "cost": 0,
-        "steps": 0,
-        "out": 0,
-        "ncc": 0,
-        "cr": 0,
-        "cw": 0,
-        "intot": 0,
-        "wall": 0.0,
-        "thinking": null,
-        "resolved": null,
-        "by_repo": null,
         "fixed": null,
         "near": null,
         "wrecked": null

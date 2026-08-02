@@ -33,45 +33,45 @@
   <tr>
     <th rowspan="4" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top">Results</th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">52</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 57</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">55</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 57</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 58</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">48</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">55</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">53</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 58</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">56</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 58</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>59</b></td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">46</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">46</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">51</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">54</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 58</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">38</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 58</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 59</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">49</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">56</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">57</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 59</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>60</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">47</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">47</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">52</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">55</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 59</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">39</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">48</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">49</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved %</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">87%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 95%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">92%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 95%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 97%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">80%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">92%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">88%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 97%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">93%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 97%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>98%</b></td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">77%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">77%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">85%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">90%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 97%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">63%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 97%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 98%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">82%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">93%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">95%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 98%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>100%</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">78%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">78%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">87%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">92%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 98%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">65%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">80%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">82%</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Total cost</th>
@@ -96,23 +96,23 @@
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/resolved</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.28</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.27</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.35</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.56</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.10</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.67</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.55</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.08</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.64</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$0.11</b></td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 $0.17</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.34</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.63</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.09</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $0.17</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.25</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.34</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.49</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.45</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.47</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.29</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.17</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.33</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.62</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.07</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $0.16</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.24</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.33</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.48</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.42</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.46</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.28</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.14</td>
   </tr>
   <tr>
@@ -855,45 +855,45 @@
   <tr>
     <th rowspan="4" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top">Results</th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">84</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">85</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">96</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">95</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">94</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 101</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 102</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">74</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">88</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">94</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">99</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>103</b></td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">67</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">77</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">85</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">93</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">99</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">51</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 102</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 103</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">75</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">89</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">95</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">100</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>104</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">68</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">74</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">78</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">86</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">94</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">100</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">52</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">69</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">75</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved %</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">80%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">81%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">91%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">90%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 97%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 98%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">71%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">85%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">90%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 96%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥈 97%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">70%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">84%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">90%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">94%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>98%</b></td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">64%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">73%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">81%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">89%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">94%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">49%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">95%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥇 <b>99%</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">65%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">70%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">74%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">82%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">90%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">95%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">50%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">66%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">71%</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Total cost</th>
@@ -918,23 +918,23 @@
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/resolved</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.43</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.42</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.59</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.89</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.46</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$2.55</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.88</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.45</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$2.52</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$0.20</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">🥉 $0.29</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.60</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.08</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.56</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.31</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.59</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.07</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$1.54</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.30</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.46</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.67</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.82</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$2.25</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.77</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.51</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.66</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$0.81</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">$2.23</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.76</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$0.50</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.26</td>
   </tr>
   <tr>
@@ -1235,7 +1235,7 @@
 </tbody>
 <tbody>
   <tr>
-    <th rowspan="2" colspan="2" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888;border-bottom:1px solid #888">Medal tally — per instance (105 events, 1 unsolved by every model)</th>
+    <th rowspan="2" colspan="2" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888;border-bottom:1px solid #888">Medal tally — per instance (105 events, 0 unsolved by every model)</th>
     <th colspan="5" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888;border-left:1px solid #888">Claude Fable 5</th>
     <th colspan="5" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888;border-left:1px solid #888">Claude Opus 5</th>
     <th colspan="5" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888;border-left:1px solid #888">Claude Sonnet 5</th>
@@ -1271,7 +1271,7 @@
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">1</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">0</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">0</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">23</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">24</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">9</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">1</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">2</td>
@@ -1304,7 +1304,7 @@
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">1</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">3</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">22</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">23</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">🥉 bronze</th>
@@ -1318,7 +1318,7 @@
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">6</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">2</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">2</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">18</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">19</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">6</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">4</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none">3</td>

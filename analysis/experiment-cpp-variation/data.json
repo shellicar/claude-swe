@@ -1,0 +1,58 @@
+{
+  "covers": [
+    "cpp"
+  ],
+  "experiment": {
+    "control": "multi",
+    "question": "Were the C++ failures the models' or the harness's? The control gave 60s and never asked for a build, so patches that did not compile reached the marker uninspected.",
+    "varies": "builds required, action timeout 60s \u2192 900s"
+  },
+  "control": "multi",
+  "models": {
+    "opus-4-8": {
+      "cpp": {
+        "events": 20,
+        "control": {
+          "resolved": 13,
+          "cost": 17.32385125,
+          "instances": 20
+        },
+        "variation": {
+          "resolved": 13,
+          "cost": 32.21404075000001,
+          "instances": 20
+        }
+      }
+    },
+    "sonnet-5": {
+      "cpp": {
+        "events": 20,
+        "control": {
+          "resolved": 12,
+          "cost": 14.91061665,
+          "instances": 20
+        },
+        "variation": {
+          "resolved": 12,
+          "cost": 20.6062914,
+          "instances": 20
+        }
+      }
+    },
+    "fable-5": {
+      "cpp": {
+        "events": 20,
+        "control": {
+          "resolved": 14,
+          "cost": 30.0690065,
+          "instances": 20
+        },
+        "variation": {
+          "resolved": 14,
+          "cost": 47.714362000000015,
+          "instances": 20
+        }
+      }
+    }
+  }
+}

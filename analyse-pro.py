@@ -20,6 +20,7 @@ import glob
 import json
 import os
 
+import selections
 from analysis_output import emit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -49,12 +50,8 @@ def tok(x):
     return f"{x/1e6:.2f}M" if x >= 1e6 else f"{x/1e3:.0f}k"
 
 
-_SELECTIONS = json.load(open(f"{ROOT}/datasets/pro.json"))["selections"]
-
-
 def selection_ids(sel):
-    """The instances this selection declares, per the dataset's own file."""
-    return {l.strip() for l in open(f"{ROOT}/{_SELECTIONS[sel]['file']}") if l.strip()}
+    return selections.ids("pro", sel)
 
 
 def leg(model_dir, sel):

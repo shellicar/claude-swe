@@ -8,7 +8,7 @@
       "name": "Claude Fable 5",
       "sets": {
         "standard": {
-          "resolved": 55,
+          "resolved": 56,
           "cost": 30.679250500000002,
           "steps": 657,
           "out": 309207,
@@ -40,8 +40,8 @@
       "name": "Claude Opus 5",
       "sets": {
         "standard": {
-          "resolved": 56,
-          "cost": 18.8134755,
+          "resolved": 57,
+          "cost": 18.813475500000003,
           "steps": 795,
           "out": 325841,
           "failed": 0,
@@ -54,7 +54,7 @@
         },
         "hard": {
           "resolved": 38,
-          "cost": 37.64664075,
+          "cost": 37.646640749999996,
           "steps": 1131,
           "out": 594764,
           "failed": 0,
@@ -75,8 +75,8 @@
       "name": "Claude Opus 4.8",
       "sets": {
         "standard": {
-          "resolved": 51,
-          "cost": 21.002607750000006,
+          "resolved": 52,
+          "cost": 21.00260775,
           "steps": 887,
           "out": 400111,
           "failed": 1,
@@ -89,7 +89,7 @@
         },
         "hard": {
           "resolved": 32,
-          "cost": 33.967708,
+          "cost": 33.967707999999995,
           "steps": 1217,
           "out": 578261,
           "failed": 1,
@@ -107,8 +107,8 @@
       "name": "Claude Sonnet 5",
       "sets": {
         "standard": {
-          "resolved": 51,
-          "cost": 17.339538299999997,
+          "resolved": 52,
+          "cost": 17.3395383,
           "steps": 1383,
           "out": 387978,
           "failed": 0,
@@ -121,7 +121,7 @@
         },
         "hard": {
           "resolved": 34,
-          "cost": 39.629120700000016,
+          "cost": 39.62912070000001,
           "steps": 2206,
           "out": 725351,
           "failed": 0,
@@ -142,7 +142,7 @@
       "name": "Claude Haiku 4.5",
       "sets": {
         "standard": {
-          "resolved": 38,
+          "resolved": 39,
           "cost": 17.904680299999995,
           "steps": 3663,
           "out": 980062,
@@ -174,8 +174,8 @@
       "name": "Kimi k2.7-code",
       "sets": {
         "standard": {
-          "resolved": 47,
-          "cost": 13.57945016,
+          "resolved": 48,
+          "cost": 13.579450160000006,
           "steps": 2401,
           "out": 710682,
           "failed": 2,
@@ -188,7 +188,7 @@
         },
         "hard": {
           "resolved": 21,
-          "cost": 20.96962395,
+          "cost": 20.969623949999995,
           "steps": 2798,
           "out": 917868,
           "failed": 0,
@@ -209,7 +209,7 @@
       "name": "Claude Opus 4.7",
       "sets": {
         "standard": {
-          "resolved": 50,
+          "resolved": 51,
           "cost": 25.89907275,
           "steps": 1179,
           "out": 408827,
@@ -223,7 +223,7 @@
         },
         "hard": {
           "resolved": 25,
-          "cost": 51.92385350000002,
+          "cost": 51.92385350000001,
           "steps": 1718,
           "out": 702504,
           "failed": 0,
@@ -244,7 +244,7 @@
       "name": "Claude Opus 4.6",
       "sets": {
         "standard": {
-          "resolved": 46,
+          "resolved": 47,
           "cost": 24.475726000000012,
           "steps": 1236,
           "out": 327306,
@@ -258,7 +258,7 @@
         },
         "hard": {
           "resolved": 18,
-          "cost": 52.13816749999998,
+          "cost": 52.1381675,
           "steps": 1799,
           "out": 676049,
           "failed": 0,
@@ -279,7 +279,7 @@
       "name": "Claude Sonnet 4.6",
       "sets": {
         "standard": {
-          "resolved": 44,
+          "resolved": 45,
           "cost": 35.582577300000004,
           "steps": 1953,
           "out": 953975,
@@ -293,7 +293,7 @@
         },
         "hard": {
           "resolved": 21,
-          "cost": 105.44785245,
+          "cost": 105.44785244999998,
           "steps": 3025,
           "out": 2064553,
           "failed": 0,

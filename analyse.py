@@ -17,6 +17,7 @@ import hashlib
 import json
 import os
 
+import selections
 from analysis_output import _medal_row, emit
 
 # The roster is declared once, in models.json — adding a model used to mean
@@ -86,14 +87,9 @@ def wire_thinking(dirn, base=None):
     return totals
 
 
-_SELECTIONS = json.load(open(f"{ROOT}/datasets/verified.json"))["selections"]
-
-
 def _selection_trajectories(base, s):
-    """Trajectories for the instances this selection declares, and no others.
-    The instance file comes from the dataset rather than the selection's name,
-    since the name is exactly what collided."""
-    ids = {l.strip() for l in open(f"{ROOT}/{_SELECTIONS[s]['file']}") if l.strip()}
+    """Trajectories for the instances this selection declares, and no others."""
+    ids = selections.ids("verified", s)
     return [t for t in sorted(glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"))
             if os.path.basename(os.path.dirname(t)) in ids]
 

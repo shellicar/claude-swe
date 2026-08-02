@@ -78,38 +78,6 @@
           ]
         }
       },
-      "*C++* variation (verify + 900s \u2014 exhibition)": {
-        "instances": 20,
-        "empty": 2,
-        "cost": 47.71436200000002,
-        "steps": 967,
-        "out": 284254,
-        "ncc": 1918,
-        "cr": 24499482,
-        "cw": 718640,
-        "intot": 25220040,
-        "wall": 7350.5220675468445,
-        "thinking": 124021,
-        "resolved": 14,
-        "by_repo": {
-          "Catch2": [
-            2,
-            1
-          ],
-          "fmt": [
-            5,
-            0
-          ],
-          "json": [
-            10,
-            10
-          ],
-          "simdjson": [
-            3,
-            3
-          ]
-        }
-      },
       "tokio stack \u2014 *Rust* (org tokio-rs)": {
         "instances": 20,
         "empty": 0,
@@ -148,8 +116,25 @@
         "intot": 21740514,
         "wall": 24968.016419649124,
         "thinking": 419137,
-        "resolved": null,
-        "by_repo": null
+        "resolved": 13,
+        "by_repo": {
+          "Catch2": [
+            2,
+            1
+          ],
+          "fmt": [
+            5,
+            0
+          ],
+          "json": [
+            10,
+            9
+          ],
+          "simdjson": [
+            3,
+            3
+          ]
+        }
       },
       "*Rust* control": {
         "instances": 20,
@@ -163,23 +148,33 @@
         "intot": 11674545,
         "wall": 8381.72622013092,
         "thinking": 222342,
-        "resolved": null,
-        "by_repo": null
-      },
-      "*C++* variation (verify + 900s \u2014 exhibition)": {
-        "instances": 0,
-        "empty": 0,
-        "cost": 0,
-        "steps": 0,
-        "out": 0,
-        "ncc": 0,
-        "cr": 0,
-        "cw": 0,
-        "intot": 0,
-        "wall": 0.0,
-        "thinking": null,
-        "resolved": null,
-        "by_repo": null
+        "resolved": 15,
+        "by_repo": {
+          "clap": [
+            12,
+            10
+          ],
+          "nushell": [
+            2,
+            2
+          ],
+          "rayon": [
+            1,
+            1
+          ],
+          "bat": [
+            1,
+            0
+          ],
+          "fd": [
+            1,
+            1
+          ],
+          "tokio": [
+            3,
+            1
+          ]
+        }
       },
       "tokio stack \u2014 *Rust* (org tokio-rs)": {
         "instances": 20,
@@ -267,38 +262,6 @@
           "tokio": [
             3,
             0
-          ]
-        }
-      },
-      "*C++* variation (verify + 900s \u2014 exhibition)": {
-        "instances": 20,
-        "empty": 2,
-        "cost": 32.21404075,
-        "steps": 1152,
-        "out": 328245,
-        "ncc": 2298,
-        "cr": 38431664,
-        "cw": 764895,
-        "intot": 39198857,
-        "wall": 5483.5849459171295,
-        "thinking": 122267,
-        "resolved": 13,
-        "by_repo": {
-          "Catch2": [
-            2,
-            1
-          ],
-          "fmt": [
-            5,
-            0
-          ],
-          "json": [
-            10,
-            9
-          ],
-          "simdjson": [
-            3,
-            3
           ]
         }
       },
@@ -400,38 +363,6 @@
           ]
         }
       },
-      "*C++* variation (verify + 900s \u2014 exhibition)": {
-        "instances": 20,
-        "empty": 2,
-        "cost": 20.6062914,
-        "steps": 1356,
-        "out": 265738,
-        "ncc": 2712,
-        "cr": 43293418,
-        "cw": 966416,
-        "intot": 44262546,
-        "wall": 4584.036306858063,
-        "thinking": 100037,
-        "resolved": 12,
-        "by_repo": {
-          "Catch2": [
-            2,
-            1
-          ],
-          "fmt": [
-            5,
-            0
-          ],
-          "json": [
-            10,
-            8
-          ],
-          "simdjson": [
-            3,
-            3
-          ]
-        }
-      },
       "tokio stack \u2014 *Rust* (org tokio-rs)": {
         "instances": 20,
         "empty": 0,
@@ -529,21 +460,6 @@
             1
           ]
         }
-      },
-      "*C++* variation (verify + 900s \u2014 exhibition)": {
-        "instances": 0,
-        "empty": 0,
-        "cost": 0,
-        "steps": 0,
-        "out": 0,
-        "ncc": 0,
-        "cr": 0,
-        "cw": 0,
-        "intot": 0,
-        "wall": 0.0,
-        "thinking": null,
-        "resolved": null,
-        "by_repo": null
       },
       "tokio stack \u2014 *Rust* (org tokio-rs)": {
         "instances": 20,

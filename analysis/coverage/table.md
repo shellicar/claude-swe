@@ -1,9 +1,9 @@
 | Coverage — contender × meet × effort | fable-5 | opus-5 | opus-4-8 | sonnet-5 | haiku-4-5 | kimi-k2.7-code | kimi-k3 |
 |---|---|---|---|---|---|---|---|
-| **Meets — contenders on the medal table** | **fable-5** | **opus-5** | **opus-4-8** | **sonnet-5** | **haiku-4-5** | **kimi-k2.7-code** | **kimi-k3** |
+| **Meets — the contender varies** | **fable-5** | **opus-5** | **opus-4-8** | **sonnet-5** | **haiku-4-5** | **kimi-k2.7-code** | **kimi-k3** |
 | multi/cpp | `..#..` | `..#..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| multi/rust | `..#..` | `..~..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| multi/tokio | `..#..` | `..~..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
+| multi/rust | `..#..` | `..#..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
+| multi/tokio | `..#..` | `..#..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
 | multilingual/cpp | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
 | multilingual/go | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
 | multilingual/rust | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
@@ -13,10 +13,8 @@
 | pro/pro | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
 | verified/hard | `#####` | `#####` | `#####` | `#####` | `..#..` | `..#..` | `# . .` |
 | verified/standard | `#####` | `#####` | `#####` | `#####` | `..#..` | `..#..` | `# . .` |
-| **Exhibitions — variations, off the medal table** | **fable-5** | **opus-5** | **opus-4-8** | **sonnet-5** | **haiku-4-5** | **kimi-k2.7-code** | **kimi-k3** |
+| **Experiments — a condition varies, contenders held** | **fable-5** | **opus-5** | **opus-4-8** | **sonnet-5** | **haiku-4-5** | **kimi-k2.7-code** | **kimi-k3** |
 | cpp-variation/cpp | `..#..` | `.....` | `..#..` | `..#..` | `.....` | `.....` | `. . .` |
-| fmt-variation/cpp | `..#..` | `.....` | `..#..` | `..#..` | `.....` | `.....` | `. . .` |
-| **Fixtures — scaffolding and tools, not contenders** | **fable-5** | **opus-5** | **opus-4-8** | **sonnet-5** | **haiku-4-5** | **kimi-k2.7-code** | **kimi-k3** |
 | exec-arm-1/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
 | exec-arm-2-no-ritual/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
 | exec-arm-2/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
@@ -26,6 +24,7 @@
 | exec-arm-6/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
 | execv1-arm2/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
 | execv2-arm2/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
+| fmt-variation/cpp | `..#..` | `.....` | `..#..` | `..#..` | `.....` | `.....` | `. . .` |
 | minimal-prompt/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
 | no-ritual/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
 | tools-arm-1/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
@@ -39,4 +38,4 @@
 | walker-fresh-told/hard | `.....` | `.....` | `.....` | `.....` | `.....` | `.....` | `. . .` |
 | walker-fresh/hard | `.....` | `.....` | `.....` | `.....` | `.....` | `.....` | `. . .` |
 | **Legend** | | | | | | | |
-| effort slots: low medium high xhigh max | `#` marked | `~` run, unmarked | `.` not run |  |  |  |  |
+| effort slots: low medium high xhigh max | `#` marked | `½` partly marked | `~` run, unmarked | `.` not run |  |  |  |

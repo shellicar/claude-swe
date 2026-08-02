@@ -1,0 +1,58 @@
+{
+  "covers": [
+    "cpp"
+  ],
+  "experiment": {
+    "control": "multilingual",
+    "question": "Were the fmtlib failures the models' or the harness's? All three contenders wrecked roughly 5 of 11 with zero build attempts under the control's 60s timeout.",
+    "varies": "builds required, action timeout 60s \u2192 900s"
+  },
+  "control": "multilingual",
+  "models": {
+    "opus-4-8": {
+      "cpp": {
+        "events": 11,
+        "control": {
+          "resolved": 4,
+          "cost": 7.603682249999999,
+          "instances": 11
+        },
+        "variation": {
+          "resolved": 5,
+          "cost": 10.8172145,
+          "instances": 11
+        }
+      }
+    },
+    "sonnet-5": {
+      "cpp": {
+        "events": 11,
+        "control": {
+          "resolved": 6,
+          "cost": 8.7123639,
+          "instances": 11
+        },
+        "variation": {
+          "resolved": 6,
+          "cost": 6.070757400000001,
+          "instances": 11
+        }
+      }
+    },
+    "fable-5": {
+      "cpp": {
+        "events": 11,
+        "control": {
+          "resolved": 3,
+          "cost": 9.798282500000003,
+          "instances": 11
+        },
+        "variation": {
+          "resolved": 4,
+          "cost": 14.530777,
+          "instances": 11
+        }
+      }
+    }
+  }
+}
