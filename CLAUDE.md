@@ -85,9 +85,33 @@ graded, so a stall announces itself rather than being discovered the next day.
 
 ## Running and reporting
 
-When something needs running, give three things: **the command, what it does,
-and where its results appear.** Then stop — running it is not yours, and the
-figures are in the file, not in the reply.
+A change is not done when the diff reads correctly. It is done when you have run
+it and looked at what came out. A missing import, a card whose `data.json` holds
+no figures, a lookup that quietly takes in a second dataset: each of these reads
+correctly in a diff and dies on the first command that touches it.
+
+So run what you changed. `node --check` is not running it. Three things, in
+order:
+
+1. **Execute the path you changed.** `./swe.mjs status verified/micro` exercises
+   argument parsing, the declarations, the manifest and every reading verb, in
+   seconds.
+2. **Read the output, not the exit code.** A generator exits 0 having written a
+   card with no figures in it; a table renders clean with every glyph wrong.
+3. **Try a case that is not the one you fixed.** Selection names collide across
+   datasets, so a lookup that is right for `verified/micro` is wrong for
+   `multi/cpp`. The same per-leg computation lives in four analysers, so a fix
+   in one leaves three. Exercising a fix only on the example it came from is not
+   exercising it: grep for the shape elsewhere.
+
+`verified/micro` (4 instances) and ad-hoc legs (`--model` outside a combination,
+landing in `runs/adhoc/`) are the bench: small enough that proving a change
+works costs almost nothing. `run` and `mark` are yours on those.
+
+`run` and `mark` on anything else spend the Supreme Commander's money and hours,
+and produce the record every card is built from. Those are his. Give three
+things — **the command, what it does, and where its results appear** — then
+stop.
 
 > Marks every unmarked leg, checks the record is complete, regenerates the
 > cards.
@@ -98,8 +122,10 @@ figures are in the file, not in the reply.
 >
 > Results: `analysis/verified/table.md`, `analysis/coverage/table.md`
 
-This covers `swe.mjs`, the analysers, and any script just written — read-only
-ones included.
+The reading verbs — `status`, `audit`, `analyse` — and the analysers are always
+yours to run. Scratch scripts go in `/tmp`, never the repo, and only read: never
+into `runs/`, `evals/`, `image-manifest.txt` or `instances-*.txt`, which is the
+record.
 
 If answering needs a figure the pipeline cannot produce, change the analyser
 that should produce it and point at the card. Not a script on the side.

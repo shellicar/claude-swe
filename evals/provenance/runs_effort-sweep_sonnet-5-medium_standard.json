@@ -1,10 +1,11 @@
 {
-  "marked_at": "2026-08-01T02:37:20.703Z",
+  "marked_at": "2026-08-02T04:57:43.601Z",
   "leg": "runs/effort-sweep/sonnet-5-medium",
   "selection": "standard",
   "marker": {
     "type": "swebench",
     "path": "vendor/swebench",
+    "vendored": true,
     "commit": "ce082a98d1e7daa3ebe194e41dfdf47978ae558f",
     "dirty": false
   },
@@ -14,7 +15,7 @@
   },
   "image_manifest_sha256": "ecca49b1482d69a9",
   "rig": {
-    "commit": "e945ce69a34893aa9ff3b6c699081701e7e6ab6a",
+    "commit": "d31a5c98fef1bfb11c8a97704aaa871189de2299",
     "dirty": true
   },
   "mark_workers": "14",

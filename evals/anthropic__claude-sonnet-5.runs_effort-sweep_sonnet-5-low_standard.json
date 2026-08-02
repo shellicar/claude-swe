@@ -2,8 +2,8 @@
     "total_instances": 500,
     "submitted_instances": 60,
     "completed_instances": 60,
-    "resolved_instances": 46,
-    "unresolved_instances": 14,
+    "resolved_instances": 47,
+    "unresolved_instances": 13,
     "empty_patch_instances": 0,
     "error_instances": 0,
     "completed_ids": [
@@ -612,6 +612,7 @@
         "sphinx-doc__sphinx-10466",
         "sphinx-doc__sphinx-7889",
         "sphinx-doc__sphinx-8056",
+        "sphinx-doc__sphinx-8595",
         "sphinx-doc__sphinx-9367",
         "sympy__sympy-12481",
         "sympy__sympy-13372",
@@ -633,7 +634,6 @@
         "django__django-16950",
         "matplotlib__matplotlib-26208",
         "matplotlib__matplotlib-26291",
-        "sphinx-doc__sphinx-8595",
         "sympy__sympy-13974",
         "sympy__sympy-15349"
     ],

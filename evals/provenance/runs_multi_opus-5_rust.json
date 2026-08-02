@@ -1,0 +1,23 @@
+{
+  "marked_at": "2026-08-02T06:45:50.244Z",
+  "leg": "runs/multi/opus-5",
+  "selection": "rust",
+  "marker": {
+    "type": "multi-swe",
+    "path": "vendor/multi-swe-bench",
+    "vendored": true,
+    "commit": "4f9797586e9c77c2b903b5c421f5ff9b2bc22a28",
+    "dirty": false
+  },
+  "dataset": {
+    "snapshot": "datasets/multi-swe-bench.jsonl",
+    "sha256": "439049fe4c0572c4"
+  },
+  "image_manifest_sha256": "ecca49b1482d69a9",
+  "rig": {
+    "commit": "357c90a907ad986ad89c654830b9a4e5b1acbb97",
+    "dirty": true
+  },
+  "mark_workers": "14",
+  "output_dir": "evals/multi/multi-opus-5-rust"
+}

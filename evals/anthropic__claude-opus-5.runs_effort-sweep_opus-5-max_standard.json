@@ -2,8 +2,8 @@
     "total_instances": 500,
     "submitted_instances": 60,
     "completed_instances": 60,
-    "resolved_instances": 59,
-    "unresolved_instances": 1,
+    "resolved_instances": 60,
+    "unresolved_instances": 0,
     "empty_patch_instances": 0,
     "error_instances": 0,
     "completed_ids": [
@@ -623,6 +623,7 @@
         "sphinx-doc__sphinx-10466",
         "sphinx-doc__sphinx-7889",
         "sphinx-doc__sphinx-8056",
+        "sphinx-doc__sphinx-8595",
         "sphinx-doc__sphinx-9367",
         "sympy__sympy-12481",
         "sympy__sympy-13372",
@@ -634,9 +635,7 @@
         "sympy__sympy-20801",
         "sympy__sympy-23534"
     ],
-    "unresolved_ids": [
-        "sphinx-doc__sphinx-8595"
-    ],
+    "unresolved_ids": [],
     "error_ids": [],
     "schema_version": 2
 }

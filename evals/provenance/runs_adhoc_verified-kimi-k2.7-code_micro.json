@@ -1,11 +1,12 @@
 {
-  "marked_at": "2026-07-31T12:09:06.790Z",
+  "marked_at": "2026-08-02T14:01:57.638Z",
   "leg": "runs/adhoc/verified-kimi-k2.7-code",
   "selection": "micro",
   "marker": {
     "type": "swebench",
     "path": "vendor/swebench",
-    "commit": "bd1ecccd8a30da93be49fe662e3922df29aa70a4",
+    "vendored": true,
+    "commit": "ce082a98d1e7daa3ebe194e41dfdf47978ae558f",
     "dirty": false
   },
   "dataset": {
@@ -14,7 +15,7 @@
   },
   "image_manifest_sha256": "ecca49b1482d69a9",
   "rig": {
-    "commit": "c60186c1eae2f98df09c5106f4a21e3989ce8726",
+    "commit": "d225b567347c9a317c00efafc66e234dd844b126",
     "dirty": true
   },
   "mark_workers": "14",

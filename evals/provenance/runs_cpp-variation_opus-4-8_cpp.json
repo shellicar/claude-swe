@@ -1,0 +1,23 @@
+{
+  "marked_at": "2026-08-02T04:47:33.750Z",
+  "leg": "runs/cpp-variation/opus-4-8",
+  "selection": "cpp",
+  "marker": {
+    "type": "multi-swe",
+    "path": "vendor/multi-swe-bench",
+    "vendored": true,
+    "commit": "4f9797586e9c77c2b903b5c421f5ff9b2bc22a28",
+    "dirty": false
+  },
+  "dataset": {
+    "snapshot": "datasets/multi-swe-bench.jsonl",
+    "sha256": "439049fe4c0572c4"
+  },
+  "image_manifest_sha256": "ecca49b1482d69a9",
+  "rig": {
+    "commit": "d31a5c98fef1bfb11c8a97704aaa871189de2299",
+    "dirty": true
+  },
+  "mark_workers": "14",
+  "output_dir": "evals/multi/cpp-variation-opus-4-8-cpp"
+}

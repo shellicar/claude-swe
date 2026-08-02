@@ -2,8 +2,8 @@
     "total_instances": 500,
     "submitted_instances": 60,
     "completed_instances": 60,
-    "resolved_instances": 38,
-    "unresolved_instances": 22,
+    "resolved_instances": 39,
+    "unresolved_instances": 21,
     "empty_patch_instances": 0,
     "error_instances": 0,
     "completed_ids": [
@@ -605,6 +605,7 @@
         "scikit-learn__scikit-learn-25931",
         "sphinx-doc__sphinx-10466",
         "sphinx-doc__sphinx-7889",
+        "sphinx-doc__sphinx-8595",
         "sphinx-doc__sphinx-9367",
         "sympy__sympy-12481",
         "sympy__sympy-13372",
@@ -632,7 +633,6 @@
         "pylint-dev__pylint-7080",
         "pytest-dev__pytest-7205",
         "sphinx-doc__sphinx-8056",
-        "sphinx-doc__sphinx-8595",
         "sympy__sympy-13877",
         "sympy__sympy-13974",
         "sympy__sympy-17318"
