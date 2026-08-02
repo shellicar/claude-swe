@@ -68,7 +68,10 @@ def wire_thinking(dirn, base=None):
         return THINKING_LEGACY.get(dirn)
     conv2set = {}
     for s, _ in SETS:
-        for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
+        # Selection members only: a stray directory would map its conversation
+        # hash onto this selection and its thinking tokens would be counted as
+        # this selection's.
+        for tf in _selection_trajectories(base, s):
             t = json.load(open(tf))
             first = next((m for m in t["messages"] if m.get("role") == "user"), None)
             c = first["content"]
@@ -171,7 +174,11 @@ def per_instance(base, s):
         raise SystemExit(f"{base}/{s}: {len(reps)} reports match in evals/ — remove the stale one")
     resolved = set(json.load(open(reps[0]))["resolved_ids"])
     out = {}
-    for tf in glob.glob(f"{ROOT}/runs/{base}/{s}/*/*.traj.json"):
+    # Selection members only. A stray cannot appear in resolved_ids, so it
+    # never places — but it joins `every` in instance_medals, which is the
+    # event count and the "unsolved by every model" figure in the tally
+    # heading. Both would read high.
+    for tf in _selection_trajectories(base, s):
         t = json.load(open(tf))
         iid = t["instance_id"]
         out[iid] = (iid in resolved, t["info"]["model_stats"]["instance_cost"])
