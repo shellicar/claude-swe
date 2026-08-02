@@ -581,11 +581,17 @@ function watchProgress(label, everyMs = 5 * 60_000) {
   return () => clearInterval(timer);
 }
 
-// Containers the markers leave behind. They belong to dockerd, not to the
-// process tree, so no signal reaches them: killing the harness kills the thing
-// that WOULD have removed them and nothing else. swebench names its own
-// `sweb.eval.<instance>.<run_id>`, and the run ids are ours; multi-swe takes
-// docker's random names, so it is identified by the image it runs.
+// Containers the SWEBENCH marker leaves behind. They belong to dockerd, not to
+// the process tree, so no signal reaches them: killing the harness kills the
+// thing that WOULD have removed them and nothing else. swebench names its own
+// `sweb.eval.<instance>.<run_id>` and the run ids are ours, so they can be
+// attributed exactly.
+//
+// multi-swe and Scale are NOT covered: their containers take docker's random
+// names, carrying nothing that ties them to a leg. Removing every container on
+// an mswebench image was the alternative, and it took out the harness's own
+// tooling container the first time it ran. So they are reported instead —
+// `./swe.mjs cleanup` lists them and leaves the judgement to a human.
 // `./swe.mjs cleanup` — for containers already stranded by an interrupted mark
 // before the reaping above existed, or by a crash that outran it. Lists what it
 // would remove and why, then removes it: eval containers are disposable, but a
@@ -605,8 +611,9 @@ async function cleanup() {
   // never removed.
   const ours = rows.filter(([name]) =>
     name.startsWith('sweb.eval.') || name.startsWith('minisweagent-'));
+  const ourNames = new Set(ours.map(([name]) => name));
   const unattributable = rows.filter(([name, image]) =>
-    !ours.includes(name) && (image ?? '').includes('mswebench'));
+    !ourNames.has(name) && (image ?? '').includes('mswebench'));
 
   if (ours.length === 0) console.log('[cleanup] nothing of ours to remove');
   else {
@@ -632,9 +639,19 @@ function reapMarkerContainers(runIds) {
     .map((l) => l.split('\t'))
     .filter(([name]) => runIds.some((id) => name.endsWith(`.${id}`)))
     .map(([name]) => name);
-  if (doomed.length === 0) return;
-  console.error(`[mark] removing ${doomed.length} container(s) the marker left behind`);
-  spawnSync('docker', ['rm', '-f', ...doomed], { stdio: 'ignore' });
+  if (doomed.length > 0) {
+    console.error(`[mark] removing ${doomed.length} container(s) the marker left behind`);
+    spawnSync('docker', ['rm', '-f', ...doomed], { stdio: 'ignore' });
+  }
+  // Say what was NOT handled, rather than leaving it to be discovered later.
+  const strays = listed.stdout.trim().split('\n').filter(Boolean)
+    .map((l) => l.split('\t'))
+    .filter(([name, image]) => !doomed.includes(name) && (image ?? '').includes('mswebench'));
+  if (strays.length > 0) {
+    console.error(
+      `[mark] ${strays.length} multi-swe container(s) cannot be attributed to a leg`
+      + ' and were left: run `./swe.mjs cleanup` to see them');
+  }
 }
 
 async function mark(target, flags) {

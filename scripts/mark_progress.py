@@ -34,12 +34,16 @@ def graded_swebench(rid):
 
 
 def graded_multi_swe(combo, model, sel):
-    # Keyed on the FULL leg path, matching multiSweScratch in swe.mjs. Keyed on
-    # the model alone, runs/multi/opus-4-8/cpp and runs/cpp-variation/opus-4-8/
-    # cpp share one directory, so both legs count the same instances and an
-    # unmarked leg reports as complete.
-    return len(glob.glob(
-        f"evals/logs/multi-swe/{combo}-{model}-{sel}/workdir/*/*/evals/*"))
+    # From the VERDICT, not the scratch directory. Scratch is the harness's
+    # working state: its key changed when the control/variation collision was
+    # fixed, and the existing directories cannot be migrated because the old
+    # key is precisely what made two legs indistinguishable. The verdict is the
+    # record, is keyed per leg, and survives the harness's internals changing.
+    path = f"evals/{DATASET_OF.get(combo, 'multi')}/{combo}-{model}-{sel}/final_report.json"
+    if not os.path.exists(path):
+        return 0
+    d = json.load(open(path))
+    return d.get("completed_instances", 0) + d.get("empty_patch_instances", 0)
 
 
 def graded_scale(model, sel):
