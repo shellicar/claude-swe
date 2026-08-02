@@ -39,7 +39,7 @@ export const instanceFilter = (set, file) => {
 // And waiting matters: kill() only delivers the signal and returns, so exiting
 // straight afterwards gives the child no time to tear anything down. SIGKILL
 // only after the grace period, when it has had its chance.
-export const stopChild = (child, graceMs = 15_000) => new Promise((resolve) => {
+export const stopChild = (child, graceMs = 10_000) => new Promise((resolve) => {
   if (!child || child.exitCode !== null || child.signalCode !== null) return resolve();
   const done = () => { clearTimeout(timer); resolve(); };
   const timer = setTimeout(() => { child.kill('SIGKILL'); done(); }, graceMs);
@@ -80,9 +80,18 @@ export const onShutdown = (cleanup) => {
   handlerInstalled = true;
   let firing = false;
   const hardStop = async (sig, code = 130) => {
-    if (firing) return;
+    // A second signal while already stopping means give up now. Teardown waits
+    // for a child to exit before removing its containers, which takes seconds
+    // — long enough to look like a hang. Ignoring the second Ctrl-C invites a
+    // kill -9, and that skips the teardown altogether.
+    if (firing) {
+      console.error('[run] second signal — abandoning teardown; '
+        + 'containers may be left behind (./swe.mjs cleanup)');
+      process.exit(code);
+    }
     firing = true;
-    console.error(`\n[run] ${sig} — hard stop, tearing down...`);
+    console.error(`\n[run] ${sig} — stopping: waiting for the child to exit, `
+      + 'then removing its containers. Ctrl-C again to abandon that.');
     try {
       await Promise.allSettled(cleanups.map((fn) => fn()));
     } finally {
