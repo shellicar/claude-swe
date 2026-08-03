@@ -6,7 +6,7 @@
 .card .t { border-top: 1px solid #888 }
 .card .h { border-bottom: 1px solid #888; border-top: 1px solid #888 }
 .card .u { border-bottom: 1px solid #888 }
-.card .s { vertical-align: top }
+.card .s { vertical-align: middle }
 </style>
 <h3>Sonnet division — the lineage (SWE-bench Verified)</h3>
 <table class="card">
