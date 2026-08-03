@@ -11,7 +11,7 @@
     <th rowspan="3" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top">Resolved</th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">control</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">13/20</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">12/20</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">11/20</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">14/20</td>
   </tr>
   <tr>
@@ -23,7 +23,7 @@
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">delta</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">+0</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">+0</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">+1</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">+0</td>
   </tr>
   <tr>

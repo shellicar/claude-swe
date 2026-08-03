@@ -188,8 +188,17 @@
         "intot": 14244014,
         "wall": 6383.55575299263,
         "thinking": 371299,
-        "resolved": null,
-        "by_repo": null
+        "resolved": 9,
+        "by_repo": {
+          "tokio": [
+            10,
+            2
+          ],
+          "tracing": [
+            10,
+            7
+          ]
+        }
       }
     },
     "opus-4-8": {
@@ -303,7 +312,7 @@
         "intot": 27739852,
         "wall": 3251.4159848690033,
         "thinking": 91189,
-        "resolved": 12,
+        "resolved": 11,
         "by_repo": {
           "Catch2": [
             2,
@@ -319,7 +328,7 @@
           ],
           "simdjson": [
             3,
-            3
+            2
           ]
         }
       },

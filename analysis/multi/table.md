@@ -15,7 +15,7 @@
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>14</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 13</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 13</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 12</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 11</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">9</td>
   </tr>
   <tr>
@@ -23,7 +23,7 @@
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>70%</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 65%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 65%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 60%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 55%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">45%</td>
   </tr>
   <tr>
@@ -38,8 +38,8 @@
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$2.15</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$2.70</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $1.33</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $1.24</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $1.33</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $1.36</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$0.85</b></td>
   </tr>
   <tr>
@@ -71,7 +71,7 @@
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">3/3</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">3/3</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">3/3</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">3/3</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">2/3</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">2/3</td>
   </tr>
   <tr>
@@ -341,7 +341,7 @@
     <th rowspan="6" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top">Results</th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 10</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 9</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>11</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>11</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 9</td>
@@ -349,7 +349,7 @@
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved %</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 50%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 45%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>55%</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>55%</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 45%</td>
@@ -365,7 +365,7 @@
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$2.16</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$2.63</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $2.03</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.97</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$0.86</b></td>
@@ -373,7 +373,7 @@
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">— tokio</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">4/10</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">2/10</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">4/10</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">4/10</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">4/10</td>
@@ -381,7 +381,7 @@
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">— tracing</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">6/10</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">7/10</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">7/10</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">7/10</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">5/10</td>
@@ -481,23 +481,23 @@
     <th rowspan="4" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top"></th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>38/60</b></td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">28/40</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 37/60</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 35/60</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 36/60</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 35/60</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">29/60</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved %</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 63%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>70%</b></td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">58%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 60%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>63%</b></td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 62%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 58%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 58%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">48%</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Total cost</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$69.57</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$53.33</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$76.96</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $50.33</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $35.07</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$20.91</b></td>
@@ -505,9 +505,9 @@
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$1.83</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$1.90</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$2.08</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $1.44</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.97</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $1.00</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$0.72</b></td>
   </tr>
 </tbody>
@@ -540,7 +540,7 @@
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">🥉 bronze</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">2</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>

@@ -89,24 +89,24 @@
   <tr>
     <th rowspan="13" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top;border-top:1px solid #888">Stats</th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888">Bug fixed (F2P clean)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">40</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">37</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">37</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">26</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Near misses (fixed, P2P broke)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">4</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">4</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">4</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">5</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Build-breakers (&gt;20% P2P broke)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">2</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">6</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/instance</th>
@@ -219,24 +219,24 @@
   <tr>
     <th rowspan="13" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top;border-top:1px solid #888">Stats</th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888">Bug fixed (F2P clean)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">4</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">4</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">6</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">5</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Near misses (fixed, P2P broke)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Build-breakers (&gt;20% P2P broke)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">5</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">5</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">5</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">5</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/instance</th>
@@ -322,14 +322,14 @@
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>37</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 30</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 31</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 32</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">25</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved %</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>88%</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 71%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 74%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 76%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">60%</td>
   </tr>
   <tr>
@@ -343,14 +343,14 @@
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$1.33</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $1.11</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.99</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.96</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$0.77</b></td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">— caddy</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">12/14</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">10/14</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">8/14</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">9/14</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">8/14</td>
   </tr>
   <tr>
@@ -384,24 +384,24 @@
   <tr>
     <th rowspan="13" style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;vertical-align:top;border-top:1px solid #888">Stats</th>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold;border-top:1px solid #888">Bug fixed (F2P clean)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">38</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">30</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">33</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888;border-top:1px solid #888">26</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Near misses (fixed, P2P broke)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">0</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Build-breakers (&gt;20% P2P broke)</th>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">—</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">2</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">1</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/instance</th>
@@ -487,14 +487,14 @@
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>76/96</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 67/96</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 70/96</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 71/96</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">51/96</td>
   </tr>
   <tr>
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">Resolved %</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>79%</b></td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 70%</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 73%</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 74%</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">53%</td>
   </tr>
   <tr>
@@ -508,7 +508,7 @@
     <th style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;font-weight:bold">$/resolved</th>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">$1.40</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥉 $1.03</td>
-    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.97</td>
+    <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥈 $0.96</td>
     <td style="padding:3px 10px;text-align:left;white-space:nowrap;border:none;border-left:1px solid #888">🥇 <b>$0.75</b></td>
   </tr>
 </tbody>

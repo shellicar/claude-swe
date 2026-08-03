@@ -28,7 +28,7 @@
       "cpp": {
         "events": 20,
         "control": {
-          "resolved": 12,
+          "resolved": 11,
           "cost": 14.91061665,
           "instances": 20
         },

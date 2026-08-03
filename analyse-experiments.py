@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """One card per experiment: the same contenders, one condition changed.
 
-A meet varies the contender, so its columns are models and a podium means
-something. An experiment varies the CONDITION and holds the contenders, so the
-comparison is each contender against itself — control against variation, on the
-same events. Columns are still the contenders, but the rows beneath each metric
-are control / variation / delta, which puts the two numbers that answer the
-question side by side in one column.
+A meet varies the contender, so its columns are models. An experiment varies
+the CONDITION and holds the contenders, so its columns are the conditions —
+control and variation — and there is one table per contender, because the
+comparison is each contender against itself.
 
-Putting an experiment inside a meet's card, as these used to be, loses exactly
-that: the pairing is split across sections and the numbers join a podium that
-was never the question.
+Everything else is the meet's card. The rows are the meet analyser's own rows
+and the figures come from its own `leg`, so an experiment is read exactly like
+the contest it varies: same metrics, same definitions, same shape. A card
+invented for the occasion carries different numbers and cannot be compared
+with anything.
 
 An experiment declares itself in its combination file:
 
     "experiment": { "control": "multi", "question": "...", "varies": "..." }
 """
 import glob
+import importlib.util
 import json
 import os
 
@@ -28,116 +29,66 @@ ROSTER = json.load(open(f"{ROOT}/models.json"))["models"]
 NAME = {m["dir"]: m["name"] for m in ROSTER}
 
 
-def combos():
-    for path in sorted(glob.glob(f"{ROOT}/combinations/*.json")):
-        yield json.load(open(path))
+def meet_analyser(dataset):
+    """The analyser that builds this meet's card, imported for its `leg` and
+    `rows` — hyphenated filenames are not importable by name."""
+    path = f"{ROOT}/analyse-{dataset}.py"
+    spec = importlib.util.spec_from_file_location(f"meet_{dataset}", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-def multi_id(instance_id):
-    """multi-swe names an instance `org/repo:pr-N`; the instance files and run
-    directories name the same thing `org__repo-N`. Comparing the two forms
-    directly intersects to nothing, which renders as a leg that resolved
-    zero — indistinguishable from a leg that genuinely failed everything."""
-    repo, _, pr = instance_id.partition(":pr-")
-    return f"{repo.replace('/', '__')}-{pr}" if pr else instance_id
+def decls(dataset, combo, sel, expected):
+    """The meet analyser's own leg declaration, pointed at one combination."""
+    if dataset == "multi":
+        return dict(sel=sel, runs=f"runs/{combo}/{{m}}/{sel}",
+                    evals=f"evals/multi/{combo}-{{m}}-{sel}")
+    return dict(sel=sel, runs=f"runs/{combo}",
+                runid=f"runs_{combo}", expected=expected)
 
 
-def verdicts(marker, dataset, combo, model, sel):
-    """resolved_ids for one leg. Each marker stores them its own way — guessing
-    a path returns nothing and renders as "unmarked", which reads like missing
-    work rather than a lookup bug."""
-    if marker == "multi-swe":
-        path = f"{ROOT}/evals/{dataset}/{combo}-{model}-{sel}/final_report.json"
-        if os.path.exists(path):
-            return {multi_id(i) for i in json.load(open(path))["resolved_ids"]}
-        return None
-    reports = glob.glob(f"{ROOT}/evals/*.runs_{combo}_{model}_{sel}.json")
-    if len(reports) > 1:
-        raise SystemExit(f"{combo}/{model}/{sel}: {len(reports)} reports match")
-    return set(json.load(open(reports[0]))["resolved_ids"]) if reports else None
-
-
-def leg_figures(runs_dir, ids, resolved_ids):
-    """Resolved and cost for one leg, scoped to the declared instances."""
-    cost = 0.0
-    seen = 0
-    for tf in glob.glob(f"{ROOT}/{runs_dir}/*/*.traj.json"):
-        if os.path.basename(os.path.dirname(tf)) not in ids:
-            continue
-        seen += 1
-        cost += json.load(open(tf))["info"]["model_stats"]["instance_cost"]
-    resolved = None if resolved_ids is None else len(resolved_ids & ids)
-    return {"resolved": resolved, "cost": cost, "instances": seen}
+def meet_rows(meet, expected):
+    """The meet's rows. Some analysers define them at module level, others
+    build them per section because a row needs the selection's size."""
+    if hasattr(meet, "rows"):
+        return meet.rows
+    return meet.make_rows(expected)
 
 
 def card(exp):
     spec = exp["experiment"]
     control = spec["control"]
-    ds = json.load(open(f"{ROOT}/datasets/{exp['dataset']}.json"))
-    sections = []
-    figures = {}  # the machine layer: same numbers the card renders
+    dataset = exp["dataset"]
+    meet = meet_analyser(dataset)
+    models = [l["out"].split("/")[-1] for l in exp["legs"]]
 
-    for sel in exp["selections"]:
-        ids = selections.ids(exp["dataset"], sel)
-        models = [l["out"].split("/")[-1] for l in exp["legs"]]
-        marker = ds["marker"]["type"]
-        pairs = {}
-        for m in models:
-            pairs[m] = {
-                "control": leg_figures(
-                    f"runs/{control}/{m}/{sel}", ids,
-                    verdicts(marker, exp["dataset"], control, m, sel)),
-                "variation": leg_figures(
-                    f"runs/{exp['name']}/{m}/{sel}", ids,
-                    verdicts(marker, exp["dataset"], exp["name"], m, sel)),
+    for model in models:
+        sections = []
+        figures = {}
+        for sel in exp["selections"]:
+            body = []
+            expected = selections.expected(dataset, sel)
+            legs = {
+                "control": meet.leg(model, decls(dataset, control, sel, expected)),
+                "variation": meet.leg(model, decls(dataset, exp["name"], sel, expected)),
             }
+            for label, render in meet_rows(meet, expected):
+                body.append((label, [render(legs[c]) for c in ("control", "variation")]))
+            sections.append((f"{sel} — {expected} events", body))
+            figures[sel] = legs
 
-        def row(label, fn):
-            return (label, [fn(pairs[m]) for m in models])
-
-        def fmt_resolved(p, which):
-            v = p[which]["resolved"]
-            return f"{v}/{len(ids)}" if v is not None else "unmarked"
-
-        def delta(p, key):
-            a, b = p["control"][key], p["variation"][key]
-            if a is None or b is None:
-                return "—"
-            d = b - a
-            return f"{d:+}" if isinstance(d, int) else f"{d:+.2f}"
-
-        body = [
-            ("## Resolved", []),
-            row("control", lambda p: fmt_resolved(p, "control")),
-            row("variation", lambda p: fmt_resolved(p, "variation")),
-            row("delta", lambda p: delta(p, "resolved")),
-            ("## Cost", []),
-            row("control", lambda p: f"${p['control']['cost']:.2f}"),
-            row("variation", lambda p: f"${p['variation']['cost']:.2f}"),
-            row("delta", lambda p: f"${delta(p, 'cost')}".replace("$-", "-$").replace("$+", "+$")),
-        ]
-        sections.append((f"{sel} — {len(ids)} events", body))
-        for m in models:
-            figures.setdefault(m, {})[sel] = {
-                "events": len(ids),
-                "control": pairs[m]["control"],
-                "variation": pairs[m]["variation"],
-            }
-
-    columns = [NAME.get(l["out"].split("/")[-1], l["out"].split("/")[-1])
-               for l in exp["legs"]]
-    note = f"{spec['question']} Varies: {spec['varies']}. Control: {control}."
-    analysis_output.emit(
-        f"experiment-{exp['name']}",
-        f"Experiment — {exp['name']} (control: {control})",
-        columns, sections, note,
-        # Figures, not an empty shell: a card whose numbers live only in its
-        # rendered HTML cannot be diffed, joined or checked.
-        {"covers": exp["selections"], "experiment": spec, "control": control,
-         "models": figures},
-    )
+        analysis_output.emit(
+            f"experiment-{exp['name']}-{model}",
+            f"{NAME.get(model, model)} — {exp['name']} experiment",
+            ["control", "variation"], sections,
+            f"{spec['question']} Varies: {spec['varies']}. Control: {control}.",
+            {"covers": exp["selections"], "experiment": spec,
+             "control": control, "contender": model, "sets": figures},
+        )
 
 
-for combo in combos():
+for path in sorted(glob.glob(f"{ROOT}/combinations/*.json")):
+    combo = json.load(open(path))
     if combo.get("experiment"):
         card(combo)
