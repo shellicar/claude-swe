@@ -9,17 +9,29 @@ never copied as text, so losing the plain-text table costs nothing.
 
 Rules run VERTICALLY, between model families, never horizontally under each
 row: what the eye needs is which model a column belongs to, and a line under
-every one of forty rows buries exactly that. Styling is inline rather than in
-a <style> block, because several markdown previews strip the block.
+every one of forty rows buries exactly that.
+
+One <style> block, classes on the cells. The rules were inline on every cell,
+which put the same eighty characters on each of ~4,000 cells and made one card
+130 KB — mostly the word "padding" repeated. GitHub strips <style> from README
+prose but keeps it in a standalone file, and every local preview honours it.
 
 The SVG/PNG path is unaffected: it builds its own markdown inside d2.
 """
 LEVELS = ("low", "medium", "high", "xhigh", "max")
 
-RULE = "1px solid #888"
-TD = "padding:3px 10px;text-align:left;white-space:nowrap;border:none"
-GROUP = f"{TD};border-left:{RULE}"
-
+# `g` marks the first column of a model family and carries the vertical rule;
+# `t` marks the first row of a group and carries the rule above it.
+STYLE = """<style>
+.card { border-collapse: collapse }
+.card th, .card td { padding: 3px 10px; text-align: left; white-space: nowrap }
+.card th { font-weight: bold }
+.card .g { border-left: 1px solid #888 }
+.card .t { border-top: 1px solid #888 }
+.card .h { border-bottom: 1px solid #888; border-top: 1px solid #888 }
+.card .u { border-bottom: 1px solid #888 }
+.card .s { vertical-align: top }
+</style>"""
 
 
 def split_family(label):
@@ -47,6 +59,12 @@ def cell(text):
     while out.count("*") >= 2:
         out = out.replace("*", "<i>", 1).replace("*", "</i>", 1)
     return out
+
+
+def klass(*names):
+    """A class attribute, or nothing at all when there is no class to give."""
+    got = " ".join(n for n in names if n)
+    return f' class="{got}"' if got else ""
 
 
 def _grouped(body):
@@ -93,34 +111,31 @@ def table(heading, columns, sections, note):
         rows are one heading, so a line between them cuts a family off from
         the levels it owns.
         """
-        base = f"{TD};font-weight:bold;border-top:{RULE}"
         span = 2 if has_levels else 1
-        bottom = "" if has_levels else f";border-bottom:{RULE}"
         # colspan 2: the label area is the group column plus the row column.
         # It spans BOTH header rows, so its bottom edge is level with the rule
         # under the levels — it needs that border or the line starts partway
         # across the table with a gap on the left.
         rows = ["  <tr>",
-                f'    <th rowspan="{span}" colspan="2" '
-                f'style="{base};border-bottom:{RULE}">{cell(label)}</th>']
+                f'    <th rowspan="{span}" colspan="2" class="h">{cell(label)}</th>']
+        # A family name only gets its bottom rule when there is no level row
+        # beneath it to carry one.
+        fam = "h" if not has_levels else "t"
         for family, n in groups:
-            rows.append(f'    <th colspan="{n}" '
-                        f'style="{base}{bottom};border-left:{RULE}">{esc(family)}</th>')
+            rows.append(f'    <th colspan="{n}"{klass(fam, "g")}>{esc(family)}</th>')
         rows.append("  </tr>")
         if has_levels:
             rows.append("  <tr>")
             for i, (_family, level) in enumerate(families):
-                s = f"{TD};font-weight:bold;border-bottom:{RULE}"
-                if i in starts:
-                    s += f";border-left:{RULE}"
-                rows.append(f'    <th style="{s}">{esc(level) or "&nbsp;"}</th>')
+                rows.append(f'    <th{klass("u", "g" if i in starts else "")}>'
+                            f'{esc(level) or "&nbsp;"}</th>')
             rows.append("  </tr>")
         return rows
 
     # No table-wide <thead>: every section already carries the same family and
     # level rows, so a top one prints them twice. The card's own title moves
     # above the table rather than disappearing with it.
-    out = [f"<h3>{cell(heading)}</h3>", '<table style="border-collapse:collapse">']
+    out = [STYLE, f"<h3>{cell(heading)}</h3>", '<table class="card">']
     for title, body in sections:
         # Every section repeats the headers: the table is far too wide to read
         # a section against a header row scrolled off the top, and one section
@@ -129,21 +144,18 @@ def table(heading, columns, sections, note):
         for g, (group, rows) in enumerate(_grouped(body)):
             # A rule between row groups — Results from Stats — since they are
             # different kinds of number, not a continuous list.
-            top = f";border-top:{RULE}" if g else ""
             for j, (label, cells) in enumerate(rows):
-                edge = top if j == 0 else ""
+                edge = "t" if g and j == 0 else ""
                 out.append("  <tr>")
                 if j == 0:
                     # "Results" / "Stats" beside their rows rather than above
                     # them: as a full-width divider row it cost a blank line
                     # across every column just to carry one word.
-                    out.append(f'    <th rowspan="{len(rows)}" '
-                               f'style="{TD};font-weight:bold;vertical-align:top{edge}">'
+                    out.append(f'    <th rowspan="{len(rows)}"{klass("s", edge)}>'
                                f"{cell(group)}</th>")
-                out.append(f'    <th style="{TD};font-weight:bold{edge}">'
-                           f"{cell(label)}</th>")
+                out.append(f'    <th{klass(edge)}>{cell(label)}</th>')
                 for i, c in enumerate(cells):
-                    out.append(f'    <td style="{GROUP if i in starts else TD}{edge}">'
+                    out.append(f'    <td{klass("g" if i in starts else "", edge)}>'
                                f"{cell(c)}</td>")
                 out.append("  </tr>")
         out.append("</tbody>")
