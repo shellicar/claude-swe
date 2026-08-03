@@ -1,0 +1,23 @@
+{
+  "marked_at": "2026-08-03T14:39:57.047Z",
+  "leg": "runs/effort-sweep/kimi-k3-high",
+  "selection": "hard",
+  "marker": {
+    "type": "swebench",
+    "path": "vendor/swebench",
+    "vendored": true,
+    "commit": "ce082a98d1e7daa3ebe194e41dfdf47978ae558f",
+    "dirty": false
+  },
+  "dataset": {
+    "snapshot": "datasets/swe-bench-verified.jsonl",
+    "sha256": "7303cc5795e37071"
+  },
+  "image_manifest_sha256": "ecca49b1482d69a9",
+  "rig": {
+    "commit": "a60d10cdb65adfdedd92502b21b8966104262b6f",
+    "dirty": true
+  },
+  "mark_workers": "14",
+  "run_id": "runs_effort-sweep_kimi-k3-high_hard"
+}
