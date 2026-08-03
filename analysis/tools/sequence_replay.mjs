@@ -11,11 +11,17 @@
 //   node analysis/tools/sequence_replay.mjs extract
 //   node analysis/tools/sequence_replay.mjs run --sample 0.01 [--seed 1] [--limit N]
 //
+// Worker count is a live dial, not a launch-time decision: the parent holds a
+// queue and hands out one trajectory at a time, so workers can join or retire
+// mid-run. `echo N > .sequence-replay-state/workers` retunes a running job
+// from another terminal, and 0 drains to idle and holds.
+//
 // Containers are created, owned, and removed by this script.
 
 import { execFileSync, spawnSync, spawn } from "node:child_process";
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { createInterface } from "node:readline";
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 // Machine capacity comes from the one place that declares it.
@@ -31,6 +37,31 @@ const STEP_TIMEOUT_S = RIG.replayStepTimeoutS;
 // Commands that run on both sides but whose output is inherently
 // nondeterministic — executed (state must advance) but not compared.
 const NONDET_CMD = /\$RANDOM|\$\$|\$!|\bdate\b|\bmktemp\b|\btime\s|SECONDS|EPOCH|BASHPID|&\s*$|\bcurl\b|\bwget\b|\bpip3? (install|download)\b|\bsleep\s+\d+\s*(&&|;)|\bpgrep\b|\bpkill\b|\bps\s+(aux|ax|-)/m;
+
+// A heredoc body is data, not command. `cat > f <<'EOF'` writing a file whose
+// text mentions time, date or curl is perfectly deterministic, and testing the
+// body excluded exactly the file-writing and `python - <<EOF` steps whose
+// output matters most. Bodies are stripped before the test only; what runs is
+// always the untouched command.
+function withoutHeredocBodies(cmd) {
+  const lines = cmd.split("\n");
+  const kept = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    kept.push(line);
+    const opens = [...line.matchAll(/<<(-?)\s*(?:'([^']*)'|"([^"]*)"|([A-Za-z_]\w*))/g)]
+      // `<<<` is a here-string with no body, and its 2nd and 3rd `<` match here.
+      .filter((m) => line[m.index - 1] !== "<")
+      .map((m) => ({ dash: m[1] === "-", delim: m[2] ?? m[3] ?? m[4] }));
+    for (const { dash, delim } of opens) {
+      i++;
+      while (i < lines.length && (dash ? lines[i].replace(/^\t+/, "") : lines[i]) !== delim) i++;
+    }
+  }
+  return kept.join("\n");
+}
+
+const isNondet = (cmd) => NONDET_CMD.test(withoutHeredocBodies(cmd));
 
 // Output noise both shells legitimately produce differently run-to-run.
 function normalize(s) {
@@ -202,7 +233,7 @@ function replayOne(entry, tag) {
       const cmd = entry.commands[i];
       const a = stepBash(bashC, cmd);
       const b = stepWalker(walkC, cmd, env);
-      if (NONDET_CMD.test(cmd)) {
+      if (isNondet(cmd)) {
         result.skippedNondet++;
         continue;
       }
@@ -261,6 +292,41 @@ function mulberry(seed) {
   };
 }
 
+// The live worker dial: a plain number in a file, re-read between hand-outs.
+// A number rather than a signal because it is settable from any terminal,
+// readable with `cat`, and says what it means; zero is a pause, which is how a
+// replay yields the machine to a paid run without discarding its progress.
+const WORKERS_FILE = `${STATE_DIR}/workers`;
+let lastDial = null;
+
+function readWorkerDial(current, ceiling) {
+  let raw;
+  try {
+    raw = readFileSync(WORKERS_FILE, "utf8").trim();
+  } catch {
+    return current;
+  }
+  if (raw === lastDial) return current;
+  lastDial = raw;
+  const n = Number.parseInt(raw, 10);
+  if (!Number.isInteger(n) || n < 0 || String(n) !== raw) {
+    console.log(`workers: ${JSON.stringify(raw.slice(0, 20))} is not a count, staying at ${current}`);
+    return current;
+  }
+  if (n > ceiling) {
+    console.log(`workers: ${n} is above this machine's ceiling ${ceiling}, using ${ceiling}`);
+    return ceiling;
+  }
+  return n;
+}
+
+function verdictOf(r) {
+  const extras = `${r.orderOnly.length} order-only, ${r.windowNondet.length} window-nondet`;
+  if (r.divergence) return `DIVERGED at step ${r.divergence.step}`;
+  if (r.runNondet.length) return `stopped run-nondet at step ${r.runNondet[0].step}, ${r.compared} compared (${extras})`;
+  return `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped`;
+}
+
 async function run(argv) {
   const arg = (n, d) => {
     const i = argv.indexOf(n);
@@ -270,7 +336,7 @@ async function run(argv) {
   const seed = parseInt(arg("--seed", "1"), 10);
   const limit = parseInt(arg("--limit", "0"), 10);
   const parallel = parseInt(arg("--parallel", String(RIG.replayParallel)), 10);
-  const shard = arg("--shard", "");
+  const idsFile = arg("--ids", "");
   const resultsPath = arg("--results", `${STATE_DIR}/sequence_replay_results.json`);
   if (!existsSync(CORPUS)) {
     console.error("no corpus; run `extract` first");
@@ -284,10 +350,16 @@ async function run(argv) {
     .map(([, e]) => e);
   let picked = shuffled.slice(0, Math.max(1, Math.round(all.length * sample)));
   if (limit > 0) picked = picked.slice(0, limit);
+  if (idsFile) {
+    const ids = new Set(JSON.parse(readFileSync(idsFile, "utf8")));
+    picked = picked.filter((e) => ids.has(e.id));
+  }
 
   // Estimated seconds per trajectory: both sides pay every commanded sleep,
-  // plus a few seconds of real work per step. Scheduling input only — the
-  // commands themselves are never touched.
+  // plus a few seconds of real work per step. Scheduling input only, the
+  // commands themselves are never touched. Longest first is now the whole
+  // scheduler: nothing is tied to a worker until that worker is free to take
+  // it, so a slow trajectory delays only itself.
   const cost = (e) => {
     let sleep = 0;
     for (const c of e.commands) {
@@ -295,85 +367,139 @@ async function run(argv) {
     }
     return 2 * sleep + 4 * e.commands.length;
   };
+  picked = [...picked].sort((a, b) => cost(b) - cost(a));
 
-  // Parent mode: longest-first, greedily dealt to the least-loaded shard,
-  // so the sleep-heavy build-poll trajectories start at minute zero instead
-  // of straggling at the end.
-  if (parallel > 1 && !shard) {
-    console.log(`replaying ${picked.length}/${all.length} trajectories across ${parallel} shards (sample=${sample}, seed=${seed})`);
-    const buckets = Array.from({ length: parallel }, () => ({ load: 0, ids: [] }));
-    for (const e of [...picked].sort((a, b) => cost(b) - cost(a))) {
-      const b = buckets.reduce((m, x) => (x.load < m.load ? x : m));
-      b.load += cost(e);
-      b.ids.push(e.id);
-    }
-    const kids = [];
-    for (let k = 0; k < parallel; k++) {
-      writeFileSync(`${STATE_DIR}/sequence_replay_shard-${k}.ids.json`, JSON.stringify(buckets[k].ids));
-      const kidArgs = [
-        process.argv[1], "run",
-        "--sample", String(sample), "--seed", String(seed),
-        ...(argv.includes("--resume") ? ["--resume"] : []),
-        "--shard", `${k}/${parallel}`,
-        "--ids", `${STATE_DIR}/sequence_replay_shard-${k}.ids.json`,
-        "--results", `${STATE_DIR}/sequence_replay_results-${k}.json`,
-      ];
-      kids.push(new Promise((res) => {
-        const c = spawn(process.execPath, kidArgs, { stdio: ["ignore", "inherit", "inherit"] });
-        c.on("exit", res);
-      }));
-    }
-    await Promise.all(kids);
-    const merged = [];
-    for (let k = 0; k < parallel; k++) {
-      merged.push(...JSON.parse(readFileSync(`${STATE_DIR}/sequence_replay_results-${k}.json`, "utf8")));
-    }
-    writeFileSync(resultsPath, JSON.stringify(merged, null, 1));
-    summarize(merged, resultsPath);
-    return;
-  }
-
-  const idsFile = arg("--ids", "");
-  if (idsFile) {
-    const ids = new Set(JSON.parse(readFileSync(idsFile, "utf8")));
-    picked = picked.filter((e) => ids.has(e.id)).sort((a, b) => cost(b) - cost(a));
-  } else if (shard) {
-    const [k, n] = shard.split("/").map(Number);
-    picked = picked.filter((_, i) => i % n === k);
-  } else {
-    picked = [...picked].sort((a, b) => cost(b) - cost(a));
-    console.log(`replaying ${picked.length}/${all.length} trajectories (sample=${sample}, seed=${seed})`);
-  }
-  // Resume: keep prior completed results (same sample/seed/parallel), replay
-  // only what's missing.
+  // Resume keeps prior completed results and replays only what is missing.
+  // It no longer depends on the worker count, because no trajectory belongs
+  // to a particular worker.
   let results = [];
   if (argv.includes("--resume") && existsSync(resultsPath)) {
     results = JSON.parse(readFileSync(resultsPath, "utf8"));
   }
   const done = new Set(results.map((r) => r.id));
-  const tag = shard ? `[shard ${shard}] ` : "";
-  // Every line is complete and self-identifying — parallel shards share one
-  // terminal, so a dangling half-line would get another shard's completion
-  // spliced onto it.
-  for (const [i, e] of picked.entries()) {
-    if (done.has(e.id)) continue;
-    console.log(`${tag}[${i + 1}/${picked.length}] > ${e.id} (${e.commands.length} cmds)`);
-    const t0 = Date.now();
-    const r = replayOne(e, `${process.pid}-${i}`);
-    results.push(r);
-    // Flush after every trajectory so an interrupted run loses nothing.
-    writeFileSync(resultsPath, JSON.stringify(results, null, 1));
-    const secs = ((Date.now() - t0) / 1000).toFixed(0);
-    const extras = `${r.orderOnly.length} order-only, ${r.windowNondet.length} window-nondet`;
-    const verdict = r.divergence
-      ? `DIVERGED at step ${r.divergence.step}`
-      : r.runNondet.length
-        ? `stopped run-nondet at step ${r.runNondet[0].step}, ${r.compared} compared (${extras})`
-        : `ok ${r.compared} compared (${extras}), ${r.skippedNondet} nondet-skipped`;
-    console.log(`${tag}[${i + 1}/${picked.length}] ${e.id}: ${verdict} (${secs}s)`);
+  const queue = picked.filter((e) => !done.has(e.id));
+  const total = picked.length;
+  let finished = total - queue.length;
+
+  const ceiling = Math.max(parallel, RIG.replayParallel);
+  writeFileSync(WORKERS_FILE, `${parallel}\n`);
+  lastDial = String(parallel);
+  let want = parallel;
+
+  console.log(`replaying ${total}/${all.length} trajectories (sample=${sample}, seed=${seed}); ${queue.length} to do, ${finished} already done`);
+  console.log(`workers: ${want}, change live with \`echo N > ${WORKERS_FILE}\` (0 pauses, ceiling ${ceiling})`);
+
+  const workers = new Set();
+  const retried = new Set();
+  let settle;
+  const allDone = new Promise((res) => (settle = res));
+  const flush = () => writeFileSync(resultsPath, JSON.stringify(results, null, 1));
+
+  function startWorker() {
+    const child = spawn(process.execPath, [process.argv[1], "worker"], { stdio: ["pipe", "pipe", "inherit"] });
+    const w = { child, busy: null, retiring: false };
+    workers.add(w);
+    let buf = "";
+    child.stdout.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => {
+      buf += chunk;
+      for (let nl = buf.indexOf("\n"); nl >= 0; nl = buf.indexOf("\n")) {
+        const r = JSON.parse(buf.slice(0, nl));
+        buf = buf.slice(nl + 1);
+        w.busy = null;
+        results.push(r);
+        // Flush after every trajectory so an interrupted run loses nothing.
+        flush();
+        finished++;
+        console.log(`[${finished}/${total}] ${r.id}: ${verdictOf(r)} (${r.seconds}s)`);
+      }
+      pump();
+    });
+    child.on("exit", () => {
+      workers.delete(w);
+      // A worker that dies mid-trajectory hands that work back once. A second
+      // death on the same trajectory is reported rather than looped on.
+      if (w.busy) {
+        const e = w.busy;
+        w.busy = null;
+        if (retried.has(e.id)) {
+          console.log(`worker died twice on ${e.id}, leaving it undone`);
+        } else {
+          retried.add(e.id);
+          queue.unshift(e);
+          console.log(`worker died on ${e.id}, requeued`);
+        }
+      }
+      pump();
+    });
   }
-  writeFileSync(resultsPath, JSON.stringify(results, null, 1));
-  if (!shard) summarize(results, resultsPath);
+
+  function pump() {
+    const busy = [...workers].filter((w) => w.busy).length;
+    const target = Math.min(want, queue.length + busy);
+    let live = [...workers].filter((w) => !w.retiring).length;
+    while (live < target) {
+      startWorker();
+      live++;
+    }
+    // Only an idle worker is retired, so a trajectory is never abandoned and
+    // its two containers are always removed by the worker that made them.
+    for (const w of workers) {
+      if (live <= target) break;
+      if (!w.busy && !w.retiring) {
+        w.retiring = true;
+        w.child.stdin.end();
+        live--;
+      }
+    }
+    for (const w of workers) {
+      if (queue.length === 0) break;
+      if (w.busy || w.retiring) continue;
+      w.busy = queue.shift();
+      w.child.stdin.write(`${JSON.stringify(w.busy)}\n`);
+    }
+    if (queue.length === 0 && ![...workers].some((w) => w.busy)) {
+      for (const w of workers) {
+        if (!w.retiring) {
+          w.retiring = true;
+          w.child.stdin.end();
+        }
+      }
+      if (workers.size === 0) settle();
+    }
+  }
+
+  const timer = setInterval(() => {
+    const next = readWorkerDial(want, ceiling);
+    if (next !== want) {
+      console.log(`workers: ${want} -> ${next}${next === 0 ? " (paused, progress kept)" : ""}`);
+      want = next;
+    }
+    pump();
+  }, 2000);
+
+  pump();
+  await allDone;
+  clearInterval(timer);
+  flush();
+  summarize(results, resultsPath);
+}
+
+// A worker holds no share of the work: it replays whatever single trajectory
+// the parent writes to its stdin and reports one JSON line per trajectory,
+// which is what lets the pool grow and shrink mid-run. Progress goes to
+// stderr so stdout carries results and nothing else.
+async function worker() {
+  let n = 0;
+  for await (const line of createInterface({ input: process.stdin })) {
+    if (!line.trim()) continue;
+    const entry = JSON.parse(line);
+    process.stderr.write(`> ${entry.id} (${entry.commands.length} cmds)\n`);
+    const t0 = Date.now();
+    const r = replayOne(entry, `${process.pid}-${n++}`);
+    r.seconds = Math.round((Date.now() - t0) / 1000);
+    process.stdout.write(`${JSON.stringify(r)}\n`);
+  }
 }
 
 function summarize(results, resultsPath) {
@@ -396,6 +522,7 @@ function summarize(results, resultsPath) {
 const [mode, ...rest] = process.argv.slice(2);
 if (mode === "extract") extract();
 else if (mode === "run") await run(rest);
+else if (mode === "worker") await worker();
 else {
   console.error("usage: sequence_replay.mjs extract | run [--sample F] [--seed N] [--limit N] [--parallel N] [--resume]");
   process.exit(2);
