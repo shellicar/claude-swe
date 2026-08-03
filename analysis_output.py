@@ -164,7 +164,9 @@ def emit(name, heading, columns, sections, note, payload, medals=None,
     elif medals:
         counts, unsolved, total = medals
         keys = list(counts)
-        body = []
+        # Name the group so the tally does not render with a blank spanning
+        # cell down its left, the way an ungrouped body would.
+        body = [("## medals", [])]
         for i, (m, word) in enumerate(zip(MEDALS, ("gold", "silver", "bronze"))):
             body.append((f"{m} {word}", [str(counts[d][i]) for d in keys]))
         # Placing by the Olympic rule: golds first, silvers then bronzes only

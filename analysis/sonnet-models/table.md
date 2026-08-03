@@ -314,7 +314,7 @@
     <th colspan="1" class="h g">Claude Sonnet 5</th>
   </tr>
   <tr>
-    <th rowspan="4" class="s"></th>
+    <th rowspan="4" class="s">medals</th>
     <th>🥇 gold</th>
     <td class="g">14</td>
     <td class="g">73</td>

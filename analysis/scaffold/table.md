@@ -156,7 +156,7 @@
     <th colspan="1" class="h g">Sonnet 5 — exec tool, no ritual (pen-down only)</th>
   </tr>
   <tr>
-    <th rowspan="4" class="s"></th>
+    <th rowspan="4" class="s">medals</th>
     <th>🥇 gold</th>
     <td class="g">12</td>
     <td class="g">12</td>

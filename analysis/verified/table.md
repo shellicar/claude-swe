@@ -1274,7 +1274,7 @@
     <th class="u g">low</th>
   </tr>
   <tr>
-    <th rowspan="4" class="s"></th>
+    <th rowspan="4" class="s">medals</th>
     <th>🥇 gold</th>
     <td class="g">2</td>
     <td>1</td>
