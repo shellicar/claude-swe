@@ -46,6 +46,22 @@ THINKING_LEGACY = {
 }
 
 
+def cache_tokens(usage):
+    """(read, write) input tokens, whichever name the provider gives them.
+
+    Anthropic reports cache_read_input_tokens and cache_creation_input_tokens
+    and counts them outside prompt_tokens' plain input. Moonshot reports
+    OpenAI's shape — prompt_tokens_details.cached_tokens, a hit count with no
+    separate write figure — so reading only Anthropic's names counted every
+    cached Kimi token as freshly sent input.
+    """
+    read = usage.get("cache_read_input_tokens")
+    if read is None:
+        details = usage.get("prompt_tokens_details") or {}
+        read = details.get("cached_tokens") or usage.get("cached_tokens") or 0
+    return read or 0, usage.get("cache_creation_input_tokens") or 0
+
+
 def thinking_tokens(usage):
     """Reasoning tokens, whichever name the provider gives them. The proxy
     records `usage` raw so the wire shape is preserved; naming them is the
@@ -141,8 +157,7 @@ def leg(base, s):
                 u = (m.get("extra", {}).get("response") or {}).get("usage") or {}
                 out += u.get("completion_tokens", 0) or 0
                 p = u.get("prompt_tokens", 0) or 0
-                r = u.get("cache_read_input_tokens", 0) or 0
-                w = u.get("cache_creation_input_tokens", 0) or 0
+                r, w = cache_tokens(u)
                 cr += r
                 cw += w
                 ncc += max(p - r - w, 0)

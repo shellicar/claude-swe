@@ -18,7 +18,7 @@
     <th colspan="5" class="t g">Claude Sonnet 5</th>
     <th colspan="1" class="t g">Claude Haiku 4.5</th>
     <th colspan="1" class="t g">Kimi k2.7-code</th>
-    <th colspan="1" class="t g">Kimi K3</th>
+    <th colspan="2" class="t g">Kimi K3</th>
   </tr>
   <tr>
     <th class="u g">low</th>
@@ -39,6 +39,7 @@
     <th class="u g">&nbsp;</th>
     <th class="u g">&nbsp;</th>
     <th class="u g">low</th>
+    <th class="u">high</th>
   </tr>
   <tr>
     <th rowspan="4" class="s">Results</th>
@@ -61,6 +62,7 @@
     <td class="g">39</td>
     <td class="g">48</td>
     <td class="g">49</td>
+    <td>56</td>
   </tr>
   <tr>
     <th>Resolved %</th>
@@ -82,6 +84,7 @@
     <td class="g">65%</td>
     <td class="g">80%</td>
     <td class="g">82%</td>
+    <td>93%</td>
   </tr>
   <tr>
     <th>Total cost</th>
@@ -103,6 +106,7 @@
     <td class="g">$17.90</td>
     <td class="g">$13.58</td>
     <td class="g">🥈 $6.82</td>
+    <td>$20.31</td>
   </tr>
   <tr>
     <th>$/resolved</th>
@@ -124,6 +128,7 @@
     <td class="g">$0.46</td>
     <td class="g">$0.28</td>
     <td class="g">🥈 $0.14</td>
+    <td>$0.36</td>
   </tr>
   <tr>
     <th rowspan="14" class="s t">Stats</th>
@@ -146,6 +151,7 @@
     <td class="g t">3,663</td>
     <td class="g t">2,401</td>
     <td class="g t">816</td>
+    <td class="t">1,481</td>
   </tr>
   <tr>
     <th>Turns/instance (avg)</th>
@@ -167,6 +173,7 @@
     <td class="g">61.0</td>
     <td class="g">40.0</td>
     <td class="g">13.6</td>
+    <td>24.7</td>
   </tr>
   <tr>
     <th>Cost/turn (avg)</th>
@@ -188,6 +195,7 @@
     <td class="g">$0.005</td>
     <td class="g">$0.006</td>
     <td class="g">$0.008</td>
+    <td>$0.014</td>
   </tr>
   <tr>
     <th>Output tokens</th>
@@ -209,6 +217,7 @@
     <td class="g">980k</td>
     <td class="g">711k</td>
     <td class="g">202k</td>
+    <td>619k</td>
   </tr>
   <tr>
     <th>Thinking (output)</th>
@@ -230,6 +239,7 @@
     <td class="g">—</td>
     <td class="g">461k</td>
     <td class="g">89k</td>
+    <td>42k</td>
   </tr>
   <tr>
     <th>Input tokens</th>
@@ -251,6 +261,7 @@
     <td class="g">94.68M</td>
     <td class="g">48.82M</td>
     <td class="g">6.78M</td>
+    <td>23.73M</td>
   </tr>
   <tr>
     <th>— non-cached</th>
@@ -270,8 +281,9 @@
     <td>4k</td>
     <td>7k</td>
     <td class="g">656k</td>
-    <td class="g">48.82M</td>
-    <td class="g">6.78M</td>
+    <td class="g">1.92M</td>
+    <td class="g">651k</td>
+    <td>1.45M</td>
   </tr>
   <tr>
     <th>— cache read</th>
@@ -291,8 +303,9 @@
     <td>39.91M</td>
     <td>159.06M</td>
     <td class="g">91.46M</td>
-    <td class="g">0k</td>
-    <td class="g">0k</td>
+    <td class="g">46.90M</td>
+    <td class="g">6.13M</td>
+    <td>22.28M</td>
   </tr>
   <tr>
     <th>— cache write</th>
@@ -314,6 +327,7 @@
     <td class="g">2.56M</td>
     <td class="g">0k</td>
     <td class="g">0k</td>
+    <td>0k</td>
   </tr>
   <tr>
     <th>Failed tool calls (FormatError)</th>
@@ -335,6 +349,7 @@
     <td class="g">0</td>
     <td class="g">2</td>
     <td class="g">0</td>
+    <td>0</td>
   </tr>
   <tr>
     <th>Input tokens/turn (avg)</th>
@@ -356,6 +371,7 @@
     <td class="g">25,847</td>
     <td class="g">20,334</td>
     <td class="g">8,308</td>
+    <td>16,023</td>
   </tr>
   <tr>
     <th>Output tokens/turn (avg)</th>
@@ -377,6 +393,7 @@
     <td class="g">268</td>
     <td class="g">296</td>
     <td class="g">247</td>
+    <td>418</td>
   </tr>
   <tr>
     <th>Context window (peak, single turn)</th>
@@ -398,6 +415,7 @@
     <td class="g">107k</td>
     <td class="g">76k</td>
     <td class="g">35k</td>
+    <td>58k</td>
   </tr>
   <tr>
     <th>Wall-clock (12-way parallel)</th>
@@ -419,6 +437,7 @@
     <td class="g">3.5 h</td>
     <td class="g">6.8 h</td>
     <td class="g">2.7 h</td>
+    <td>7.1 h</td>
   </tr>
 </tbody>
 <tbody>
@@ -429,7 +448,7 @@
     <th colspan="5" class="t g">Claude Sonnet 5</th>
     <th colspan="1" class="t g">Claude Haiku 4.5</th>
     <th colspan="1" class="t g">Kimi k2.7-code</th>
-    <th colspan="1" class="t g">Kimi K3</th>
+    <th colspan="2" class="t g">Kimi K3</th>
   </tr>
   <tr>
     <th class="u g">low</th>
@@ -450,13 +469,14 @@
     <th class="u g">&nbsp;</th>
     <th class="u g">&nbsp;</th>
     <th class="u g">low</th>
+    <th class="u">high</th>
   </tr>
   <tr>
     <th rowspan="4" class="s">Results</th>
     <th>Resolved</th>
     <td class="g">32</td>
     <td>38</td>
-    <td>🥉 39</td>
+    <td>39</td>
     <td>🥇 <b>44</b></td>
     <td>🥇 <b>44</b></td>
     <td class="g">26</td>
@@ -467,17 +487,18 @@
     <td class="g">21</td>
     <td>31</td>
     <td>34</td>
-    <td>🥉 39</td>
+    <td>39</td>
     <td>🥈 41</td>
     <td class="g">13</td>
     <td class="g">21</td>
     <td class="g">26</td>
+    <td>🥉 40</td>
   </tr>
   <tr>
     <th>Resolved %</th>
     <td class="g">71%</td>
     <td>84%</td>
-    <td>🥉 87%</td>
+    <td>87%</td>
     <td>🥇 <b>98%</b></td>
     <td>🥇 <b>98%</b></td>
     <td class="g">58%</td>
@@ -488,11 +509,12 @@
     <td class="g">47%</td>
     <td>69%</td>
     <td>76%</td>
-    <td>🥉 87%</td>
+    <td>87%</td>
     <td>🥈 91%</td>
     <td class="g">29%</td>
     <td class="g">47%</td>
     <td class="g">58%</td>
+    <td>🥉 89%</td>
   </tr>
   <tr>
     <th>Total cost</th>
@@ -514,6 +536,7 @@
     <td class="g">$21.41</td>
     <td class="g">$20.97</td>
     <td class="g">🥈 $12.62</td>
+    <td>$30.09</td>
   </tr>
   <tr>
     <th>$/resolved</th>
@@ -535,6 +558,7 @@
     <td class="g">$1.65</td>
     <td class="g">$1.00</td>
     <td class="g">🥈 $0.49</td>
+    <td>$0.75</td>
   </tr>
   <tr>
     <th rowspan="14" class="s t">Stats</th>
@@ -557,6 +581,7 @@
     <td class="g t">3,832</td>
     <td class="g t">2,798</td>
     <td class="g t">1,076</td>
+    <td class="t">1,711</td>
   </tr>
   <tr>
     <th>Turns/instance (avg)</th>
@@ -578,6 +603,7 @@
     <td class="g">85.2</td>
     <td class="g">62.2</td>
     <td class="g">23.9</td>
+    <td>38.0</td>
   </tr>
   <tr>
     <th>Cost/turn (avg)</th>
@@ -599,6 +625,7 @@
     <td class="g">$0.006</td>
     <td class="g">$0.007</td>
     <td class="g">$0.012</td>
+    <td>$0.018</td>
   </tr>
   <tr>
     <th>Output tokens</th>
@@ -620,6 +647,7 @@
     <td class="g">1.05M</td>
     <td class="g">918k</td>
     <td class="g">361k</td>
+    <td>828k</td>
   </tr>
   <tr>
     <th>Thinking (output)</th>
@@ -641,6 +669,7 @@
     <td class="g">—</td>
     <td class="g">746k</td>
     <td class="g">160k</td>
+    <td>101k</td>
   </tr>
   <tr>
     <th>Input tokens</th>
@@ -662,6 +691,7 @@
     <td class="g">126.48M</td>
     <td class="g">81.58M</td>
     <td class="g">15.39M</td>
+    <td>42.10M</td>
   </tr>
   <tr>
     <th>— non-cached</th>
@@ -681,8 +711,9 @@
     <td>5k</td>
     <td>8k</td>
     <td class="g">497k</td>
-    <td class="g">81.58M</td>
-    <td class="g">15.39M</td>
+    <td class="g">2.37M</td>
+    <td class="g">959k</td>
+    <td>1.86M</td>
   </tr>
   <tr>
     <th>— cache read</th>
@@ -702,8 +733,9 @@
     <td>95.00M</td>
     <td>299.17M</td>
     <td class="g">123.32M</td>
-    <td class="g">0k</td>
-    <td class="g">0k</td>
+    <td class="g">79.21M</td>
+    <td class="g">14.43M</td>
+    <td>40.23M</td>
   </tr>
   <tr>
     <th>— cache write</th>
@@ -725,6 +757,7 @@
     <td class="g">2.66M</td>
     <td class="g">0k</td>
     <td class="g">0k</td>
+    <td>0k</td>
   </tr>
   <tr>
     <th>Failed tool calls (FormatError)</th>
@@ -746,6 +779,7 @@
     <td class="g">0</td>
     <td class="g">0</td>
     <td class="g">0</td>
+    <td>0</td>
   </tr>
   <tr>
     <th>Input tokens/turn (avg)</th>
@@ -767,6 +801,7 @@
     <td class="g">33,006</td>
     <td class="g">29,156</td>
     <td class="g">14,304</td>
+    <td>24,604</td>
   </tr>
   <tr>
     <th>Output tokens/turn (avg)</th>
@@ -788,6 +823,7 @@
     <td class="g">275</td>
     <td class="g">328</td>
     <td class="g">335</td>
+    <td>484</td>
   </tr>
   <tr>
     <th>Context window (peak, single turn)</th>
@@ -809,6 +845,7 @@
     <td class="g">101k</td>
     <td class="g">126k</td>
     <td class="g">49k</td>
+    <td>79k</td>
   </tr>
   <tr>
     <th>Wall-clock (12-way parallel)</th>
@@ -830,6 +867,7 @@
     <td class="g">3.5 h</td>
     <td class="g">7.5 h</td>
     <td class="g">3.7 h</td>
+    <td>8.7 h</td>
   </tr>
 </tbody>
 <tbody>
@@ -840,7 +878,7 @@
     <th colspan="5" class="t g">Claude Sonnet 5</th>
     <th colspan="1" class="t g">Claude Haiku 4.5</th>
     <th colspan="1" class="t g">Kimi k2.7-code</th>
-    <th colspan="1" class="t g">Kimi K3</th>
+    <th colspan="2" class="t g">Kimi K3</th>
   </tr>
   <tr>
     <th class="u g">low</th>
@@ -861,6 +899,7 @@
     <th class="u g">&nbsp;</th>
     <th class="u g">&nbsp;</th>
     <th class="u g">low</th>
+    <th class="u">high</th>
   </tr>
   <tr>
     <th rowspan="4" class="s">Results</th>
@@ -883,6 +922,7 @@
     <td class="g">52</td>
     <td class="g">69</td>
     <td class="g">75</td>
+    <td>96</td>
   </tr>
   <tr>
     <th>Resolved %</th>
@@ -904,6 +944,7 @@
     <td class="g">50%</td>
     <td class="g">66%</td>
     <td class="g">71%</td>
+    <td>91%</td>
   </tr>
   <tr>
     <th>Total cost</th>
@@ -925,6 +966,7 @@
     <td class="g">$39.32</td>
     <td class="g">$34.55</td>
     <td class="g">🥈 $19.44</td>
+    <td>$50.40</td>
   </tr>
   <tr>
     <th>$/resolved</th>
@@ -946,6 +988,7 @@
     <td class="g">$0.76</td>
     <td class="g">$0.50</td>
     <td class="g">🥈 $0.26</td>
+    <td>$0.52</td>
   </tr>
   <tr>
     <th rowspan="14" class="s t">Stats</th>
@@ -968,6 +1011,7 @@
     <td class="g t">7,495</td>
     <td class="g t">5,199</td>
     <td class="g t">1,892</td>
+    <td class="t">3,192</td>
   </tr>
   <tr>
     <th>Turns/instance (avg)</th>
@@ -989,6 +1033,7 @@
     <td class="g">71.4</td>
     <td class="g">49.5</td>
     <td class="g">18.0</td>
+    <td>30.4</td>
   </tr>
   <tr>
     <th>Cost/turn (avg)</th>
@@ -1010,6 +1055,7 @@
     <td class="g">$0.005</td>
     <td class="g">$0.007</td>
     <td class="g">$0.010</td>
+    <td>$0.016</td>
   </tr>
   <tr>
     <th>Output tokens</th>
@@ -1031,6 +1077,7 @@
     <td class="g">2.03M</td>
     <td class="g">1.63M</td>
     <td class="g">563k</td>
+    <td>1.45M</td>
   </tr>
   <tr>
     <th>Thinking (output)</th>
@@ -1052,6 +1099,7 @@
     <td class="g">—</td>
     <td class="g">1.21M</td>
     <td class="g">249k</td>
+    <td>142k</td>
   </tr>
   <tr>
     <th>Input tokens</th>
@@ -1073,6 +1121,7 @@
     <td class="g">221.15M</td>
     <td class="g">130.40M</td>
     <td class="g">22.17M</td>
+    <td>65.83M</td>
   </tr>
   <tr>
     <th>— non-cached</th>
@@ -1092,8 +1141,9 @@
     <td>9k</td>
     <td>15k</td>
     <td class="g">1.15M</td>
-    <td class="g">130.40M</td>
-    <td class="g">22.17M</td>
+    <td class="g">4.29M</td>
+    <td class="g">1.61M</td>
+    <td>3.31M</td>
   </tr>
   <tr>
     <th>— cache read</th>
@@ -1113,8 +1163,9 @@
     <td>134.91M</td>
     <td>458.23M</td>
     <td class="g">214.78M</td>
-    <td class="g">0k</td>
-    <td class="g">0k</td>
+    <td class="g">126.11M</td>
+    <td class="g">20.56M</td>
+    <td>62.52M</td>
   </tr>
   <tr>
     <th>— cache write</th>
@@ -1136,6 +1187,7 @@
     <td class="g">5.22M</td>
     <td class="g">0k</td>
     <td class="g">0k</td>
+    <td>0k</td>
   </tr>
   <tr>
     <th>Failed tool calls (FormatError)</th>
@@ -1157,6 +1209,7 @@
     <td class="g">0</td>
     <td class="g">2</td>
     <td class="g">0</td>
+    <td>0</td>
   </tr>
   <tr>
     <th>Input tokens/turn (avg)</th>
@@ -1178,6 +1231,7 @@
     <td class="g">29,507</td>
     <td class="g">25,082</td>
     <td class="g">11,718</td>
+    <td>20,622</td>
   </tr>
   <tr>
     <th>Output tokens/turn (avg)</th>
@@ -1199,6 +1253,7 @@
     <td class="g">271</td>
     <td class="g">313</td>
     <td class="g">297</td>
+    <td>453</td>
   </tr>
   <tr>
     <th>Context window (peak, single turn)</th>
@@ -1220,6 +1275,7 @@
     <td class="g">107k</td>
     <td class="g">126k</td>
     <td class="g">49k</td>
+    <td>79k</td>
   </tr>
   <tr>
     <th>Wall-clock (12-way parallel)</th>
@@ -1241,6 +1297,7 @@
     <td class="g">7.0 h</td>
     <td class="g">14.3 h</td>
     <td class="g">6.4 h</td>
+    <td>15.8 h</td>
   </tr>
 </tbody>
 <tbody>
@@ -1251,7 +1308,7 @@
     <th colspan="5" class="t g">Claude Sonnet 5</th>
     <th colspan="1" class="t g">Claude Haiku 4.5</th>
     <th colspan="1" class="t g">Kimi k2.7-code</th>
-    <th colspan="1" class="t g">Kimi K3</th>
+    <th colspan="2" class="t g">Kimi K3</th>
   </tr>
   <tr>
     <th class="u g">low</th>
@@ -1272,6 +1329,7 @@
     <th class="u g">&nbsp;</th>
     <th class="u g">&nbsp;</th>
     <th class="u g">low</th>
+    <th class="u">high</th>
   </tr>
   <tr>
     <th rowspan="4" class="s">medals</th>
@@ -1282,81 +1340,85 @@
     <td>0</td>
     <td>0</td>
     <td class="g">24</td>
-    <td>9</td>
+    <td>8</td>
     <td>1</td>
-    <td>2</td>
+    <td>0</td>
     <td>0</td>
     <td class="g">22</td>
     <td>6</td>
-    <td>4</td>
+    <td>3</td>
     <td>0</td>
     <td>0</td>
     <td class="g">0</td>
     <td class="g">9</td>
-    <td class="g">24</td>
+    <td class="g">23</td>
+    <td>5</td>
   </tr>
   <tr>
     <th>🥈 silver</th>
-    <td class="g">6</td>
+    <td class="g">4</td>
     <td>1</td>
-    <td>2</td>
-    <td>2</td>
+    <td>1</td>
+    <td>0</td>
     <td>0</td>
     <td class="g">20</td>
-    <td>15</td>
-    <td>3</td>
-    <td>0</td>
-    <td>1</td>
-    <td class="g">14</td>
-    <td>11</td>
-    <td>1</td>
+    <td>14</td>
+    <td>2</td>
     <td>2</td>
     <td>1</td>
+    <td class="g">14</td>
+    <td>10</td>
+    <td>2</td>
+    <td>1</td>
+    <td>0</td>
     <td class="g">0</td>
     <td class="g">3</td>
-    <td class="g">23</td>
+    <td class="g">24</td>
+    <td>6</td>
   </tr>
   <tr>
     <th>🥉 bronze</th>
-    <td class="g">8</td>
+    <td class="g">9</td>
     <td>5</td>
-    <td>1</td>
-    <td>1</td>
+    <td>2</td>
+    <td>3</td>
     <td>1</td>
     <td class="g">15</td>
-    <td>13</td>
-    <td>6</td>
-    <td>2</td>
-    <td>2</td>
-    <td class="g">19</td>
-    <td>6</td>
-    <td>4</td>
+    <td>15</td>
     <td>3</td>
+    <td>1</td>
     <td>0</td>
+    <td class="g">19</td>
+    <td>7</td>
+    <td>2</td>
+    <td>2</td>
+    <td>1</td>
     <td class="g">1</td>
     <td class="g">8</td>
     <td class="g">10</td>
+    <td>1</td>
   </tr>
   <tr>
     <th>placing</th>
-    <td class="g">8</td>
-    <td>12</td>
+    <td class="g">9</td>
     <td>11</td>
-    <td>14</td>
+    <td>12</td>
+    <td>16</td>
     <td>17</td>
-    <td class="g">🥈 <b>2</b></td>
-    <td>4</td>
+    <td class="g">🥇 <b>1</b></td>
+    <td>5</td>
     <td>10</td>
-    <td>9</td>
+    <td>13</td>
     <td>15</td>
     <td class="g">🥉 <b>3</b></td>
     <td>6</td>
-    <td>7</td>
-    <td>13</td>
-    <td>16</td>
+    <td>8</td>
+    <td>14</td>
+    <td>17</td>
     <td class="g">17</td>
-    <td class="g">5</td>
-    <td class="g">🥇 <b>1</b></td>
+    <td class="g">4</td>
+    <td class="g">🥈 <b>2</b></td>
+    <td>7</td>
   </tr>
 </tbody>
 </table>
