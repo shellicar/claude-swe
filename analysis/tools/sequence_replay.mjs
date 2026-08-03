@@ -122,15 +122,22 @@ function commandsOf(traj) {
 }
 
 function extract() {
+  // The manifest's second column is the whole point of that file: a digest
+  // pinned reference per instance, for every dataset. Rebuilding a name from
+  // the instance id instead assumed the Verified pattern, so Pro
+  // (jefzda/sweap-images) and Multi (mswebench/*) asked for tags that cannot
+  // exist and dropped out as "no local image", and even Verified replayed
+  // whatever :latest pointed at rather than the digest the rig pins.
   const manifest = new Map(
     readFileSync(`${ROOT}/image-manifest.txt`, "utf8")
       .trim()
       .split("\n")
-      .map((l) => l.split(" "))
-      .map(([inst]) => [inst, `swebench/sweb.eval.x86_64.${inst.replace("__", "_1776_")}:latest`]),
+      .map((l) => l.split(" ")),
   );
+  // Locality is a digest question, not a name one: every Pro image shares a
+  // single repository and differs only by digest.
   const local = new Set(
-    execFileSync("docker", ["images", "--format", "{{.Repository}}:{{.Tag}}"], { encoding: "utf8" })
+    execFileSync("docker", ["images", "--digests", "--format", "{{.Repository}}@{{.Digest}}"], { encoding: "utf8" })
       .trim()
       .split("\n"),
   );
@@ -152,7 +159,7 @@ function extract() {
       id: f.slice(ROOT.length + 1).replace(/\/[^/]*$/, ""),
       instance: inst,
       image,
-      imageLocal: local.has(image),
+      imageLocal: local.has(image.replace(/^docker\.io\//, "")),
       commands,
     });
   }
