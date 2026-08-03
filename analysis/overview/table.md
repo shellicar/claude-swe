@@ -657,8 +657,7 @@
     <th colspan="1" class="h g">kimi-k2.7-code</th>
   </tr>
   <tr>
-    <th rowspan="4" class="s"></th>
-    <th>Resolved</th>
+    <th colspan="2">Resolved</th>
     <td class="g">🥇 <b>309/370</b></td>
     <td class="g">132/165</td>
     <td class="g">🥉 270/370</td>
@@ -667,7 +666,7 @@
     <td class="g">69/105</td>
   </tr>
   <tr>
-    <th>Resolved %</th>
+    <th colspan="2">Resolved %</th>
     <td class="g">🥇 <b>84%</b></td>
     <td class="g">🥈 80%</td>
     <td class="g">73%</td>
@@ -676,7 +675,7 @@
     <td class="g">66%</td>
   </tr>
   <tr>
-    <th>Total cost</th>
+    <th colspan="2">Total cost</th>
     <td class="g">$521.01</td>
     <td class="g">🥈 $133.42</td>
     <td class="g">$292.59</td>
@@ -685,7 +684,7 @@
     <td class="g">🥇 <b>$34.55</b></td>
   </tr>
   <tr>
-    <th>$/resolved</th>
+    <th colspan="2">$/resolved</th>
     <td class="g">$1.69</td>
     <td class="g">🥉 $1.01</td>
     <td class="g">$1.08</td>
@@ -705,8 +704,7 @@
     <th colspan="1" class="h g">kimi-k2.7-code</th>
   </tr>
   <tr>
-    <th rowspan="3" class="s"></th>
-    <th>🥇 gold</th>
+    <th colspan="2">🥇 gold</th>
     <td class="g">214</td>
     <td class="g">80</td>
     <td class="g">20</td>
@@ -715,7 +713,7 @@
     <td class="g">0</td>
   </tr>
   <tr>
-    <th>🥈 silver</th>
+    <th colspan="2">🥈 silver</th>
     <td class="g">145</td>
     <td class="g">65</td>
     <td class="g">107</td>
@@ -724,7 +722,7 @@
     <td class="g">0</td>
   </tr>
   <tr>
-    <th>🥉 bronze</th>
+    <th colspan="2">🥉 bronze</th>
     <td class="g">0</td>
     <td class="g">20</td>
     <td class="g">178</td>

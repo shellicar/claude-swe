@@ -147,13 +147,19 @@ def table(heading, columns, sections, note):
             for j, (label, cells) in enumerate(rows):
                 edge = "t" if g and j == 0 else ""
                 out.append("  <tr>")
-                if j == 0:
-                    # "Results" / "Stats" beside their rows rather than above
-                    # them: as a full-width divider row it cost a blank line
-                    # across every column just to carry one word.
-                    out.append(f'    <th rowspan="{len(rows)}"{klass("s", edge)}>'
-                               f"{cell(group)}</th>")
-                out.append(f'    <th{klass(edge)}>{cell(label)}</th>')
+                if not group:
+                    # An ungrouped section — a TOTAL, a medal tally — has no
+                    # word to put in the left column, so the label takes both
+                    # rather than sitting beside an empty cell.
+                    out.append(f'    <th colspan="2"{klass(edge)}>{cell(label)}</th>')
+                else:
+                    if j == 0:
+                        # "Results" / "Stats" beside their rows rather than
+                        # above them: as a full-width divider row it cost a
+                        # blank line across every column to carry one word.
+                        out.append(f'    <th rowspan="{len(rows)}"{klass("s", edge)}>'
+                                   f"{cell(group)}</th>")
+                    out.append(f'    <th{klass(edge)}>{cell(label)}</th>')
                 for i, c in enumerate(cells):
                     out.append(f'    <td{klass("g" if i in starts else "", edge)}>'
                                f"{cell(c)}</td>")

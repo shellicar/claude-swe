@@ -455,29 +455,28 @@
     <th colspan="1" class="h g">haiku-4-5</th>
   </tr>
   <tr>
-    <th rowspan="4" class="s"></th>
-    <th>Resolved</th>
+    <th colspan="2">Resolved</th>
     <td class="g">🥇 <b>100/109</b></td>
     <td class="g">🥉 84/109</td>
     <td class="g">🥈 89/109</td>
     <td class="g">41/109</td>
   </tr>
   <tr>
-    <th>Resolved %</th>
+    <th colspan="2">Resolved %</th>
     <td class="g">🥇 <b>92%</b></td>
     <td class="g">🥉 77%</td>
     <td class="g">🥈 82%</td>
     <td class="g">38%</td>
   </tr>
   <tr>
-    <th>Total cost</th>
+    <th colspan="2">Total cost</th>
     <td class="g">$261.36</td>
     <td class="g">🥈 $118.24</td>
     <td class="g">🥉 $150.73</td>
     <td class="g">🥇 <b>$40.18</b></td>
   </tr>
   <tr>
-    <th>$/resolved</th>
+    <th colspan="2">$/resolved</th>
     <td class="g">$2.61</td>
     <td class="g">🥈 $1.41</td>
     <td class="g">🥉 $1.69</td>
@@ -493,22 +492,21 @@
     <th colspan="1" class="h g">haiku-4-5</th>
   </tr>
   <tr>
-    <th rowspan="3" class="s"></th>
-    <th>🥇 gold</th>
+    <th colspan="2">🥇 gold</th>
     <td class="g">2</td>
     <td class="g">0</td>
     <td class="g">2</td>
     <td class="g">0</td>
   </tr>
   <tr>
-    <th>🥈 silver</th>
+    <th colspan="2">🥈 silver</th>
     <td class="g">2</td>
     <td class="g">1</td>
     <td class="g">1</td>
     <td class="g">0</td>
   </tr>
   <tr>
-    <th>🥉 bronze</th>
+    <th colspan="2">🥉 bronze</th>
     <td class="g">0</td>
     <td class="g">3</td>
     <td class="g">1</td>
