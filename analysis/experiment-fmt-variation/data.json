@@ -8,49 +8,124 @@
     "varies": "builds required, action timeout 60s \u2192 900s"
   },
   "control": "multilingual",
-  "models": {
+  "contenders": {
     "opus-4-8": {
       "cpp": {
-        "events": 11,
         "control": {
+          "instances": 11,
+          "empty": 0,
+          "cost": 7.60368225,
+          "steps": 274,
+          "out": 129876,
+          "ncc": 548,
+          "cr": 5345822,
+          "cw": 268981,
+          "intot": 5615351,
+          "wall": 2219.383960008621,
+          "thinking": 77110,
           "resolved": 4,
-          "cost": 7.603682249999999,
-          "instances": 11
+          "by_repo": null,
+          "fixed": 4,
+          "near": 0,
+          "wrecked": 5
         },
         "variation": {
+          "instances": 11,
+          "empty": 0,
+          "cost": 10.817214499999999,
+          "steps": 361,
+          "out": 148779,
+          "ncc": 722,
+          "cr": 10146959,
+          "cw": 323304,
+          "intot": 10470985,
+          "wall": 2415.913137435913,
+          "thinking": 85529,
           "resolved": 5,
-          "cost": 10.8172145,
-          "instances": 11
+          "by_repo": null,
+          "fixed": 5,
+          "near": 0,
+          "wrecked": 5
         }
       }
     },
     "sonnet-5": {
       "cpp": {
-        "events": 11,
         "control": {
+          "instances": 11,
+          "empty": 0,
+          "cost": 8.712363899999998,
+          "steps": 437,
+          "out": 125240,
+          "ncc": 874,
+          "cr": 17628473,
+          "cw": 411360,
+          "intot": 18040707,
+          "wall": 1907.3367941379547,
+          "thinking": 63381,
           "resolved": 6,
-          "cost": 8.7123639,
-          "instances": 11
+          "by_repo": null,
+          "fixed": 6,
+          "near": 0,
+          "wrecked": 5
         },
         "variation": {
-          "resolved": 6,
+          "instances": 11,
+          "empty": 0,
           "cost": 6.070757400000001,
-          "instances": 11
+          "steps": 436,
+          "out": 113507,
+          "ncc": 872,
+          "cr": 9735363,
+          "cw": 385314,
+          "intot": 10121549,
+          "wall": 1677.8709259033203,
+          "thinking": 47966,
+          "resolved": 6,
+          "by_repo": null,
+          "fixed": 6,
+          "near": 0,
+          "wrecked": 5
         }
       }
     },
     "fable-5": {
       "cpp": {
-        "events": 11,
         "control": {
+          "instances": 11,
+          "empty": 0,
+          "cost": 9.7982825,
+          "steps": 187,
+          "out": 94428,
+          "ncc": 374,
+          "cr": 2355405,
+          "cw": 217419,
+          "intot": 2573198,
+          "wall": 1859.1335000991821,
+          "thinking": 50281,
           "resolved": 3,
-          "cost": 9.798282500000003,
-          "instances": 11
+          "by_repo": null,
+          "fixed": 4,
+          "near": 1,
+          "wrecked": 5
         },
         "variation": {
+          "instances": 11,
+          "empty": 0,
+          "cost": 14.530776999999999,
+          "steps": 272,
+          "out": 127594,
+          "ncc": 544,
+          "cr": 4689012,
+          "cw": 276530,
+          "intot": 4966086,
+          "wall": 2635.895017147064,
+          "thinking": 68615,
           "resolved": 4,
-          "cost": 14.530777,
-          "instances": 11
+          "by_repo": null,
+          "fixed": 4,
+          "near": 0,
+          "wrecked": 5
         }
       }
     }

@@ -2,8 +2,8 @@
     "total_instances": 300,
     "submitted_instances": 42,
     "completed_instances": 42,
-    "resolved_instances": 31,
-    "unresolved_instances": 11,
+    "resolved_instances": 32,
+    "unresolved_instances": 10,
     "empty_patch_instances": 0,
     "error_instances": 0,
     "completed_ids": [
@@ -356,6 +356,7 @@
         "prometheus__prometheus-9248"
     ],
     "resolved_ids": [
+        "caddyserver__caddy-4774",
         "caddyserver__caddy-4943",
         "caddyserver__caddy-5626",
         "caddyserver__caddy-5870",
@@ -389,7 +390,6 @@
         "prometheus__prometheus-9248"
     ],
     "unresolved_ids": [
-        "caddyserver__caddy-4774",
         "caddyserver__caddy-5404",
         "caddyserver__caddy-5761",
         "caddyserver__caddy-6115",

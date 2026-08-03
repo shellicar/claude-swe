@@ -1,5 +1,5 @@
 {
-  "marked_at": "2026-08-02T06:45:50.244Z",
+  "marked_at": "2026-08-03T00:16:55.352Z",
   "leg": "runs/multi/opus-5",
   "selection": "rust",
   "marker": {
@@ -15,7 +15,7 @@
   },
   "image_manifest_sha256": "ecca49b1482d69a9",
   "rig": {
-    "commit": "357c90a907ad986ad89c654830b9a4e5b1acbb97",
+    "commit": "a2e19dc76a4d00d0bc137f46896223ece487e3ed",
     "dirty": true
   },
   "mark_workers": "14",

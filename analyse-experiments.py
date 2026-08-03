@@ -56,6 +56,51 @@ def meet_rows(meet, expected):
     return meet.make_rows(expected)
 
 
+def instance_tally(dataset, sel, legs, ids):
+    """Per instance, which condition resolved it — and where both did, which did
+    it cheaper. Resolving is the entry ticket, so a condition that failed an
+    instance cannot place on it however cheap it was."""
+    per = {}
+    for combo, model in legs:
+        resolved = verdicts(dataset, combo, model, sel) or set()
+        costs = {}
+        for tf in glob.glob(f"{ROOT}/runs/{combo}/{model}/{sel}/*/*.traj.json"):
+            iid = os.path.basename(os.path.dirname(tf))
+            if iid in ids:
+                costs[iid] = json.load(open(tf))["info"]["model_stats"]["instance_cost"]
+        per[combo] = (resolved, costs)
+    counts = {combo: [0, 0, 0] for combo, _m in legs}
+    unsolved = 0
+    for iid in sorted(ids):
+        finishers = sorted((per[c][1].get(iid, 0.0), c) for c, _m in legs
+                           if iid in per[c][0])
+        if not finishers:
+            unsolved += 1
+            continue
+        for rank, (_cost, combo) in enumerate(finishers[:3]):
+            counts[combo][rank] += 1
+    return counts, unsolved, len(ids)
+
+
+def verdicts(dataset, combo, model, sel):
+    """resolved_ids for one leg, in the shape its marker stores them."""
+    marker = json.load(open(f"{ROOT}/datasets/{dataset}.json"))["marker"]["type"]
+    if marker == "multi-swe":
+        path = f"{ROOT}/evals/{dataset}/{combo}-{model}-{sel}/final_report.json"
+        if not os.path.exists(path):
+            return None
+        return {multi_id(i) for i in json.load(open(path))["resolved_ids"]}
+    reports = glob.glob(f"{ROOT}/evals/*.runs_{combo}_{model}_{sel}.json")
+    return set(json.load(open(reports[0]))["resolved_ids"]) if reports else None
+
+
+def multi_id(instance_id):
+    """multi-swe names an instance `org/repo:pr-N`; the instance files and run
+    directories name the same thing `org__repo-N`."""
+    repo, _, pr = instance_id.partition(":pr-")
+    return f"{repo.replace('/', '__')}-{pr}" if pr else instance_id
+
+
 def card(exp):
     spec = exp["experiment"]
     control = spec["control"]
@@ -63,9 +108,13 @@ def card(exp):
     meet = meet_analyser(dataset)
     models = [l["out"].split("/")[-1] for l in exp["legs"]]
 
+    # One card, one table per contender: the experiment is a single result, and
+    # splitting it across files means holding three of them side by side to
+    # read one answer.
+    sections = []
+    figures = {}
+    tallies = {}
     for model in models:
-        sections = []
-        figures = {}
         for sel in exp["selections"]:
             body = []
             expected = selections.expected(dataset, sel)
@@ -75,17 +124,24 @@ def card(exp):
             }
             for label, render in meet_rows(meet, expected):
                 body.append((label, [render(legs[c]) for c in ("control", "variation")]))
-            sections.append((f"{sel} — {expected} events", body))
-            figures[sel] = legs
+            title = f"{NAME.get(model, model)} — {sel}, {expected} events"
+            sections.append((title, body))
+            figures.setdefault(model, {})[sel] = legs
+            # This contender against itself, per instance: the tally belongs to
+            # this result table alone.
+            tallies[title] = instance_tally(
+                dataset, sel, [(control, model), (exp["name"], model)],
+                selections.ids(dataset, sel))
 
-        analysis_output.emit(
-            f"experiment-{exp['name']}-{model}",
-            f"{NAME.get(model, model)} — {exp['name']} experiment",
-            ["control", "variation"], sections,
-            f"{spec['question']} Varies: {spec['varies']}. Control: {control}.",
-            {"covers": exp["selections"], "experiment": spec,
-             "control": control, "contender": model, "sets": figures},
-        )
+    analysis_output.emit(
+        f"experiment-{exp['name']}",
+        f"{exp['name']} — control against variation",
+        ["control", "variation"], sections,
+        f"{spec['question']} Varies: {spec['varies']}. Control: {control}.",
+        {"covers": exp["selections"], "experiment": spec,
+         "control": control, "contenders": figures},
+        medals_by_section=tallies,
+    )
 
 
 for path in sorted(glob.glob(f"{ROOT}/combinations/*.json")):

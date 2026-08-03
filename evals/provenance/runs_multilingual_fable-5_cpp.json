@@ -1,18 +1,23 @@
 {
-  "marked_at": "2026-07-20T18:54:12.567495+00:00",
-  "inferred": true,
-  "inferred_note": "Reconstructed from repository history, not recorded at mark time. The marker is certain (its pointer never moved and predates every verdict); dataset and manifest hashes are taken from the commit current when the verdict file was written; dirtiness is unknowable.",
+  "marked_at": "2026-08-03T00:21:26.724Z",
+  "leg": "runs/multilingual/fable-5",
   "selection": "cpp",
   "marker": {
     "type": "swebench",
     "path": "vendor/swebench",
-    "commit": "bd1ecccd8a30da93be49fe662e3922df29aa70a4",
-    "dirty": null
+    "vendored": true,
+    "commit": "ce082a98d1e7daa3ebe194e41dfdf47978ae558f",
+    "dirty": false
   },
-  "repo_commit_at_mark_time": "a2939eb2321681d66cd7e9b498e1ebe320d2b993",
   "dataset": {
-    "snapshot": "datasets/swe-bench-verified.jsonl",
-    "sha256": "8f8c8fee718e37d7"
+    "snapshot": "datasets/swe-bench-multilingual.jsonl",
+    "sha256": "6cbf362671d212bc"
   },
-  "image_manifest_sha256": "ecca49b1482d69a9"
+  "image_manifest_sha256": "ecca49b1482d69a9",
+  "rig": {
+    "commit": "a2e19dc76a4d00d0bc137f46896223ece487e3ed",
+    "dirty": true
+  },
+  "mark_workers": "14",
+  "run_id": "runs_multilingual_fable-5_cpp"
 }

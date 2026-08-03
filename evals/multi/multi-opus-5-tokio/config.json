@@ -1,6 +1,6 @@
 {
   "mode": "evaluation",
-  "workdir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/opus-5-tokio/workdir",
+  "workdir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-opus-5-tokio/workdir",
   "patch_files": [
     "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-opus-5-tokio/patches.jsonl"
   ],
@@ -11,7 +11,7 @@
   "output_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-opus-5-tokio",
   "specifics": [],
   "skips": [],
-  "repo_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/opus-5-tokio/repos",
+  "repo_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-opus-5-tokio/repos",
   "need_clone": false,
   "global_env": [],
   "clear_env": true,
@@ -19,6 +19,6 @@
   "max_workers": 14,
   "max_workers_build_image": 14,
   "max_workers_run_instance": 14,
-  "log_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/opus-5-tokio/logs",
+  "log_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-opus-5-tokio/logs",
   "log_level": "INFO"
 }

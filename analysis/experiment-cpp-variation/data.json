@@ -8,49 +8,208 @@
     "varies": "builds required, action timeout 60s \u2192 900s"
   },
   "control": "multi",
-  "models": {
+  "contenders": {
     "opus-4-8": {
       "cpp": {
-        "events": 20,
         "control": {
-          "resolved": 13,
+          "instances": 20,
+          "empty": 0,
           "cost": 17.32385125,
-          "instances": 20
+          "steps": 635,
+          "out": 259723,
+          "ncc": 1270,
+          "cr": 13680640,
+          "cw": 637457,
+          "intot": 14319367,
+          "wall": 3731.715783596039,
+          "thinking": 108515,
+          "resolved": 13,
+          "by_repo": {
+            "Catch2": [
+              2,
+              1
+            ],
+            "fmt": [
+              5,
+              0
+            ],
+            "json": [
+              10,
+              9
+            ],
+            "simdjson": [
+              3,
+              3
+            ]
+          }
         },
         "variation": {
+          "instances": 20,
+          "empty": 2,
+          "cost": 32.21404075,
+          "steps": 1152,
+          "out": 328245,
+          "ncc": 2298,
+          "cr": 38431664,
+          "cw": 764895,
+          "intot": 39198857,
+          "wall": 5483.5849459171295,
+          "thinking": 122267,
           "resolved": 13,
-          "cost": 32.21404075000001,
-          "instances": 20
+          "by_repo": {
+            "Catch2": [
+              2,
+              1
+            ],
+            "fmt": [
+              5,
+              0
+            ],
+            "json": [
+              10,
+              9
+            ],
+            "simdjson": [
+              3,
+              3
+            ]
+          }
         }
       }
     },
     "sonnet-5": {
       "cpp": {
-        "events": 20,
         "control": {
-          "resolved": 11,
+          "instances": 20,
+          "empty": 0,
           "cost": 14.91061665,
-          "instances": 20
+          "steps": 910,
+          "out": 243925,
+          "ncc": 1820,
+          "cr": 26890243,
+          "cw": 847789,
+          "intot": 27739852,
+          "wall": 3251.4159848690033,
+          "thinking": 91189,
+          "resolved": 11,
+          "by_repo": {
+            "Catch2": [
+              2,
+              1
+            ],
+            "fmt": [
+              5,
+              0
+            ],
+            "json": [
+              10,
+              8
+            ],
+            "simdjson": [
+              3,
+              2
+            ]
+          }
         },
         "variation": {
-          "resolved": 12,
+          "instances": 20,
+          "empty": 2,
           "cost": 20.6062914,
-          "instances": 20
+          "steps": 1356,
+          "out": 265738,
+          "ncc": 2712,
+          "cr": 43293418,
+          "cw": 966416,
+          "intot": 44262546,
+          "wall": 4584.036306858063,
+          "thinking": 100037,
+          "resolved": 12,
+          "by_repo": {
+            "Catch2": [
+              2,
+              1
+            ],
+            "fmt": [
+              5,
+              0
+            ],
+            "json": [
+              10,
+              8
+            ],
+            "simdjson": [
+              3,
+              3
+            ]
+          }
         }
       }
     },
     "fable-5": {
       "cpp": {
-        "events": 20,
         "control": {
+          "instances": 20,
+          "empty": 0,
+          "cost": 30.069006499999997,
+          "steps": 503,
+          "out": 243780,
+          "ncc": 1006,
+          "cr": 10202459,
+          "cw": 613399,
+          "intot": 10816864,
+          "wall": 4962.308630943298,
+          "thinking": 125877,
           "resolved": 14,
-          "cost": 30.0690065,
-          "instances": 20
+          "by_repo": {
+            "Catch2": [
+              2,
+              1
+            ],
+            "fmt": [
+              5,
+              0
+            ],
+            "json": [
+              10,
+              10
+            ],
+            "simdjson": [
+              3,
+              3
+            ]
+          }
         },
         "variation": {
+          "instances": 20,
+          "empty": 2,
+          "cost": 47.71436200000002,
+          "steps": 967,
+          "out": 284254,
+          "ncc": 1918,
+          "cr": 24499482,
+          "cw": 718640,
+          "intot": 25220040,
+          "wall": 7350.5220675468445,
+          "thinking": 124021,
           "resolved": 14,
-          "cost": 47.714362000000015,
-          "instances": 20
+          "by_repo": {
+            "Catch2": [
+              2,
+              1
+            ],
+            "fmt": [
+              5,
+              0
+            ],
+            "json": [
+              10,
+              10
+            ],
+            "simdjson": [
+              3,
+              3
+            ]
+          }
         }
       }
     }

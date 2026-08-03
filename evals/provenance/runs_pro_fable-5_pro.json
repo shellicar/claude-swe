@@ -1,0 +1,23 @@
+{
+  "marked_at": "2026-08-03T00:23:59.818Z",
+  "leg": "runs/pro/fable-5",
+  "selection": "pro",
+  "marker": {
+    "type": "scale",
+    "path": "vendor/swe-bench-pro",
+    "vendored": true,
+    "commit": "ca10a60a5fcae51e6948ffe1485d4153d421e6c5",
+    "dirty": false
+  },
+  "dataset": {
+    "snapshot": "datasets/swe-bench-pro.jsonl",
+    "sha256": "22dde86ccafb0d9c"
+  },
+  "image_manifest_sha256": "ecca49b1482d69a9",
+  "rig": {
+    "commit": "a2e19dc76a4d00d0bc137f46896223ece487e3ed",
+    "dirty": true
+  },
+  "mark_workers": "14",
+  "output_dir": "evals/pro/fable-5"
+}

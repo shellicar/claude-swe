@@ -1,6 +1,6 @@
 {
   "mode": "evaluation",
-  "workdir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/opus-5-rust/workdir",
+  "workdir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-opus-5-rust/workdir",
   "patch_files": [
     "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-opus-5-rust/patches.jsonl"
   ],
@@ -11,7 +11,7 @@
   "output_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-opus-5-rust",
   "specifics": [],
   "skips": [],
-  "repo_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/opus-5-rust/repos",
+  "repo_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-opus-5-rust/repos",
   "need_clone": false,
   "global_env": [],
   "clear_env": true,
@@ -19,6 +19,6 @@
   "max_workers": 14,
   "max_workers_build_image": 14,
   "max_workers_run_instance": 14,
-  "log_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/opus-5-rust/logs",
+  "log_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-opus-5-rust/logs",
   "log_level": "INFO"
 }

@@ -1,5 +1,5 @@
 {
-  "marked_at": "2026-08-02T05:03:51.348Z",
+  "marked_at": "2026-08-02T23:59:42.667Z",
   "leg": "runs/effort-sweep/fable-5-max",
   "selection": "standard",
   "marker": {
@@ -15,7 +15,7 @@
   },
   "image_manifest_sha256": "ecca49b1482d69a9",
   "rig": {
-    "commit": "d31a5c98fef1bfb11c8a97704aaa871189de2299",
+    "commit": "a2e19dc76a4d00d0bc137f46896223ece487e3ed",
     "dirty": true
   },
   "mark_workers": "14",

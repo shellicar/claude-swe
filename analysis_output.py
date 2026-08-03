@@ -93,7 +93,17 @@ def _medal_row(label, cells):
     return out
 
 
-def emit(name, heading, columns, sections, note, payload, medals=None):
+def emit(name, heading, columns, sections, note, payload, medals=None,
+         medals_by_section=None):
+    """`medals_by_section` maps a section title to its own tally.
+
+    A tally belongs to a RESULT TABLE — one set of columns compared over one
+    subject — not to a file. A meet's card is one result table (contenders over
+    a program), so one tally covers it. An experiment's card holds one result
+    table per contender (control against variation, that contender against
+    itself), so a single card-wide tally would be comparing one contender's
+    control with another's variation, which is not a contest anyone entered.
+    """
     outdir = f"{ROOT}/analysis/{name}"
     os.makedirs(outdir, exist_ok=True)
 
@@ -108,6 +118,27 @@ def emit(name, heading, columns, sections, note, payload, medals=None):
 
     sections = [(title, [(label, _medal_row(label, cells)) for label, cells in body])
                 for title, body in sections]
+
+    if medals_by_section:
+        # Each result table carries its own tally, immediately after it.
+        MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
+        expanded = []
+        for title, body in sections:
+            expanded.append((title, body))
+            got = medals_by_section.get(title)
+            if not got:
+                continue
+            counts, unsolved, total = got
+            keys = list(counts)
+            # Leading divider: rows before one fall into an unnamed group and
+            # render with a blank spanning cell down the left.
+            tally = [("## medals", [])]
+            tally += [(f"{m} {word}", [str(counts[k][i]) for k in keys])
+                      for i, (m, word) in enumerate(zip(MEDALS, ("gold", "silver", "bronze")))]
+            expanded.append((
+                f"{title} — per instance ({total} events, {unsolved} unsolved either way)",
+                tally))
+        sections = expanded
 
     # medal tally, split per discipline and WEIGHTED BY EVENTS: a gold on a
     # 44-event program outweighs a gold on an 11-event one. The weight is the
@@ -125,9 +156,12 @@ def emit(name, heading, columns, sections, note, payload, medals=None):
         return int(m.group(1)) if m else 1
 
     MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
+    if medals_by_section:
+        pass  # each result table carries its own; a card-wide one would span
+        # result tables that never competed with each other
     # Per-INSTANCE medals when the caller computed them: every instance is its
     # own event, resolving is the entry ticket, cheapest finisher takes gold.
-    if medals:
+    elif medals:
         counts, unsolved, total = medals
         keys = list(counts)
         body = []

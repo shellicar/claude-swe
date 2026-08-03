@@ -1,6 +1,6 @@
 {
   "mode": "evaluation",
-  "workdir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/haiku-4-5-cpp/workdir",
+  "workdir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-haiku-4-5-cpp/workdir",
   "patch_files": [
     "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-haiku-4-5-cpp/patches.jsonl"
   ],
@@ -11,14 +11,14 @@
   "output_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/multi/multi-haiku-4-5-cpp",
   "specifics": [],
   "skips": [],
-  "repo_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/haiku-4-5-cpp/repos",
+  "repo_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-haiku-4-5-cpp/repos",
   "need_clone": false,
   "global_env": [],
   "clear_env": true,
   "stop_on_error": false,
-  "max_workers": 2,
-  "max_workers_build_image": 2,
-  "max_workers_run_instance": 2,
-  "log_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/haiku-4-5-cpp/logs",
+  "max_workers": 14,
+  "max_workers_build_image": 14,
+  "max_workers_run_instance": 14,
+  "log_dir": "/Users/stephen/repos/shellicar/claude-swe/evals/logs/multi-swe/multi-haiku-4-5-cpp/logs",
   "log_level": "INFO"
 }
