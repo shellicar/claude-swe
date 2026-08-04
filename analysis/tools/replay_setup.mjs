@@ -90,7 +90,10 @@ if (missing.length > 0) {
   if (from) {
     // A non-interactive ssh gets a minimal PATH, so `docker` is not on it.
     // Ask a login shell where it lives once, then use that path directly.
-    const which = spawnSync("ssh", [from, "sh", "-lc", "command -v docker"], { encoding: "utf8" });
+    //
+    // Sent as one already-quoted string: ssh joins its arguments and the
+    // remote shell splits them again, so separate arguments do not survive.
+    const which = spawnSync("ssh", [from, "sh -lc 'command -v docker'"], { encoding: "utf8" });
     // A login shell runs the profile, which can print escape sequences before
     // the answer, so take the last line that actually looks like a path.
     const remoteDocker = (which.stdout ?? "")
