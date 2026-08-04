@@ -6,7 +6,7 @@
   ],
   "models": {
     "fable-5": {
-      "*Rust* \u2014 7 repos (43 events)": {
+      "*Rust* \u2014 7 repos": {
         "instances": 43,
         "empty": 0,
         "cost": 47.61907500000001,
@@ -53,7 +53,7 @@
         "near": 4,
         "wrecked": 1
       },
-      "fmtlib/fmt \u2014 *C++* (11 events)": {
+      "fmtlib/fmt \u2014 *C++*": {
         "instances": 11,
         "empty": 0,
         "cost": 9.7982825,
@@ -71,7 +71,7 @@
         "near": 1,
         "wrecked": 5
       },
-      "*Go* \u2014 5 repos (42 events)": {
+      "*Go* \u2014 5 repos": {
         "instances": 42,
         "empty": 0,
         "cost": 49.13781,
@@ -112,7 +112,7 @@
       }
     },
     "opus-4-8": {
-      "*Rust* \u2014 7 repos (43 events)": {
+      "*Rust* \u2014 7 repos": {
         "instances": 43,
         "empty": 0,
         "cost": 28.215016000000006,
@@ -159,7 +159,7 @@
         "near": 4,
         "wrecked": 2
       },
-      "fmtlib/fmt \u2014 *C++* (11 events)": {
+      "fmtlib/fmt \u2014 *C++*": {
         "instances": 11,
         "empty": 0,
         "cost": 7.60368225,
@@ -177,7 +177,7 @@
         "near": 0,
         "wrecked": 5
       },
-      "*Go* \u2014 5 repos (42 events)": {
+      "*Go* \u2014 5 repos": {
         "instances": 42,
         "empty": 0,
         "cost": 33.2236775,
@@ -218,7 +218,7 @@
       }
     },
     "sonnet-5": {
-      "*Rust* \u2014 7 repos (43 events)": {
+      "*Rust* \u2014 7 repos": {
         "instances": 43,
         "empty": 0,
         "cost": 28.3582854,
@@ -265,7 +265,7 @@
         "near": 4,
         "wrecked": 1
       },
-      "fmtlib/fmt \u2014 *C++* (11 events)": {
+      "fmtlib/fmt \u2014 *C++*": {
         "instances": 11,
         "empty": 0,
         "cost": 8.712363899999998,
@@ -283,7 +283,7 @@
         "near": 0,
         "wrecked": 5
       },
-      "*Go* \u2014 5 repos (42 events)": {
+      "*Go* \u2014 5 repos": {
         "instances": 42,
         "empty": 0,
         "cost": 30.76999034999999,
@@ -324,7 +324,7 @@
       }
     },
     "haiku-4-5": {
-      "*Rust* \u2014 7 repos (43 events)": {
+      "*Rust* \u2014 7 repos": {
         "instances": 43,
         "empty": 2,
         "cost": 14.210193600000002,
@@ -371,7 +371,7 @@
         "near": 5,
         "wrecked": 6
       },
-      "fmtlib/fmt \u2014 *C++* (11 events)": {
+      "fmtlib/fmt \u2014 *C++*": {
         "instances": 11,
         "empty": 0,
         "cost": 4.686230450000001,
@@ -389,7 +389,7 @@
         "near": 0,
         "wrecked": 5
       },
-      "*Go* \u2014 5 repos (42 events)": {
+      "*Go* \u2014 5 repos": {
         "instances": 42,
         "empty": 1,
         "cost": 19.207052500000003,

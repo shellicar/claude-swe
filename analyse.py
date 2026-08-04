@@ -17,6 +17,7 @@ import hashlib
 import json
 import os
 
+import analysis_html
 import medals
 import selections
 from analysis_output import _medal_row, emit
@@ -560,18 +561,9 @@ def experiment_table(heading, entries):
     if total:
         sections_.append((medals.heading("arm", total, unsolved),
                           medals.rows(counts, bases)))
-    lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
-    for title, body in sections_:
-        # Repeat the column names per section — the table is too wide to read
-        # a section against a header row that has scrolled away.
-        lines.append(f"| **{title}** | " + " | ".join(f"**{c}**" for c in columns) + " |")
-        for label, cells in body:
-            if label.startswith("## "):
-                lines.append(f"| **{label[3:]}** |" + " |" * len(columns))
-            else:
-                lines.append(f"| {label} | " + " | ".join(cells) + " |")
-    payload = {"models": {b: {"name": n, "sets": {"hard": data_[b]}} for n, b, _ in entries if data_[b]}}
-    return "\n".join(lines), payload
+    payload = {"models": {b: {"name": n, "sets": {"hard": data_[b]}}
+                          for n, b, _ in entries if data_[b]}}
+    return analysis_html.table(heading, columns, sections_, NOTE), payload
 
 
 _CONTROL = ("Control", "main/sonnet-5",

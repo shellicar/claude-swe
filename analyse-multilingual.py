@@ -29,9 +29,9 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # label -> (selection, runs root, run-id prefix, expected)
 SECTIONS = {
-    "*Rust* — 7 repos (43 events)": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", expected=43, ids="instances-rust.txt"),
-    "fmtlib/fmt — *C++* (11 events)": dict(sel="cpp", runs="runs/multilingual", runid="runs_multilingual", expected=11),
-    "*Go* — 5 repos (42 events)": dict(sel="go", runs="runs/multilingual", runid="runs_multilingual", expected=42, ids="instances-go.txt"),
+    "*Rust* — 7 repos": dict(sel="rust", runs="runs/multilingual", runid="runs_multilingual", ids="instances-rust.txt"),
+    "fmtlib/fmt — *C++*": dict(sel="cpp", runs="runs/multilingual", runid="runs_multilingual"),
+    "*Go* — 5 repos": dict(sel="go", runs="runs/multilingual", runid="runs_multilingual", ids="instances-go.txt"),
 }
 
 
@@ -237,16 +237,19 @@ def repo_rows(label):
     return out
 
 
+# The event count comes from the selection, never from the heading text: it
+# used to be written twice, once as `expected` and once inside the label.
 sections = []
 for label, decl in SECTIONS.items():
-    rows_all = make_rows(decl["expected"])
+    n = selections.expected("multilingual", decl["sel"])
+    rows_all = make_rows(n)
     rows_all = rows_all[:5] + repo_rows(label) + rows_all[5:]
     body = [(rl, [fn(data[m][label]) for m in models]) for rl, fn in rows_all]
-    sections.append((label, body))
+    sections.append((f"{label} ({n} events)", body))
 
 # Every section is a program now, so the total needs no exclusion clause — the
 # fmt experiment has its own card (analysis/experiment-fmt-variation).
-sections.append(("TOTAL", total_section(["*Rust* — 7 repos (43 events)", "fmtlib/fmt — *C++* (11 events)", "*Go* — 5 repos (42 events)"])))
+sections.append(("TOTAL", total_section(list(SECTIONS))))
 
 def _resolved_ids(base, sel):
     """The swebench marker's resolved set, or None when the leg is unmarked."""

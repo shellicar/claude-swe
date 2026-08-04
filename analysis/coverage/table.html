@@ -1,41 +1,389 @@
-| Coverage — contender × meet × effort | fable-5 | opus-5 | opus-4-8 | sonnet-5 | haiku-4-5 | kimi-k2.7-code | kimi-k3 |
-|---|---|---|---|---|---|---|---|
-| **Meets — the contender varies** | **fable-5** | **opus-5** | **opus-4-8** | **sonnet-5** | **haiku-4-5** | **kimi-k2.7-code** | **kimi-k3** |
-| multi/cpp | `..#..` | `..#..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| multi/rust | `..#..` | `..#..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| multi/tokio | `..#..` | `..#..` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| multilingual/cpp | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| multilingual/go | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| multilingual/rust | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| pro/element | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| pro/go | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| pro/nodebb | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| pro/pro | `..#..` | `.....` | `..#..` | `..#..` | `..#..` | `.....` | `. . .` |
-| verified/hard | `#####` | `#####` | `#####` | `#####` | `..#..` | `..#..` | `# . .` |
-| verified/standard | `#####` | `#####` | `#####` | `#####` | `..#..` | `..#..` | `# . .` |
-| **Experiments — a condition varies, contenders held** | **fable-5** | **opus-5** | **opus-4-8** | **sonnet-5** | **haiku-4-5** | **kimi-k2.7-code** | **kimi-k3** |
-| cpp-variation/cpp | `..#..` | `.....` | `..#..` | `..#..` | `.....` | `.....` | `. . .` |
-| exec-arm-1/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| exec-arm-2-no-ritual/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| exec-arm-2/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| exec-arm-3/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| exec-arm-4/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| exec-arm-5/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| exec-arm-6/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| execv1-arm2/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| execv2-arm2/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| fmt-variation/cpp | `..#..` | `.....` | `..#..` | `..#..` | `.....` | `.....` | `. . .` |
-| minimal-prompt/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| no-ritual/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| tools-arm-1/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| tools-arm-2/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| tools-arm-3/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| tools-arm-4/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| tools-arm-5/hard | `.....` | `.....` | `.....` | `..#..` | `.....` | `.....` | `. . .` |
-| walker-ccdesc/hard | `.....` | `.....` | `.....` | `.....` | `.....` | `.....` | `. . .` |
-| walker-cwd-told/hard | `.....` | `.....` | `.....` | `.....` | `.....` | `.....` | `. . .` |
-| walker-cwd/hard | `.....` | `.....` | `.....` | `.....` | `.....` | `.....` | `. . .` |
-| walker-fresh-told/hard | `.....` | `.....` | `.....` | `.....` | `.....` | `.....` | `. . .` |
-| walker-fresh/hard | `.....` | `.....` | `.....` | `.....` | `.....` | `.....` | `. . .` |
-| **Legend** | | | | | | | |
-| effort slots: low medium high xhigh max | `#` marked | `½` partly marked | `~` run, unmarked | `.` not run |  |  |  |
+<style>
+.card { border-collapse: collapse }
+.card th, .card td { padding: 3px 10px; text-align: left; white-space: nowrap }
+.card th { font-weight: bold }
+.card .g { border-left: 1px solid #888 }
+.card .t { border-top: 1px solid #888 }
+.card .h { border-bottom: 1px solid #888; border-top: 1px solid #888 }
+.card .u { border-bottom: 1px solid #888 }
+.card .s { vertical-align: middle }
+</style>
+<h3>Coverage — contender × meet × effort</h3>
+<table class="card">
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Meets — the contender varies</th>
+    <th colspan="1" class="h g">fable-5</th>
+    <th colspan="1" class="h g">opus-5</th>
+    <th colspan="1" class="h g">opus-4-8</th>
+    <th colspan="1" class="h g">sonnet-5</th>
+    <th colspan="1" class="h g">haiku-4-5</th>
+    <th colspan="1" class="h g">kimi-k2.7-code</th>
+    <th colspan="1" class="h g">kimi-k3</th>
+  </tr>
+  <tr>
+    <th colspan="2">multi/cpp</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">multi/rust</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">multi/tokio</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">multilingual/cpp</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">multilingual/go</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">multilingual/rust</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">pro/element</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">pro/go</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">pro/nodebb</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">pro/pro</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">verified/hard</th>
+    <td class="g">`#####`</td>
+    <td class="g">`#####`</td>
+    <td class="g">`#####`</td>
+    <td class="g">`#####`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`# . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">verified/standard</th>
+    <td class="g">`#####`</td>
+    <td class="g">`#####`</td>
+    <td class="g">`#####`</td>
+    <td class="g">`#####`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`# . .`</td>
+  </tr>
+</tbody>
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Experiments — a condition varies, contenders held</th>
+    <th colspan="1" class="h g">fable-5</th>
+    <th colspan="1" class="h g">opus-5</th>
+    <th colspan="1" class="h g">opus-4-8</th>
+    <th colspan="1" class="h g">sonnet-5</th>
+    <th colspan="1" class="h g">haiku-4-5</th>
+    <th colspan="1" class="h g">kimi-k2.7-code</th>
+    <th colspan="1" class="h g">kimi-k3</th>
+  </tr>
+  <tr>
+    <th colspan="2">cpp-variation/cpp</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">exec-arm-1/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">exec-arm-2-no-ritual/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">exec-arm-2/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">exec-arm-3/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">exec-arm-4/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">exec-arm-5/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">exec-arm-6/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">execv1-arm2/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">execv2-arm2/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">fmt-variation/cpp</th>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">minimal-prompt/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">no-ritual/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">tools-arm-1/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">tools-arm-2/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">tools-arm-3/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">tools-arm-4/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">tools-arm-5/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`..#..`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">walker-ccdesc/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">walker-cwd-told/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">walker-cwd/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">walker-fresh-told/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+  <tr>
+    <th colspan="2">walker-fresh/hard</th>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`.....`</td>
+    <td class="g">`. . .`</td>
+  </tr>
+</tbody>
+</table>
+
+Effort slots read low medium high xhigh max. `#` marked, `½` partly marked, `~` run but unmarked, `.` not run, blank where the model has no such level. What has been run, from the record — never hand-maintained.

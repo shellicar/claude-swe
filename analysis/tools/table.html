@@ -1,119 +1,912 @@
-| Exec-grammar division — SWE-bench Verified hard, Sonnet 5 | Control | Exec Arm 1 | ExecV1, aligned | ExecV2, aligned | ExecV3, aligned (bash-named) | ExecV3, aligned (exec-named) | ExecV3, no ritual |
-|---|---|---|---|---|---|---|---|
-| **Variables** | **Control** | **Exec Arm 1** | **ExecV1, aligned** | **ExecV2, aligned** | **ExecV3, aligned (bash-named)** | **ExecV3, aligned (exec-named)** | **ExecV3, no ritual** |
-| Shell tool | bash | ExecV3 | ExecV1 | ExecV2 | ExecV3 | ExecV3 | ExecV3 |
-| Tool name shown to model | bash | bash | bash | bash | bash | exec | bash |
-| Input encoding | raw string | JSON | JSON | JSON | JSON | JSON | JSON |
-| Prompt | bash | bash (mismatched) | exec-aligned | exec-aligned | exec-aligned | exec-aligned | exec-aligned |
-| Extra tools | — | — | — | — | — | — | — |
-| Submission | ritual | ritual | ritual | ritual | ritual | ritual | pen-down |
-| Output format | text | block | block | block | block | block | block |
-| **Hard — 45 *Python* events (1+ h human effort)** | **Control** | **Exec Arm 1** | **ExecV1, aligned** | **ExecV2, aligned** | **ExecV3, aligned (bash-named)** | **ExecV3, aligned (exec-named)** | **ExecV3, no ritual** |
-| **Results** | | | | | | | |
-| Resolved | 🥇 **34** | 🥉 32 | 🥉 32 | 🥈 33 | 🥇 **34** | 🥈 33 | 🥈 33 |
-| Resolved % | 🥇 **76%** | 🥉 71% | 🥉 71% | 🥈 73% | 🥇 **76%** | 🥈 73% | 🥈 73% |
-| Total cost | 🥇 **$39.63** | $51.74 | $50.69 | $43.62 | $42.11 | 🥉 $40.84 | 🥈 $40.51 |
-| $/resolved | 🥇 **$1.17** | $1.62 | $1.58 | $1.32 | 🥉 $1.24 | 🥉 $1.24 | 🥈 $1.23 |
-| **Stats** | | | | | | | |
-| Steps (total) | 2,206 | 2,395 | 2,345 | 2,184 | 2,118 | 2,063 | 2,067 |
-| Turns/instance (avg) | 49.0 | 53.2 | 52.1 | 48.5 | 47.1 | 45.8 | 45.9 |
-| Cost/turn (avg) | $0.018 | $0.022 | $0.022 | $0.020 | $0.020 | $0.020 | $0.020 |
-| Output tokens | 725k | 938k | 920k | 796k | 799k | 771k | 804k |
-| Thinking (output) | — | — | — | — | — | — | — |
-| Input tokens | 71.86M | 96.23M | 92.98M | 78.02M | 72.18M | 71.06M | 69.12M |
-| — non-cached | 4k | 5k | 5k | 4k | 4k | 4k | 4k |
-| — cache read | 69.78M | 93.68M | 90.37M | 75.62M | 69.72M | 68.75M | 66.89M |
-| — cache write | 2.08M | 2.55M | 2.60M | 2.39M | 2.45M | 2.30M | 2.23M |
-| Failed tool calls (FormatError) | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
-| Input tokens/turn (avg) | 32,575 | 40,181 | 39,651 | 35,724 | 34,080 | 34,443 | 33,442 |
-| Output tokens/turn (avg) | 329 | 392 | 392 | 365 | 377 | 374 | 389 |
-| Context window (peak, single turn) | 134k | 166k | 149k | 119k | 111k | 118k | 127k |
-| Wall-clock (12-way parallel) | 3.5 h | 3.5 h | 3.2 h | 2.8 h | 3.3 h | 2.8 h | 2.7 h |
-| **Medal tally — per instance (45 events, 4 unsolved by every arm)** | **Control** | **Exec Arm 1** | **ExecV1, aligned** | **ExecV2, aligned** | **ExecV3, aligned (bash-named)** | **ExecV3, aligned (exec-named)** | **ExecV3, no ritual** |
-| **medals** | | | | | | | |
-| 🥇 gold | 14 | 5 | 1 | 3 | 4 | 7 | 7 |
-| 🥈 silver | 4 | 3 | 4 | 8 | 5 | 6 | 10 |
-| 🥉 bronze | 4 | 3 | 6 | 8 | 6 | 6 | 3 |
-| placing | 🥇 **1** | 4 | 7 | 6 | 5 | 🥉 **3** | 🥈 **2** |
+<style>
+.card { border-collapse: collapse }
+.card th, .card td { padding: 3px 10px; text-align: left; white-space: nowrap }
+.card th { font-weight: bold }
+.card .g { border-left: 1px solid #888 }
+.card .t { border-top: 1px solid #888 }
+.card .h { border-bottom: 1px solid #888; border-top: 1px solid #888 }
+.card .u { border-bottom: 1px solid #888 }
+.card .s { vertical-align: middle }
+</style>
+<h3>Exec-grammar division — SWE-bench Verified hard, Sonnet 5</h3>
+<table class="card">
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Variables</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">Exec Arm 1</th>
+    <th colspan="1" class="h g">ExecV1, aligned</th>
+    <th colspan="1" class="h g">ExecV2, aligned</th>
+    <th colspan="1" class="h g">ExecV3, aligned (bash-named)</th>
+    <th colspan="1" class="h g">ExecV3, aligned (exec-named)</th>
+    <th colspan="1" class="h g">ExecV3, no ritual</th>
+  </tr>
+  <tr>
+    <th colspan="2">Shell tool</th>
+    <td class="g">bash</td>
+    <td class="g">ExecV3</td>
+    <td class="g">ExecV1</td>
+    <td class="g">ExecV2</td>
+    <td class="g">ExecV3</td>
+    <td class="g">ExecV3</td>
+    <td class="g">ExecV3</td>
+  </tr>
+  <tr>
+    <th colspan="2">Tool name shown to model</th>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">exec</td>
+    <td class="g">bash</td>
+  </tr>
+  <tr>
+    <th colspan="2">Input encoding</th>
+    <td class="g">raw string</td>
+    <td class="g">JSON</td>
+    <td class="g">JSON</td>
+    <td class="g">JSON</td>
+    <td class="g">JSON</td>
+    <td class="g">JSON</td>
+    <td class="g">JSON</td>
+  </tr>
+  <tr>
+    <th colspan="2">Prompt</th>
+    <td class="g">bash</td>
+    <td class="g">bash (mismatched)</td>
+    <td class="g">exec-aligned</td>
+    <td class="g">exec-aligned</td>
+    <td class="g">exec-aligned</td>
+    <td class="g">exec-aligned</td>
+    <td class="g">exec-aligned</td>
+  </tr>
+  <tr>
+    <th colspan="2">Extra tools</th>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+  </tr>
+  <tr>
+    <th colspan="2">Submission</th>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">pen-down</td>
+  </tr>
+  <tr>
+    <th colspan="2">Output format</th>
+    <td class="g">text</td>
+    <td class="g">block</td>
+    <td class="g">block</td>
+    <td class="g">block</td>
+    <td class="g">block</td>
+    <td class="g">block</td>
+    <td class="g">block</td>
+  </tr>
+</tbody>
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Hard — 45 <i>Python</i> events (1+ h human effort)</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">Exec Arm 1</th>
+    <th colspan="1" class="h g">ExecV1, aligned</th>
+    <th colspan="1" class="h g">ExecV2, aligned</th>
+    <th colspan="1" class="h g">ExecV3, aligned (bash-named)</th>
+    <th colspan="1" class="h g">ExecV3, aligned (exec-named)</th>
+    <th colspan="1" class="h g">ExecV3, no ritual</th>
+  </tr>
+  <tr>
+    <th rowspan="4" class="s">Results</th>
+    <th>Resolved</th>
+    <td class="g">🥇 <b>34</b></td>
+    <td class="g">🥉 32</td>
+    <td class="g">🥉 32</td>
+    <td class="g">🥈 33</td>
+    <td class="g">🥇 <b>34</b></td>
+    <td class="g">🥈 33</td>
+    <td class="g">🥈 33</td>
+  </tr>
+  <tr>
+    <th>Resolved %</th>
+    <td class="g">🥇 <b>76%</b></td>
+    <td class="g">🥉 71%</td>
+    <td class="g">🥉 71%</td>
+    <td class="g">🥈 73%</td>
+    <td class="g">🥇 <b>76%</b></td>
+    <td class="g">🥈 73%</td>
+    <td class="g">🥈 73%</td>
+  </tr>
+  <tr>
+    <th>Total cost</th>
+    <td class="g">🥇 <b>$39.63</b></td>
+    <td class="g">$51.74</td>
+    <td class="g">$50.69</td>
+    <td class="g">$43.62</td>
+    <td class="g">$42.11</td>
+    <td class="g">🥉 $40.84</td>
+    <td class="g">🥈 $40.51</td>
+  </tr>
+  <tr>
+    <th>$/resolved</th>
+    <td class="g">🥇 <b>$1.17</b></td>
+    <td class="g">$1.62</td>
+    <td class="g">$1.58</td>
+    <td class="g">$1.32</td>
+    <td class="g">🥉 $1.24</td>
+    <td class="g">🥉 $1.24</td>
+    <td class="g">🥈 $1.23</td>
+  </tr>
+  <tr>
+    <th rowspan="14" class="s t">Stats</th>
+    <th class="t">Steps (total)</th>
+    <td class="g t">2,206</td>
+    <td class="g t">2,395</td>
+    <td class="g t">2,345</td>
+    <td class="g t">2,184</td>
+    <td class="g t">2,118</td>
+    <td class="g t">2,063</td>
+    <td class="g t">2,067</td>
+  </tr>
+  <tr>
+    <th>Turns/instance (avg)</th>
+    <td class="g">49.0</td>
+    <td class="g">53.2</td>
+    <td class="g">52.1</td>
+    <td class="g">48.5</td>
+    <td class="g">47.1</td>
+    <td class="g">45.8</td>
+    <td class="g">45.9</td>
+  </tr>
+  <tr>
+    <th>Cost/turn (avg)</th>
+    <td class="g">$0.018</td>
+    <td class="g">$0.022</td>
+    <td class="g">$0.022</td>
+    <td class="g">$0.020</td>
+    <td class="g">$0.020</td>
+    <td class="g">$0.020</td>
+    <td class="g">$0.020</td>
+  </tr>
+  <tr>
+    <th>Output tokens</th>
+    <td class="g">725k</td>
+    <td class="g">938k</td>
+    <td class="g">920k</td>
+    <td class="g">796k</td>
+    <td class="g">799k</td>
+    <td class="g">771k</td>
+    <td class="g">804k</td>
+  </tr>
+  <tr>
+    <th>Thinking (output)</th>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+  </tr>
+  <tr>
+    <th>Input tokens</th>
+    <td class="g">71.86M</td>
+    <td class="g">96.23M</td>
+    <td class="g">92.98M</td>
+    <td class="g">78.02M</td>
+    <td class="g">72.18M</td>
+    <td class="g">71.06M</td>
+    <td class="g">69.12M</td>
+  </tr>
+  <tr>
+    <th>— non-cached</th>
+    <td class="g">4k</td>
+    <td class="g">5k</td>
+    <td class="g">5k</td>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+  </tr>
+  <tr>
+    <th>— cache read</th>
+    <td class="g">69.78M</td>
+    <td class="g">93.68M</td>
+    <td class="g">90.37M</td>
+    <td class="g">75.62M</td>
+    <td class="g">69.72M</td>
+    <td class="g">68.75M</td>
+    <td class="g">66.89M</td>
+  </tr>
+  <tr>
+    <th>— cache write</th>
+    <td class="g">2.08M</td>
+    <td class="g">2.55M</td>
+    <td class="g">2.60M</td>
+    <td class="g">2.39M</td>
+    <td class="g">2.45M</td>
+    <td class="g">2.30M</td>
+    <td class="g">2.23M</td>
+  </tr>
+  <tr>
+    <th>Failed tool calls (FormatError)</th>
+    <td class="g">0</td>
+    <td class="g">1</td>
+    <td class="g">0</td>
+    <td class="g">0</td>
+    <td class="g">0</td>
+    <td class="g">0</td>
+    <td class="g">0</td>
+  </tr>
+  <tr>
+    <th>Input tokens/turn (avg)</th>
+    <td class="g">32,575</td>
+    <td class="g">40,181</td>
+    <td class="g">39,651</td>
+    <td class="g">35,724</td>
+    <td class="g">34,080</td>
+    <td class="g">34,443</td>
+    <td class="g">33,442</td>
+  </tr>
+  <tr>
+    <th>Output tokens/turn (avg)</th>
+    <td class="g">329</td>
+    <td class="g">392</td>
+    <td class="g">392</td>
+    <td class="g">365</td>
+    <td class="g">377</td>
+    <td class="g">374</td>
+    <td class="g">389</td>
+  </tr>
+  <tr>
+    <th>Context window (peak, single turn)</th>
+    <td class="g">134k</td>
+    <td class="g">166k</td>
+    <td class="g">149k</td>
+    <td class="g">119k</td>
+    <td class="g">111k</td>
+    <td class="g">118k</td>
+    <td class="g">127k</td>
+  </tr>
+  <tr>
+    <th>Wall-clock (12-way parallel)</th>
+    <td class="g">3.5 h</td>
+    <td class="g">3.5 h</td>
+    <td class="g">3.2 h</td>
+    <td class="g">2.8 h</td>
+    <td class="g">3.3 h</td>
+    <td class="g">2.8 h</td>
+    <td class="g">2.7 h</td>
+  </tr>
+</tbody>
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Medal tally — per instance (45 events, 4 unsolved by every arm)</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">Exec Arm 1</th>
+    <th colspan="1" class="h g">ExecV1, aligned</th>
+    <th colspan="1" class="h g">ExecV2, aligned</th>
+    <th colspan="1" class="h g">ExecV3, aligned (bash-named)</th>
+    <th colspan="1" class="h g">ExecV3, aligned (exec-named)</th>
+    <th colspan="1" class="h g">ExecV3, no ritual</th>
+  </tr>
+  <tr>
+    <th rowspan="4" class="s">medals</th>
+    <th>🥇 gold</th>
+    <td class="g">14</td>
+    <td class="g">5</td>
+    <td class="g">1</td>
+    <td class="g">3</td>
+    <td class="g">4</td>
+    <td class="g">7</td>
+    <td class="g">7</td>
+  </tr>
+  <tr>
+    <th>🥈 silver</th>
+    <td class="g">4</td>
+    <td class="g">3</td>
+    <td class="g">4</td>
+    <td class="g">8</td>
+    <td class="g">5</td>
+    <td class="g">6</td>
+    <td class="g">10</td>
+  </tr>
+  <tr>
+    <th>🥉 bronze</th>
+    <td class="g">4</td>
+    <td class="g">3</td>
+    <td class="g">6</td>
+    <td class="g">8</td>
+    <td class="g">6</td>
+    <td class="g">6</td>
+    <td class="g">3</td>
+  </tr>
+  <tr>
+    <th>placing</th>
+    <td class="g">🥇 <b>1</b></td>
+    <td class="g">4</td>
+    <td class="g">7</td>
+    <td class="g">6</td>
+    <td class="g">5</td>
+    <td class="g">🥉 <b>3</b></td>
+    <td class="g">🥈 <b>2</b></td>
+  </tr>
+</tbody>
+</table>
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.
 
-| Tool-alternatives division — SWE-bench Verified hard, Sonnet 5 | Control | +90 bloat tools | +Edit/Write/Read, neutral | +Edit/Write/Read, prefer | ExecV3 +Edit/Write/Read | ExecV3 +EWR, plain output |
-|---|---|---|---|---|---|---|
-| **Variables** | **Control** | **+90 bloat tools** | **+Edit/Write/Read, neutral** | **+Edit/Write/Read, prefer** | **ExecV3 +Edit/Write/Read** | **ExecV3 +EWR, plain output** |
-| Shell tool | bash | bash | bash | bash | ExecV3 | ExecV3 |
-| Tool name shown to model | bash | bash | bash | bash | bash | bash |
-| Input encoding | raw string | raw string | raw string | raw string | JSON | JSON |
-| Prompt | bash | bash | bash | bash + prefer | bash + prefer | bash + prefer |
-| Extra tools | — | +90 unusable | Edit/Write/Read | Edit/Write/Read | Edit/Write/Read | Edit/Write/Read |
-| Submission | ritual | ritual | ritual | ritual | ritual | ritual |
-| Output format | text | text | text | text | block | plain |
-| **Hard — 45 *Python* events (1+ h human effort)** | **Control** | **+90 bloat tools** | **+Edit/Write/Read, neutral** | **+Edit/Write/Read, prefer** | **ExecV3 +Edit/Write/Read** | **ExecV3 +EWR, plain output** |
-| **Results** | | | | | | |
-| Resolved | 🥉 34 | 🥈 35 | 🥉 34 | 🥇 **36** | 33 | 32 |
-| Resolved % | 🥉 76% | 🥈 78% | 🥉 76% | 🥇 **80%** | 73% | 71% |
-| Total cost | 🥈 $39.63 | $56.72 | 🥉 $40.01 | 🥇 **$34.36** | $45.14 | $46.20 |
-| $/resolved | 🥈 $1.17 | $1.62 | 🥉 $1.18 | 🥇 **$0.95** | $1.37 | $1.44 |
-| **Stats** | | | | | | |
-| Steps (total) | 2,206 | 2,052 | 2,250 | 2,129 | 2,207 | 2,208 |
-| Turns/instance (avg) | 49.0 | 45.6 | 50.0 | 47.3 | 49.0 | 49.1 |
-| Cost/turn (avg) | $0.018 | $0.028 | $0.018 | $0.016 | $0.020 | $0.021 |
-| Output tokens | 725k | 669k | 662k | 580k | 798k | 825k |
-| Thinking (output) | — | — | — | — | — | — |
-| Input tokens | 71.86M | 132.47M | 75.73M | 64.07M | 84.20M | 85.70M |
-| — non-cached | 4k | 4k | 4k | 4k | 4k | 4k |
-| — cache read | 69.78M | 130.46M | 73.60M | 62.21M | 81.91M | 83.34M |
-| — cache write | 2.08M | 2.01M | 2.13M | 1.86M | 2.29M | 2.35M |
-| Failed tool calls (FormatError) | 0 | 1 | 1 | 0 | 2 | 0 |
-| Input tokens/turn (avg) | 32,575 | 64,558 | 33,659 | 30,096 | 38,151 | 38,812 |
-| Output tokens/turn (avg) | 329 | 326 | 294 | 273 | 362 | 374 |
-| Context window (peak, single turn) | 134k | 141k | 115k | 130k | 161k | 147k |
-| Wall-clock (12-way parallel) | 3.5 h | 2.4 h | 2.8 h | 2.7 h | 3.0 h | 3.0 h |
-| **Medal tally — per instance (45 events, 6 unsolved by every arm)** | **Control** | **+90 bloat tools** | **+Edit/Write/Read, neutral** | **+Edit/Write/Read, prefer** | **ExecV3 +Edit/Write/Read** | **ExecV3 +EWR, plain output** |
-| **medals** | | | | | | |
-| 🥇 gold | 7 | 0 | 12 | 11 | 5 | 4 |
-| 🥈 silver | 13 | 2 | 7 | 7 | 6 | 3 |
-| 🥉 bronze | 8 | 3 | 7 | 8 | 4 | 8 |
-| placing | 🥉 **3** | 6 | 🥇 **1** | 🥈 **2** | 4 | 5 |
+Verdicts from the pinned swebench judges. Full caveats in report.md.
+
+<style>
+.card { border-collapse: collapse }
+.card th, .card td { padding: 3px 10px; text-align: left; white-space: nowrap }
+.card th { font-weight: bold }
+.card .g { border-left: 1px solid #888 }
+.card .t { border-top: 1px solid #888 }
+.card .h { border-bottom: 1px solid #888; border-top: 1px solid #888 }
+.card .u { border-bottom: 1px solid #888 }
+.card .s { vertical-align: middle }
+</style>
+<h3>Tool-alternatives division — SWE-bench Verified hard, Sonnet 5</h3>
+<table class="card">
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Variables</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">+90 bloat tools</th>
+    <th colspan="1" class="h g">+Edit/Write/Read, neutral</th>
+    <th colspan="1" class="h g">+Edit/Write/Read, prefer</th>
+    <th colspan="1" class="h g">ExecV3 +Edit/Write/Read</th>
+    <th colspan="1" class="h g">ExecV3 +EWR, plain output</th>
+  </tr>
+  <tr>
+    <th colspan="2">Shell tool</th>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">ExecV3</td>
+    <td class="g">ExecV3</td>
+  </tr>
+  <tr>
+    <th colspan="2">Tool name shown to model</th>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+  </tr>
+  <tr>
+    <th colspan="2">Input encoding</th>
+    <td class="g">raw string</td>
+    <td class="g">raw string</td>
+    <td class="g">raw string</td>
+    <td class="g">raw string</td>
+    <td class="g">JSON</td>
+    <td class="g">JSON</td>
+  </tr>
+  <tr>
+    <th colspan="2">Prompt</th>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash + prefer</td>
+    <td class="g">bash + prefer</td>
+    <td class="g">bash + prefer</td>
+  </tr>
+  <tr>
+    <th colspan="2">Extra tools</th>
+    <td class="g">—</td>
+    <td class="g">+90 unusable</td>
+    <td class="g">Edit/Write/Read</td>
+    <td class="g">Edit/Write/Read</td>
+    <td class="g">Edit/Write/Read</td>
+    <td class="g">Edit/Write/Read</td>
+  </tr>
+  <tr>
+    <th colspan="2">Submission</th>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+  </tr>
+  <tr>
+    <th colspan="2">Output format</th>
+    <td class="g">text</td>
+    <td class="g">text</td>
+    <td class="g">text</td>
+    <td class="g">text</td>
+    <td class="g">block</td>
+    <td class="g">plain</td>
+  </tr>
+</tbody>
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Hard — 45 <i>Python</i> events (1+ h human effort)</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">+90 bloat tools</th>
+    <th colspan="1" class="h g">+Edit/Write/Read, neutral</th>
+    <th colspan="1" class="h g">+Edit/Write/Read, prefer</th>
+    <th colspan="1" class="h g">ExecV3 +Edit/Write/Read</th>
+    <th colspan="1" class="h g">ExecV3 +EWR, plain output</th>
+  </tr>
+  <tr>
+    <th rowspan="4" class="s">Results</th>
+    <th>Resolved</th>
+    <td class="g">🥉 34</td>
+    <td class="g">🥈 35</td>
+    <td class="g">🥉 34</td>
+    <td class="g">🥇 <b>36</b></td>
+    <td class="g">33</td>
+    <td class="g">32</td>
+  </tr>
+  <tr>
+    <th>Resolved %</th>
+    <td class="g">🥉 76%</td>
+    <td class="g">🥈 78%</td>
+    <td class="g">🥉 76%</td>
+    <td class="g">🥇 <b>80%</b></td>
+    <td class="g">73%</td>
+    <td class="g">71%</td>
+  </tr>
+  <tr>
+    <th>Total cost</th>
+    <td class="g">🥈 $39.63</td>
+    <td class="g">$56.72</td>
+    <td class="g">🥉 $40.01</td>
+    <td class="g">🥇 <b>$34.36</b></td>
+    <td class="g">$45.14</td>
+    <td class="g">$46.20</td>
+  </tr>
+  <tr>
+    <th>$/resolved</th>
+    <td class="g">🥈 $1.17</td>
+    <td class="g">$1.62</td>
+    <td class="g">🥉 $1.18</td>
+    <td class="g">🥇 <b>$0.95</b></td>
+    <td class="g">$1.37</td>
+    <td class="g">$1.44</td>
+  </tr>
+  <tr>
+    <th rowspan="14" class="s t">Stats</th>
+    <th class="t">Steps (total)</th>
+    <td class="g t">2,206</td>
+    <td class="g t">2,052</td>
+    <td class="g t">2,250</td>
+    <td class="g t">2,129</td>
+    <td class="g t">2,207</td>
+    <td class="g t">2,208</td>
+  </tr>
+  <tr>
+    <th>Turns/instance (avg)</th>
+    <td class="g">49.0</td>
+    <td class="g">45.6</td>
+    <td class="g">50.0</td>
+    <td class="g">47.3</td>
+    <td class="g">49.0</td>
+    <td class="g">49.1</td>
+  </tr>
+  <tr>
+    <th>Cost/turn (avg)</th>
+    <td class="g">$0.018</td>
+    <td class="g">$0.028</td>
+    <td class="g">$0.018</td>
+    <td class="g">$0.016</td>
+    <td class="g">$0.020</td>
+    <td class="g">$0.021</td>
+  </tr>
+  <tr>
+    <th>Output tokens</th>
+    <td class="g">725k</td>
+    <td class="g">669k</td>
+    <td class="g">662k</td>
+    <td class="g">580k</td>
+    <td class="g">798k</td>
+    <td class="g">825k</td>
+  </tr>
+  <tr>
+    <th>Thinking (output)</th>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+  </tr>
+  <tr>
+    <th>Input tokens</th>
+    <td class="g">71.86M</td>
+    <td class="g">132.47M</td>
+    <td class="g">75.73M</td>
+    <td class="g">64.07M</td>
+    <td class="g">84.20M</td>
+    <td class="g">85.70M</td>
+  </tr>
+  <tr>
+    <th>— non-cached</th>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+    <td class="g">4k</td>
+  </tr>
+  <tr>
+    <th>— cache read</th>
+    <td class="g">69.78M</td>
+    <td class="g">130.46M</td>
+    <td class="g">73.60M</td>
+    <td class="g">62.21M</td>
+    <td class="g">81.91M</td>
+    <td class="g">83.34M</td>
+  </tr>
+  <tr>
+    <th>— cache write</th>
+    <td class="g">2.08M</td>
+    <td class="g">2.01M</td>
+    <td class="g">2.13M</td>
+    <td class="g">1.86M</td>
+    <td class="g">2.29M</td>
+    <td class="g">2.35M</td>
+  </tr>
+  <tr>
+    <th>Failed tool calls (FormatError)</th>
+    <td class="g">0</td>
+    <td class="g">1</td>
+    <td class="g">1</td>
+    <td class="g">0</td>
+    <td class="g">2</td>
+    <td class="g">0</td>
+  </tr>
+  <tr>
+    <th>Input tokens/turn (avg)</th>
+    <td class="g">32,575</td>
+    <td class="g">64,558</td>
+    <td class="g">33,659</td>
+    <td class="g">30,096</td>
+    <td class="g">38,151</td>
+    <td class="g">38,812</td>
+  </tr>
+  <tr>
+    <th>Output tokens/turn (avg)</th>
+    <td class="g">329</td>
+    <td class="g">326</td>
+    <td class="g">294</td>
+    <td class="g">273</td>
+    <td class="g">362</td>
+    <td class="g">374</td>
+  </tr>
+  <tr>
+    <th>Context window (peak, single turn)</th>
+    <td class="g">134k</td>
+    <td class="g">141k</td>
+    <td class="g">115k</td>
+    <td class="g">130k</td>
+    <td class="g">161k</td>
+    <td class="g">147k</td>
+  </tr>
+  <tr>
+    <th>Wall-clock (12-way parallel)</th>
+    <td class="g">3.5 h</td>
+    <td class="g">2.4 h</td>
+    <td class="g">2.8 h</td>
+    <td class="g">2.7 h</td>
+    <td class="g">3.0 h</td>
+    <td class="g">3.0 h</td>
+  </tr>
+</tbody>
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Medal tally — per instance (45 events, 6 unsolved by every arm)</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">+90 bloat tools</th>
+    <th colspan="1" class="h g">+Edit/Write/Read, neutral</th>
+    <th colspan="1" class="h g">+Edit/Write/Read, prefer</th>
+    <th colspan="1" class="h g">ExecV3 +Edit/Write/Read</th>
+    <th colspan="1" class="h g">ExecV3 +EWR, plain output</th>
+  </tr>
+  <tr>
+    <th rowspan="4" class="s">medals</th>
+    <th>🥇 gold</th>
+    <td class="g">7</td>
+    <td class="g">0</td>
+    <td class="g">12</td>
+    <td class="g">11</td>
+    <td class="g">5</td>
+    <td class="g">4</td>
+  </tr>
+  <tr>
+    <th>🥈 silver</th>
+    <td class="g">13</td>
+    <td class="g">2</td>
+    <td class="g">7</td>
+    <td class="g">7</td>
+    <td class="g">6</td>
+    <td class="g">3</td>
+  </tr>
+  <tr>
+    <th>🥉 bronze</th>
+    <td class="g">8</td>
+    <td class="g">3</td>
+    <td class="g">7</td>
+    <td class="g">8</td>
+    <td class="g">4</td>
+    <td class="g">8</td>
+  </tr>
+  <tr>
+    <th>placing</th>
+    <td class="g">🥉 <b>3</b></td>
+    <td class="g">6</td>
+    <td class="g">🥇 <b>1</b></td>
+    <td class="g">🥈 <b>2</b></td>
+    <td class="g">4</td>
+    <td class="g">5</td>
+  </tr>
+</tbody>
+</table>
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.
 
-| Plain-text encoding division — SWE-bench Verified hard, Sonnet 5 | Control | ExecV3, plain-text (symbolic) | ExecV3, plain-text (symbolic, loud) | ExecV3, plain-text (keyword) |
-|---|---|---|---|---|
-| **Variables** | **Control** | **ExecV3, plain-text (symbolic)** | **ExecV3, plain-text (symbolic, loud)** | **ExecV3, plain-text (keyword)** |
-| Shell tool | bash | ExecV3 | ExecV3 | ExecV3 |
-| Tool name shown to model | bash | bash | bash | bash |
-| Input encoding | raw string | text (symbolic) | text (symbolic) | text (keyword) |
-| Prompt | bash | text-aligned | text-aligned + loud | keyword-aligned |
-| Extra tools | — | — | — | — |
-| Submission | ritual | ritual | ritual | ritual |
-| Output format | text | block | block | block |
-| **Hard — 45 *Python* events (1+ h human effort)** | **Control** | **ExecV3, plain-text (symbolic)** | **ExecV3, plain-text (symbolic, loud)** | **ExecV3, plain-text (keyword)** |
-| **Results** | | | | |
-| Resolved | 🥇 **34** | 🥇 **34** | 🥈 31 | 🥉 30 |
-| Resolved % | 🥇 **76%** | 🥇 **76%** | 🥈 69% | 🥉 67% |
-| Total cost | 🥇 **$39.63** | $74.56 | 🥉 $66.07 | 🥈 $53.05 |
-| $/resolved | 🥇 **$1.17** | $2.19 | 🥉 $2.13 | 🥈 $1.77 |
-| **Stats** | | | | |
-| Steps (total) | 2,206 | 3,824 | 3,775 | 2,410 |
-| Turns/instance (avg) | 49.0 | 85.0 | 83.9 | 53.6 |
-| Cost/turn (avg) | $0.018 | $0.019 | $0.018 | $0.022 |
-| Output tokens | 725k | 1.29M | 1.17M | 926k |
-| Thinking (output) | — | — | — | — |
-| Input tokens | 71.86M | 148.35M | 128.55M | 86.21M |
-| — non-cached | 4k | 8k | 7k | 5k |
-| — cache read | 69.78M | 145.26M | 125.68M | 82.36M |
-| — cache write | 2.08M | 3.08M | 2.87M | 3.85M |
-| Failed tool calls (FormatError) | 0 | 0 | 375 | 5 |
-| Input tokens/turn (avg) | 32,575 | 38,795 | 34,054 | 35,773 |
-| Output tokens/turn (avg) | 329 | 338 | 311 | 384 |
-| Context window (peak, single turn) | 134k | 143k | 156k | 151k |
-| Wall-clock (12-way parallel) | 3.5 h | 5.0 h | 6.1 h | 18.5 h |
-| **Medal tally — per instance (45 events, 5 unsolved by every arm)** | **Control** | **ExecV3, plain-text (symbolic)** | **ExecV3, plain-text (symbolic, loud)** | **ExecV3, plain-text (keyword)** |
-| **medals** | | | | |
-| 🥇 gold | 25 | 3 | 2 | 10 |
-| 🥈 silver | 5 | 9 | 10 | 10 |
-| 🥉 bronze | 2 | 12 | 10 | 9 |
-| placing | 🥇 **1** | 🥉 **3** | 4 | 🥈 **2** |
+Verdicts from the pinned swebench judges. Full caveats in report.md.
+
+<style>
+.card { border-collapse: collapse }
+.card th, .card td { padding: 3px 10px; text-align: left; white-space: nowrap }
+.card th { font-weight: bold }
+.card .g { border-left: 1px solid #888 }
+.card .t { border-top: 1px solid #888 }
+.card .h { border-bottom: 1px solid #888; border-top: 1px solid #888 }
+.card .u { border-bottom: 1px solid #888 }
+.card .s { vertical-align: middle }
+</style>
+<h3>Plain-text encoding division — SWE-bench Verified hard, Sonnet 5</h3>
+<table class="card">
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Variables</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (symbolic)</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (symbolic, loud)</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (keyword)</th>
+  </tr>
+  <tr>
+    <th colspan="2">Shell tool</th>
+    <td class="g">bash</td>
+    <td class="g">ExecV3</td>
+    <td class="g">ExecV3</td>
+    <td class="g">ExecV3</td>
+  </tr>
+  <tr>
+    <th colspan="2">Tool name shown to model</th>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+    <td class="g">bash</td>
+  </tr>
+  <tr>
+    <th colspan="2">Input encoding</th>
+    <td class="g">raw string</td>
+    <td class="g">text (symbolic)</td>
+    <td class="g">text (symbolic)</td>
+    <td class="g">text (keyword)</td>
+  </tr>
+  <tr>
+    <th colspan="2">Prompt</th>
+    <td class="g">bash</td>
+    <td class="g">text-aligned</td>
+    <td class="g">text-aligned + loud</td>
+    <td class="g">keyword-aligned</td>
+  </tr>
+  <tr>
+    <th colspan="2">Extra tools</th>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+  </tr>
+  <tr>
+    <th colspan="2">Submission</th>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+    <td class="g">ritual</td>
+  </tr>
+  <tr>
+    <th colspan="2">Output format</th>
+    <td class="g">text</td>
+    <td class="g">block</td>
+    <td class="g">block</td>
+    <td class="g">block</td>
+  </tr>
+</tbody>
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Hard — 45 <i>Python</i> events (1+ h human effort)</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (symbolic)</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (symbolic, loud)</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (keyword)</th>
+  </tr>
+  <tr>
+    <th rowspan="4" class="s">Results</th>
+    <th>Resolved</th>
+    <td class="g">🥇 <b>34</b></td>
+    <td class="g">🥇 <b>34</b></td>
+    <td class="g">🥈 31</td>
+    <td class="g">🥉 30</td>
+  </tr>
+  <tr>
+    <th>Resolved %</th>
+    <td class="g">🥇 <b>76%</b></td>
+    <td class="g">🥇 <b>76%</b></td>
+    <td class="g">🥈 69%</td>
+    <td class="g">🥉 67%</td>
+  </tr>
+  <tr>
+    <th>Total cost</th>
+    <td class="g">🥇 <b>$39.63</b></td>
+    <td class="g">$74.56</td>
+    <td class="g">🥉 $66.07</td>
+    <td class="g">🥈 $53.05</td>
+  </tr>
+  <tr>
+    <th>$/resolved</th>
+    <td class="g">🥇 <b>$1.17</b></td>
+    <td class="g">$2.19</td>
+    <td class="g">🥉 $2.13</td>
+    <td class="g">🥈 $1.77</td>
+  </tr>
+  <tr>
+    <th rowspan="14" class="s t">Stats</th>
+    <th class="t">Steps (total)</th>
+    <td class="g t">2,206</td>
+    <td class="g t">3,824</td>
+    <td class="g t">3,775</td>
+    <td class="g t">2,410</td>
+  </tr>
+  <tr>
+    <th>Turns/instance (avg)</th>
+    <td class="g">49.0</td>
+    <td class="g">85.0</td>
+    <td class="g">83.9</td>
+    <td class="g">53.6</td>
+  </tr>
+  <tr>
+    <th>Cost/turn (avg)</th>
+    <td class="g">$0.018</td>
+    <td class="g">$0.019</td>
+    <td class="g">$0.018</td>
+    <td class="g">$0.022</td>
+  </tr>
+  <tr>
+    <th>Output tokens</th>
+    <td class="g">725k</td>
+    <td class="g">1.29M</td>
+    <td class="g">1.17M</td>
+    <td class="g">926k</td>
+  </tr>
+  <tr>
+    <th>Thinking (output)</th>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+    <td class="g">—</td>
+  </tr>
+  <tr>
+    <th>Input tokens</th>
+    <td class="g">71.86M</td>
+    <td class="g">148.35M</td>
+    <td class="g">128.55M</td>
+    <td class="g">86.21M</td>
+  </tr>
+  <tr>
+    <th>— non-cached</th>
+    <td class="g">4k</td>
+    <td class="g">8k</td>
+    <td class="g">7k</td>
+    <td class="g">5k</td>
+  </tr>
+  <tr>
+    <th>— cache read</th>
+    <td class="g">69.78M</td>
+    <td class="g">145.26M</td>
+    <td class="g">125.68M</td>
+    <td class="g">82.36M</td>
+  </tr>
+  <tr>
+    <th>— cache write</th>
+    <td class="g">2.08M</td>
+    <td class="g">3.08M</td>
+    <td class="g">2.87M</td>
+    <td class="g">3.85M</td>
+  </tr>
+  <tr>
+    <th>Failed tool calls (FormatError)</th>
+    <td class="g">0</td>
+    <td class="g">0</td>
+    <td class="g">375</td>
+    <td class="g">5</td>
+  </tr>
+  <tr>
+    <th>Input tokens/turn (avg)</th>
+    <td class="g">32,575</td>
+    <td class="g">38,795</td>
+    <td class="g">34,054</td>
+    <td class="g">35,773</td>
+  </tr>
+  <tr>
+    <th>Output tokens/turn (avg)</th>
+    <td class="g">329</td>
+    <td class="g">338</td>
+    <td class="g">311</td>
+    <td class="g">384</td>
+  </tr>
+  <tr>
+    <th>Context window (peak, single turn)</th>
+    <td class="g">134k</td>
+    <td class="g">143k</td>
+    <td class="g">156k</td>
+    <td class="g">151k</td>
+  </tr>
+  <tr>
+    <th>Wall-clock (12-way parallel)</th>
+    <td class="g">3.5 h</td>
+    <td class="g">5.0 h</td>
+    <td class="g">6.1 h</td>
+    <td class="g">18.5 h</td>
+  </tr>
+</tbody>
+<tbody>
+  <tr>
+    <th rowspan="1" colspan="2" class="h">Medal tally — per instance (45 events, 5 unsolved by every arm)</th>
+    <th colspan="1" class="h g">Control</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (symbolic)</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (symbolic, loud)</th>
+    <th colspan="1" class="h g">ExecV3, plain-text (keyword)</th>
+  </tr>
+  <tr>
+    <th rowspan="4" class="s">medals</th>
+    <th>🥇 gold</th>
+    <td class="g">25</td>
+    <td class="g">3</td>
+    <td class="g">2</td>
+    <td class="g">10</td>
+  </tr>
+  <tr>
+    <th>🥈 silver</th>
+    <td class="g">5</td>
+    <td class="g">9</td>
+    <td class="g">10</td>
+    <td class="g">10</td>
+  </tr>
+  <tr>
+    <th>🥉 bronze</th>
+    <td class="g">2</td>
+    <td class="g">12</td>
+    <td class="g">10</td>
+    <td class="g">9</td>
+  </tr>
+  <tr>
+    <th>placing</th>
+    <td class="g">🥇 <b>1</b></td>
+    <td class="g">🥉 <b>3</b></td>
+    <td class="g">4</td>
+    <td class="g">🥈 <b>2</b></td>
+  </tr>
+</tbody>
+</table>
+
+Verdicts from the pinned swebench judges. Full caveats in report.md.
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.

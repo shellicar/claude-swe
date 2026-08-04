@@ -17,6 +17,7 @@ import glob
 import json
 import os
 
+import analysis_html
 import selections
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -134,27 +135,21 @@ for (kind, label, dataset), legs in sorted(rows.items(),
 
 columns = [m["dir"] for m in COLUMNS]
 heading = "Coverage — contender × meet × effort"
-lines = [f"| {heading} | " + " | ".join(columns) + " |",
-         "|" + "---|" * (len(columns) + 1)]
-for title, body in (("Meets — the contender varies", bodies["meet"]),
-                    ("Experiments — a condition varies, contenders held",
-                     bodies["experiment"])):
-    if not body:
-        continue
-    # Repeat the column names per section, so a section reads on its own.
-    lines.append(f"| **{title}** | " + " | ".join(f"**{c}**" for c in columns) + " |")
-    for label, cells in body:
-        lines.append(f"| {label} | " + " | ".join(cells) + " |")
-lines.append(f"| **Legend** |" + " |" * len(columns))
-lines.append(f"| effort slots: low medium high xhigh max | "
-             + " | ".join(["`#` marked", "`½` partly marked", "`~` run, unmarked",
-                           "`.` not run"]
-                          + [""] * (len(columns) - 4)) + " |")
+sections = [(t, b) for t, b in
+            (("Meets — the contender varies", bodies["meet"]),
+             ("Experiments — a condition varies, contenders held",
+              bodies["experiment"])) if b]
+# The legend is prose, not data: as a row it needed padding cells with nothing
+# in them, one per contender.
+NOTE = ("Effort slots read low medium high xhigh max. "
+        "`#` marked, `½` partly marked, `~` run but unmarked, `.` not run, "
+        "blank where the model has no such level. "
+        "What has been run, from the record — never hand-maintained.")
 
 outdir = f"{ROOT}/analysis/coverage"
 os.makedirs(outdir, exist_ok=True)
 with open(f"{outdir}/table.html", "w") as f:
-    f.write("\n".join(lines) + "\n")
+    f.write(analysis_html.table(heading, columns, sections, NOTE) + "\n")
 # The same strips the table renders, so the machine layer cannot disagree with
 # it — it previously recorded "." (not run) for levels a model does not have,
 # showing gaps that were not gaps.

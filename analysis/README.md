@@ -63,6 +63,13 @@ files:
 | `<name>.svg` | the rendered card                              |
 | `<name>.png` | the card for pasting into chat (SVG pastes as text) |
 
-Headline rows (Resolved, Resolved %, Total cost, $/resolved) bold the best
-cell per row — highest for resolve, lowest for cost. `<name>.d2` is the
-render intermediate — regenerated every run, gitignored.
+Headline rows (Resolved, Resolved %, Total cost, $/resolved) rank their cells:
+🥇🥈🥉 mark first, second and third, highest first on resolve rows and lowest
+first on cost rows, and equal values share a rank.
+
+The medal tally at the foot of a card counts something different: one event per
+instance, awarded to the columns that resolved it, ordered by cost. An instance
+no column resolved awards nothing. Placing under it ranks by golds, using
+silvers then bronzes only to break ties.
+
+`<name>.d2` is the render intermediate — regenerated every run, gitignored.

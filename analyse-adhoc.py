@@ -13,6 +13,8 @@ import hashlib
 import json
 import os
 
+import analysis_html
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 ADHOC = f"{ROOT}/runs/adhoc"
 ROSTER = json.load(open(f"{ROOT}/models.json"))["models"]
@@ -165,22 +167,22 @@ def projection(leg, sel, instances):
 
 if sections:
     # Each ad-hoc leg gets its own table: its comparison columns depend on
-    # which model it is.
+    # which model it is, so this is several tables rather than one.
     lines = []
     for title, body, own, others in sections:
         columns = [NAME.get(own, own or "ad-hoc leg")] + [NAME[m["dir"]] for m in others]
-        lines += [f"| {title} | " + " | ".join(columns) + " |",
-                  "|" + "---|" * (len(columns) + 1)]
-        for label, cells in body:
-            lines.append(f"| {label} | " + " | ".join(cells) + " |")
+        rows = list(body)
         w = wire_totals(*title.split(" / "))
         if w:
-            lines.append(f"| _wire capture_ | {w['calls']} calls, "
-                         f"{w['thinking']:,} thinking tokens |"
-                         + " |" * (len(columns) - 1))
-        lines.append("")
-    lines += ["", "Same event, so the cells compare directly; the ad-hoc leg's own "
-              "program is not a meet's full program, so its RATE does not."]
+            # Only the ad-hoc leg has a wire capture; the comparison columns
+            # are other models' meet legs, whose captures are not read here.
+            rows.append(("wire capture",
+                         [f"{w['calls']} calls, {w['thinking']:,} thinking tokens"]
+                         + ["n/a"] * (len(columns) - 1)))
+        lines.append(analysis_html.table(
+            title, columns, [(title, rows)],
+            "Same event, so the cells compare directly; the ad-hoc leg's own "
+            "program is not a meet's full program, so its RATE does not."))
 
     proj_rows = []
     for leg in sorted(os.listdir(ADHOC)) if os.path.isdir(ADHOC) else []:
@@ -191,20 +193,18 @@ if sections:
             if p:
                 std, hard = p.get("standard"), p.get("hard")
                 both = (std or 0) + (hard or 0)
-                proj_rows.append(
-                    f"| {leg} / {sel} | {len(instances)} | "
-                    f"{'$%.2f' % std if std else '—'} | "
-                    f"{'$%.2f' % hard if hard else '—'} | "
-                    f"{'$%.2f' % both if both else '—'} |")
+                proj_rows.append((f"{leg} / {sel}", [
+                    str(len(instances)),
+                    "$%.2f" % std if std else "\u2014",
+                    "$%.2f" % hard if hard else "\u2014",
+                    "$%.2f" % both if both else "\u2014"]))
     if proj_rows:
-        lines += [
-            "", "## Projected cost of a full meet", "",
+        lines.append(analysis_html.table(
+            "Projected cost of a full meet",
+            ["sampled", "standard (60)", "hard (45)", "verified (105)"],
+            [("Projected cost of a full meet", proj_rows)],
             "Scaled by the median of every contender's own "
-            "(full-program cost / cost on these same instances) ratio.", "",
-            "| ad-hoc leg | sampled | standard (60) | hard (45) | verified (105) |",
-            "|---|---|---|---|---|",
-            *proj_rows,
-        ]
+            "(full-program cost / cost on these same instances) ratio."))
 
     outdir = f"{ROOT}/analysis/adhoc"
     os.makedirs(outdir, exist_ok=True)
