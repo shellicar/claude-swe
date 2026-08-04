@@ -1,15 +1,20 @@
 #!/usr/bin/env node
 // Sets a machine up and starts the replay. One command, everything.
 //
-//   node analysis/tools/replay_setup.mjs [--parallel N]
+//   node analysis/tools/replay_setup.mjs [--parallel N] [--from user@host]
 //
-// Builds the corpus, pulls every image the corpus needs and does not have,
+// Builds the corpus, fetches every image the corpus needs and does not have,
 // rebuilds the corpus so it sees them, and starts the run. Safe to re-run: it
-// pulls only what is missing and the replay resumes rather than restarting.
+// fetches only what is missing and the replay resumes rather than restarting.
+//
+// `--from` streams images off another machine's docker over ssh instead of
+// pulling from the registry, for when the LAN is faster than the internet.
+// Nothing is written to disk in between. It moves more bytes than a registry
+// pull, because `docker save` streams layers uncompressed.
 
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 const SELF = `${ROOT}/analysis/tools/sequence_replay.mjs`;
@@ -19,6 +24,8 @@ const RIG = JSON.parse(readFileSync(`${ROOT}/rig.json`, "utf8"));
 const argv = process.argv.slice(2);
 const at = argv.indexOf("--parallel");
 const parallel = at >= 0 ? argv[at + 1] : String(RIG.replayParallel);
+const fromAt = argv.indexOf("--from");
+const from = fromAt >= 0 ? argv[fromAt + 1] : null;
 
 const die = (msg, fix) => {
   console.error(`stopped: ${msg}`);
@@ -74,18 +81,56 @@ for (const e of corpus) {
 const missing = [...byImage].filter(([, r]) => !r.local).sort((a, b) => b[1].commands - a[1].commands);
 
 if (missing.length > 0) {
-  console.log(`\npulling ${missing.length} images`);
-  let n = 0;
-  for (const [image] of missing) {
-    n++;
-    console.log(`\n[${n}/${missing.length}] ${image}`);
-    const r = spawnSync("docker", ["pull", image], { stdio: "inherit" });
-    if (r.status !== 0) {
-      console.error(`\npull failed after ${n - 1} of ${missing.length}. Replaying what is present.`);
-      break;
+  // `docker pull` takes one reference and has no batch form, so several run at
+  // once. Beyond a handful the daemon's own max-concurrent-downloads (3 by
+  // default) is the real limit; raise it in daemon.json to go faster.
+  const CONCURRENCY = 4;
+  const queue = missing.map(([image]) => image);
+
+  if (from) {
+    // One ssh per batch: a failure costs that batch, not the whole transfer,
+    // and each batch reports rather than the stream going quiet for hours.
+    const BATCH = 5;
+    console.log(`\nstreaming ${queue.length} images from ${from}`);
+    for (let i = 0; i < queue.length; i += BATCH) {
+      const batch = queue.slice(i, i + BATCH);
+      const status = await new Promise((res) => {
+        const ssh = spawn("ssh", [from, "docker", "save", ...batch], { stdio: ["ignore", "pipe", "inherit"] });
+        const load = spawn("docker", ["load"], { stdio: ["pipe", "inherit", "inherit"] });
+        ssh.stdout.pipe(load.stdin);
+        load.on("exit", (code) => res(code));
+      });
+      console.log(`[${Math.min(i + BATCH, queue.length)}/${queue.length}] ${status === 0 ? "ok" : "FAILED"}`);
     }
-  }
+    corpus = extract();
+    if (corpus.filter((e) => e.imageLocal).length === 0) die("nothing arrived over ssh");
+  } else {
+
+  console.log(`\npulling ${missing.length} images, ${CONCURRENCY} at a time`);
+  let done = 0;
+  let failed = 0;
+  const worker = async () => {
+    for (;;) {
+      const image = queue.shift();
+      if (!image) return;
+      const status = await new Promise((res) => {
+        const c = spawn("docker", ["pull", image], { stdio: ["ignore", "ignore", "pipe"] });
+        let err = "";
+        c.stderr.on("data", (d) => (err += d));
+        c.on("exit", (code) => {
+          if (code !== 0) console.error(`  failed ${image}: ${err.trim().split("\n").pop()}`);
+          res(code);
+        });
+      });
+      done++;
+      if (status !== 0) failed++;
+      console.log(`[${done}/${missing.length}] ${status === 0 ? "ok" : "FAILED"} ${image}`);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, queue.length) }, worker));
+  if (failed > 0) console.error(`\n${failed} pulls failed. Replaying what is present.`);
   corpus = extract();
+  }
 }
 
 const replayable = corpus.filter((e) => e.imageLocal).length;
