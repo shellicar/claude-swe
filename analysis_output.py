@@ -37,6 +37,7 @@ import shutil
 import subprocess
 
 import analysis_html
+import medals as medals_mod
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -121,7 +122,6 @@ def emit(name, heading, columns, sections, note, payload, medals=None,
 
     if medals_by_section:
         # Each result table carries its own tally, immediately after it.
-        MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
         expanded = []
         for title, body in sections:
             expanded.append((title, body))
@@ -129,92 +129,27 @@ def emit(name, heading, columns, sections, note, payload, medals=None,
             if not got:
                 continue
             counts, unsolved, total = got
-            keys = list(counts)
-            # Leading divider: rows before one fall into an unnamed group and
-            # render with a blank spanning cell down the left.
-            tally = [("## medals", [])]
-            tally += [(f"{m} {word}", [str(counts[k][i]) for k in keys])
-                      for i, (m, word) in enumerate(zip(MEDALS, ("gold", "silver", "bronze")))]
+            # No placing row: with two conditions it would only restate gold.
             expanded.append((
-                f"{title} — per instance ({total} events, {unsolved} unsolved either way)",
-                tally))
+                f"{title} — {medals_mod.heading('condition', total, unsolved)}",
+                medals_mod.rows(counts, list(counts), placing=False)))
         sections = expanded
 
     # medal tally, split per discipline and WEIGHTED BY EVENTS: a gold on a
     # 44-event program outweighs a gold on an 11-event one. The weight is the
-    # event count parsed from the program's header. Aggregates are excluded —
-    # TOTAL sections and rows under a '## …total…' divider summarise contests
-    # already counted. Resolved % is skipped: it medals identically to
-    # Resolved within every group. Divisions never share a tally: each card
-    # tallies only its own columns.
-    import re as _re
-
-    def _events_in(text):
-        m = _re.search(r"\((?:all\s+)?(\d+)(?:\s+of\s+\d+)?(?:\s+events)?\)", text)
-        if not m:
-            m = _re.search(r"(\d+)\s+(?:\*\w+\*\s+)?events", text)
-        return int(m.group(1)) if m else 1
-
-    MEDALS = ("\U0001F947", "\U0001F948", "\U0001F949")
-    if medals_by_section:
-        pass  # each result table carries its own; a card-wide one would span
-        # result tables that never competed with each other
-    # Per-INSTANCE medals when the caller computed them: every instance is its
-    # own event, resolving is the entry ticket, cheapest finisher takes gold.
-    elif medals:
+    # ONE medal system, in medals.py: every instance is an event, resolving is
+    # the entry ticket, the cheapest finisher takes gold. A card either passes
+    # a tally computed that way or shows none. There used to be a third path
+    # here that counted the medal glyphs decorating aggregate rows and weighted
+    # them by an event count parsed out of the section heading with a regex,
+    # silently falling back to 1 when the heading did not match — a different
+    # quantity wearing the same emoji.
+    if medals:
         counts, unsolved, total = medals
         keys = list(counts)
-        # Name the group so the tally does not render with a blank spanning
-        # cell down its left, the way an ungrouped body would.
-        body = [("## medals", [])]
-        for i, (m, word) in enumerate(zip(MEDALS, ("gold", "silver", "bronze"))):
-            body.append((f"{m} {word}", [str(counts[d][i]) for d in keys]))
-        # Placing by the Olympic rule: golds first, silvers then bronzes only
-        # as tie-breakers — one gold outranks any number of silvers. Gold here
-        # means "solved it cheapest", so it is the column that carries the
-        # contest; a total-medals count would mostly restate Resolved.
-        order = sorted(keys, key=lambda d: tuple(-n for n in counts[d]))
-        placing = {}
-        rank = 0
-        for i, d in enumerate(order):
-            if i and counts[d] != counts[order[i - 1]]:
-                rank = i
-            placing[d] = rank
-        body.append(("placing", [
-            f"{MEDALS[placing[d]]}\u00a0**{placing[d] + 1}**" if placing[d] < 3
-            else str(placing[d] + 1)
-            for d in keys
-        ]))
-        heading_row = (
-            f"Medal tally — per instance ({total} events, "
-            f"{unsolved} unsolved by every model)"
-        )
-        sections = sections + [(heading_row, body)]
-    else:
-        DISCIPLINES = ("Resolved",)
-        tally = {d: {m: [0] * len(columns) for m in MEDALS} for d in DISCIPLINES}
-        for title, body in sections:
-            if title.startswith("TOTAL"):
-                continue
-            weight = _events_in(title)
-            in_total_group = False
-            for label, cells in body:
-                if label.startswith("## "):
-                    in_total_group = "total" in label.lower()
-                    if not in_total_group:
-                        weight = _events_in(label)
-                    continue
-                if in_total_group or label.strip() not in tally:
-                    continue
-                for i, c in enumerate(cells):
-                    for m in MEDALS:
-                        if m in c:
-                            tally[label.strip()][m][i] += weight
-        if any(any(v) for d in tally.values() for v in d.values()):
-            body = []
-            for m, word in zip(MEDALS, ("gold", "silver", "bronze")):
-                body.append((f"{m} {word}", [str(n) for n in tally["Resolved"][m]]))
-            sections = sections + [("Medal tally — counted in events", body)]
+        sections = sections + [
+            (medals_mod.heading("model", total, unsolved),
+             medals_mod.rows(counts, keys))]
 
     # HTML, not a markdown table — see analysis_html for why.
     with open(f"{outdir}/table.md", "w") as f:

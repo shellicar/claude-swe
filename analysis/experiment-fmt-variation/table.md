@@ -106,7 +106,7 @@
 </tbody>
 <tbody>
   <tr>
-    <th rowspan="1" colspan="2" class="h">Claude Opus 4.8 — cpp, 11 events — per instance (11 events, 6 unsolved either way)</th>
+    <th rowspan="1" colspan="2" class="h">Claude Opus 4.8 — cpp, 11 events — Medal tally — per instance (11 events, 6 unsolved by every condition)</th>
     <th colspan="1" class="h g">control</th>
     <th colspan="1" class="h g">variation</th>
   </tr>
@@ -223,7 +223,7 @@
 </tbody>
 <tbody>
   <tr>
-    <th rowspan="1" colspan="2" class="h">Claude Sonnet 5 — cpp, 11 events — per instance (11 events, 5 unsolved either way)</th>
+    <th rowspan="1" colspan="2" class="h">Claude Sonnet 5 — cpp, 11 events — Medal tally — per instance (11 events, 5 unsolved by every condition)</th>
     <th colspan="1" class="h g">control</th>
     <th colspan="1" class="h g">variation</th>
   </tr>
@@ -340,7 +340,7 @@
 </tbody>
 <tbody>
   <tr>
-    <th rowspan="1" colspan="2" class="h">Claude Fable 5 — cpp, 11 events — per instance (11 events, 7 unsolved either way)</th>
+    <th rowspan="1" colspan="2" class="h">Claude Fable 5 — cpp, 11 events — Medal tally — per instance (11 events, 7 unsolved by every condition)</th>
     <th colspan="1" class="h g">control</th>
     <th colspan="1" class="h g">variation</th>
   </tr>

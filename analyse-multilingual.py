@@ -21,6 +21,7 @@ import hashlib
 import json
 import os
 
+import medals
 import selections
 from analysis_output import emit
 
@@ -247,5 +248,17 @@ for label, decl in SECTIONS.items():
 # fmt experiment has its own card (analysis/experiment-fmt-variation).
 sections.append(("TOTAL", total_section(["*Rust* — 7 repos (43 events)", "fmtlib/fmt — *C++* (11 events)", "*Go* — 5 repos (42 events)"])))
 
+def _resolved_ids(base, sel):
+    """The swebench marker's resolved set, or None when the leg is unmarked."""
+    rid = base.replace("/", "_")
+    reps = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{sel}.json")
+    return set(json.load(open(reps[0]))["resolved_ids"]) if reps else None
+
+
+_bases = [f"multilingual/{m}" for m in models]
+_sels = ["rust", "cpp", "go"]
 emit("multilingual", "SWE-bench Multilingual", models, sections, NOTE,
-     {"covers": ["rust", "cpp", "go"], "models": data})
+     {"covers": ["rust", "cpp", "go"], "models": data},
+     medals=medals.tally(
+         ROOT, _bases, _sels, _resolved_ids,
+         ids_of=lambda sel: selections.ids("multilingual", sel)))

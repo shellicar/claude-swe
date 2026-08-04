@@ -17,6 +17,7 @@ import hashlib
 import json
 import os
 
+import medals
 import selections
 from analysis_output import _medal_row, emit
 
@@ -59,7 +60,10 @@ def cache_tokens(usage):
     if read is None:
         details = usage.get("prompt_tokens_details") or {}
         read = details.get("cached_tokens") or usage.get("cached_tokens") or 0
-    return read or 0, usage.get("cache_creation_input_tokens") or 0
+    # None, not 0: Moonshot has no cache-write concept at all — it prices
+    # cache-miss input instead — and "never reported" is a different fact from
+    # "reported as nothing".
+    return read or 0, usage.get("cache_creation_input_tokens")
 
 
 def thinking_tokens(usage):
@@ -129,7 +133,8 @@ def leg(base, s):
             f"({', '.join(sorted(os.path.basename(r) for r in reps))}) — remove the stale one")
     rep = reps[0]  # IndexError when absent, which callers expect
     resolved = len(json.load(open(rep))["resolved_ids"])
-    cost = steps = out = cr = cw = ncc = failed = 0
+    cost = steps = out = cr = ncc = failed = 0
+    cw = None  # absent until a provider reports cache writes
     wall = 0.0
     peak_ctx = 0  # largest single-turn context (prompt_tokens) seen, any instance
     # Selection members only. `resolved` comes from the report, which covers
@@ -159,8 +164,10 @@ def leg(base, s):
                 p = u.get("prompt_tokens", 0) or 0
                 r, w = cache_tokens(u)
                 cr += r
-                cw += w
-                ncc += max(p - r - w, 0)
+                # cw stays None until a provider reports the field at all.
+                if w is not None:
+                    cw = (cw or 0) + w
+                ncc += max(p - r - (w or 0), 0)
                 peak_ctx = max(peak_ctx, p)
                 if ts and prev:
                     wall += ts - prev
@@ -174,7 +181,8 @@ def leg(base, s):
             f"{base}/{s}: {steps} api calls but zero cost — the model is probably"
             " missing from fable-5.litellm.json, so litellm priced it at nothing")
     return dict(resolved=resolved, cost=cost, steps=steps, out=out, failed=failed,
-               ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + cw, wall=wall, peak_ctx=peak_ctx)
+               ncc=ncc, cr=cr, cw=cw, intot=ncc + cr + (cw or 0), wall=wall,
+               peak_ctx=peak_ctx)
 
 
 def per_instance(base, s):
@@ -196,46 +204,28 @@ def per_instance(base, s):
     return out
 
 
+def _resolved_ids(base, sel):
+    """The swebench marker's resolved set for one leg, or None if unmarked."""
+    rid = base.replace("/", "_")
+    reps = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{sel}.json")
+    if len(reps) > 1:
+        raise SystemExit(
+            f"{base}/{sel}: {len(reps)} reports match in evals/ — remove the stale one")
+    if not reps:
+        return None
+    return set(json.load(open(reps[0]))["resolved_ids"])
+
+
 def instance_medals(bases, sets=None):
-    """Medals per INSTANCE, not per aggregate row: each instance is its own
-    event. Resolving is the entry ticket — a competitor that failed cannot
-    place, however cheap it was — and among the finishers the cheapest takes
-    gold. An instance nobody resolved awards nothing to anyone.
-
-    This shows what averages hide: a model can post the best $/resolved while
-    rarely being the cheapest on any individual instance, if it is cheap on
-    the easy majority.
-
-    `bases` are run out-paths ("main/opus-5", "exec-arm-1/sonnet-5"), so the
-    same contest works for model divisions and for scaffolding arms.
-    """
-    sets = sets or [s for s, _n in SETS]
-    per = {}
-    for b in bases:
-        acc = {}
-        for s in sets:
-            try:
-                acc.update(per_instance(b, s))
-            except IndexError:
-                pass  # leg never run or never marked
-        per[b] = acc
-    counts = {b: [0, 0, 0] for b in bases}
-    unsolved = 0
-    every = {i for b in bases for i in per[b]}
-    for iid in sorted(every):
-        finishers = sorted(
-            (per[b][iid][1], b) for b in bases
-            if per[b].get(iid, (False, 0.0))[0]
-        )
-        if not finishers:
-            unsolved += 1
-            continue
-        for rank, (_cost, b) in enumerate(finishers[:3]):
-            counts[b][rank] += 1
-    return counts, unsolved, len(every)
+    """The shared contest, with this dataset's way of finding a resolved set."""
+    return medals.tally(
+        ROOT, bases, sets or [s for s, _n in SETS], _resolved_ids,
+        ids_of=lambda sel: selections.ids("verified", sel))
 
 
 def tok(x):
+    if x is None:
+        return "n/a"  # the provider does not report this at all
     return f"{x/1e6:.2f}M" if x >= 1e6 else f"{x/1e3:.0f}k"
 
 
@@ -433,10 +423,13 @@ def effort_card(card, heading, entries, payload=None):
     def ecombined(b):
         c = {}
         for k in edata[b]["standard"]:
+            a, d = edata[b]["standard"][k], edata[b]["hard"][k]
             if k == "peak_ctx":
-                c[k] = max(edata[b]["standard"][k], edata[b]["hard"][k])
+                c[k] = max(a, d)
+            elif a is None and d is None:
+                c[k] = None  # the provider reports it on neither selection
             else:
-                c[k] = edata[b]["standard"][k] + edata[b]["hard"][k]
+                c[k] = (a or 0) + (d or 0)
         return c
 
     sections = [
@@ -565,15 +558,8 @@ def experiment_table(heading, entries):
     # only arms that resolved an instance can place, cheapest takes gold.
     counts, unsolved, total = instance_medals(bases, sets=["hard"])
     if total:
-        tally_body = []
-        for i, (m, word) in enumerate(zip(("\U0001F947", "\U0001F948", "\U0001F949"),
-                                          ("gold", "silver", "bronze"))):
-            tally_body.append((f"{m} {word}", [str(counts[b][i]) for b in bases]))
-        tally_body.append(("medals total", [str(sum(counts[b])) for b in bases]))
-        sections_.append((
-            f"Medal tally — per instance ({total} events, {unsolved} unsolved by every arm)",
-            tally_body,
-        ))
+        sections_.append((medals.heading("arm", total, unsolved),
+                          medals.rows(counts, bases)))
     lines = [f"| {heading} | " + " | ".join(columns) + " |", "|" + "---|" * (len(columns) + 1)]
     for title, body in sections_:
         # Repeat the column names per section — the table is too wide to read

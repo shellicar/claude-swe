@@ -325,9 +325,9 @@
     <td>1.64M</td>
     <td>3.67M</td>
     <td class="g">2.56M</td>
-    <td class="g">0k</td>
-    <td class="g">0k</td>
-    <td>0k</td>
+    <td class="g">n/a</td>
+    <td class="g">n/a</td>
+    <td>n/a</td>
   </tr>
   <tr>
     <th>Failed tool calls (FormatError)</th>
@@ -755,9 +755,9 @@
     <td>2.51M</td>
     <td>5.32M</td>
     <td class="g">2.66M</td>
-    <td class="g">0k</td>
-    <td class="g">0k</td>
-    <td>0k</td>
+    <td class="g">n/a</td>
+    <td class="g">n/a</td>
+    <td>n/a</td>
   </tr>
   <tr>
     <th>Failed tool calls (FormatError)</th>
@@ -1185,9 +1185,9 @@
     <td>4.16M</td>
     <td>9.00M</td>
     <td class="g">5.22M</td>
-    <td class="g">0k</td>
-    <td class="g">0k</td>
-    <td>0k</td>
+    <td class="g">n/a</td>
+    <td class="g">n/a</td>
+    <td>n/a</td>
   </tr>
   <tr>
     <th>Failed tool calls (FormatError)</th>

@@ -21,6 +21,7 @@ import hashlib
 import json
 import os
 
+import medals
 import selections
 from analysis_output import emit
 
@@ -229,5 +230,25 @@ for label, decl in SECTIONS.items():
 # Every section is a program now, so the total needs no exclusion clause.
 sections_out.append(("TOTAL", total_section(["*C++* control", "*Rust* control", "tokio stack — *Rust* (org tokio-rs)"])))
 
+
+def _resolved_ids(base, sel):
+    """ByteDance's harness reports org/repo:pr-N; runs and instance files use
+    org__repo-N. Same instance, two spellings, so normalise to the run's."""
+    combo = base.split("/")[0]
+    model = base.split("/")[1]
+    p = f"{ROOT}/evals/multi/{combo}-{model}-{sel}/final_report.json"
+    if not os.path.exists(p):
+        return None
+    out = set()
+    for rid in json.load(open(p))["resolved_ids"]:
+        repo, pr = rid.split(":pr-")
+        out.add(repo.replace("/", "__") + "-" + pr)
+    return out
+
+
+_bases = [f"multi/{m}" for m in models]
 emit("multi", "Multi-SWE-bench", models, sections_out, NOTE,
-     {"covers": ["cpp", "rust", "tokio"], "models": data})
+     {"covers": ["cpp", "rust", "tokio"], "models": data},
+     medals=medals.tally(
+         ROOT, _bases, ["cpp", "rust", "tokio"], _resolved_ids,
+         ids_of=lambda sel: selections.ids("multi", sel)))

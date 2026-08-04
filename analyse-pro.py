@@ -20,6 +20,7 @@ import glob
 import json
 import os
 
+import medals
 import selections
 from analysis_output import emit
 
@@ -190,5 +191,18 @@ total_body.append(("Total cost", _tc(lambda s: f"${s['c']:.2f}")))
 total_body.append(("$/resolved", _tc(lambda s: f"${s['c']/s['r']:.2f}" if s["r"] else "—")))
 sections.append(("TOTAL — all selections", total_body))
 
+def _resolved_ids(base, sel):
+    """Scale's harness writes {instance_id: bool}, one file per leg."""
+    model = base.split("/")[1]
+    p = f"{ROOT}/{SELECTIONS[sel]['evals'].format(m=model)}/eval_results.json"
+    if not os.path.exists(p):
+        return None
+    return {k for k, v in json.load(open(p)).items() if v}
+
+
+_bases = [f"pro/{m}" for m in models]
 emit("pro", "SWE-bench Pro", models, sections, NOTE,
-     {"covers": list(SELECTIONS), "models": data})
+     {"covers": list(SELECTIONS), "models": data},
+     medals=medals.tally(
+         ROOT, _bases, list(SELECTIONS), _resolved_ids,
+         ids_of=lambda sel: selections.ids("pro", sel)))

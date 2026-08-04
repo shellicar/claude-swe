@@ -30,10 +30,11 @@
 | Context window (peak, single turn) | 134k | 166k | 149k | 119k | 111k | 118k | 127k |
 | Wall-clock (12-way parallel) | 3.5 h | 3.5 h | 3.2 h | 2.8 h | 3.3 h | 2.8 h | 2.7 h |
 | **Medal tally — per instance (45 events, 4 unsolved by every arm)** | **Control** | **Exec Arm 1** | **ExecV1, aligned** | **ExecV2, aligned** | **ExecV3, aligned (bash-named)** | **ExecV3, aligned (exec-named)** | **ExecV3, no ritual** |
+| **medals** | | | | | | | |
 | 🥇 gold | 14 | 5 | 1 | 3 | 4 | 7 | 7 |
 | 🥈 silver | 4 | 3 | 4 | 8 | 5 | 6 | 10 |
 | 🥉 bronze | 4 | 3 | 6 | 8 | 6 | 6 | 3 |
-| medals total | 22 | 11 | 11 | 19 | 15 | 19 | 20 |
+| placing | 🥇 **1** | 4 | 7 | 6 | 5 | 🥉 **3** | 🥈 **2** |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.
 
@@ -69,10 +70,11 @@ Verdicts from the pinned swebench judges. Full caveats in report.md.
 | Context window (peak, single turn) | 134k | 141k | 115k | 130k | 161k | 147k |
 | Wall-clock (12-way parallel) | 3.5 h | 2.4 h | 2.8 h | 2.7 h | 3.0 h | 3.0 h |
 | **Medal tally — per instance (45 events, 6 unsolved by every arm)** | **Control** | **+90 bloat tools** | **+Edit/Write/Read, neutral** | **+Edit/Write/Read, prefer** | **ExecV3 +Edit/Write/Read** | **ExecV3 +EWR, plain output** |
+| **medals** | | | | | | |
 | 🥇 gold | 7 | 0 | 12 | 11 | 5 | 4 |
 | 🥈 silver | 13 | 2 | 7 | 7 | 6 | 3 |
 | 🥉 bronze | 8 | 3 | 7 | 8 | 4 | 8 |
-| medals total | 28 | 5 | 26 | 26 | 15 | 15 |
+| placing | 🥉 **3** | 6 | 🥇 **1** | 🥈 **2** | 4 | 5 |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.
 
@@ -108,9 +110,10 @@ Verdicts from the pinned swebench judges. Full caveats in report.md.
 | Context window (peak, single turn) | 134k | 143k | 156k | 151k |
 | Wall-clock (12-way parallel) | 3.5 h | 5.0 h | 6.1 h | 18.5 h |
 | **Medal tally — per instance (45 events, 5 unsolved by every arm)** | **Control** | **ExecV3, plain-text (symbolic)** | **ExecV3, plain-text (symbolic, loud)** | **ExecV3, plain-text (keyword)** |
+| **medals** | | | | |
 | 🥇 gold | 25 | 3 | 2 | 10 |
 | 🥈 silver | 5 | 9 | 10 | 10 |
 | 🥉 bronze | 2 | 12 | 10 | 9 |
-| medals total | 32 | 24 | 22 | 29 |
+| placing | 🥇 **1** | 🥉 **3** | 4 | 🥈 **2** |
 
 Verdicts from the pinned swebench judges. Full caveats in report.md.

@@ -693,44 +693,6 @@
     <td class="g">🥇 <b>$0.50</b></td>
   </tr>
 </tbody>
-<tbody>
-  <tr>
-    <th rowspan="1" colspan="2" class="h">Medal tally — counted in events</th>
-    <th colspan="1" class="h g">fable-5</th>
-    <th colspan="1" class="h g">opus-5</th>
-    <th colspan="1" class="h g">opus-4-8</th>
-    <th colspan="1" class="h g">sonnet-5</th>
-    <th colspan="1" class="h g">haiku-4-5</th>
-    <th colspan="1" class="h g">kimi-k2.7-code</th>
-  </tr>
-  <tr>
-    <th colspan="2">🥇 gold</th>
-    <td class="g">214</td>
-    <td class="g">80</td>
-    <td class="g">20</td>
-    <td class="g">76</td>
-    <td class="g">0</td>
-    <td class="g">0</td>
-  </tr>
-  <tr>
-    <th colspan="2">🥈 silver</th>
-    <td class="g">145</td>
-    <td class="g">65</td>
-    <td class="g">107</td>
-    <td class="g">105</td>
-    <td class="g">11</td>
-    <td class="g">0</td>
-  </tr>
-  <tr>
-    <th colspan="2">🥉 bronze</th>
-    <td class="g">0</td>
-    <td class="g">20</td>
-    <td class="g">178</td>
-    <td class="g">189</td>
-    <td class="g">63</td>
-    <td class="g">0</td>
-  </tr>
-</tbody>
 </table>
 
 Each meet's event programs, the Results block medalled per row. — = did not enter or unjudged. Full results per meet in analysis/&lt;dataset&gt;/table.md.

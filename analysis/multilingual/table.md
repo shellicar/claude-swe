@@ -523,32 +523,40 @@
 </tbody>
 <tbody>
   <tr>
-    <th rowspan="1" colspan="2" class="h">Medal tally — counted in events</th>
+    <th rowspan="1" colspan="2" class="h">Medal tally — per instance (96 events, 15 unsolved by every model)</th>
     <th colspan="1" class="h g">fable-5</th>
     <th colspan="1" class="h g">opus-4-8</th>
     <th colspan="1" class="h g">sonnet-5</th>
     <th colspan="1" class="h g">haiku-4-5</th>
   </tr>
   <tr>
-    <th colspan="2">🥇 gold</th>
-    <td class="g">2</td>
-    <td class="g">0</td>
-    <td class="g">1</td>
-    <td class="g">0</td>
+    <th rowspan="4" class="s">medals</th>
+    <th>🥇 gold</th>
+    <td class="g">8</td>
+    <td class="g">25</td>
+    <td class="g">26</td>
+    <td class="g">22</td>
   </tr>
   <tr>
-    <th colspan="2">🥈 silver</th>
-    <td class="g">0</td>
-    <td class="g">1</td>
-    <td class="g">2</td>
-    <td class="g">1</td>
+    <th>🥈 silver</th>
+    <td class="g">12</td>
+    <td class="g">22</td>
+    <td class="g">24</td>
+    <td class="g">16</td>
   </tr>
   <tr>
-    <th colspan="2">🥉 bronze</th>
-    <td class="g">0</td>
-    <td class="g">2</td>
-    <td class="g">0</td>
-    <td class="g">1</td>
+    <th>🥉 bronze</th>
+    <td class="g">17</td>
+    <td class="g">18</td>
+    <td class="g">19</td>
+    <td class="g">11</td>
+  </tr>
+  <tr>
+    <th>placing</th>
+    <td class="g">4</td>
+    <td class="g">🥈 <b>2</b></td>
+    <td class="g">🥇 <b>1</b></td>
+    <td class="g">🥉 <b>3</b></td>
   </tr>
 </tbody>
 </table>
