@@ -174,6 +174,10 @@ function sh(args, input) {
     input,
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024,
+    // Own process group, so a terminal Ctrl-C does not reach these. Without
+    // it the docker call in flight dies with the group and the step it was
+    // running returns a truncated answer, which is worse than not stopping.
+    detached: true,
   });
   return { out: (r.stdout ?? "") + (r.stderr ?? ""), code: r.status ?? 128 };
 }
@@ -398,6 +402,7 @@ async function run(argv) {
 
   const workers = new Set();
   const retried = new Set();
+  let draining = false;
   let settle;
   const allDone = new Promise((res) => (settle = res));
   const flush = () => writeFileSync(resultsPath, JSON.stringify(results, null, 1));
@@ -443,7 +448,7 @@ async function run(argv) {
 
   function pump() {
     const busy = [...workers].filter((w) => w.busy).length;
-    const target = Math.min(want, queue.length + busy);
+    const target = draining ? 0 : Math.min(want, queue.length + busy);
     let live = [...workers].filter((w) => !w.retiring).length;
     while (live < target) {
       startWorker();
@@ -459,13 +464,15 @@ async function run(argv) {
         live--;
       }
     }
-    for (const w of workers) {
-      if (queue.length === 0) break;
-      if (w.busy || w.retiring) continue;
-      w.busy = queue.shift();
-      w.child.stdin.write(`${JSON.stringify(w.busy)}\n`);
+    if (!draining) {
+      for (const w of workers) {
+        if (queue.length === 0) break;
+        if (w.busy || w.retiring) continue;
+        w.busy = queue.shift();
+        w.child.stdin.write(`${JSON.stringify(w.busy)}\n`);
+      }
     }
-    if (queue.length === 0 && ![...workers].some((w) => w.busy)) {
+    if (draining ? workers.size === 0 : queue.length === 0 && ![...workers].some((w) => w.busy)) {
       for (const w of workers) {
         if (!w.retiring) {
           w.retiring = true;
@@ -476,11 +483,32 @@ async function run(argv) {
     }
   }
 
+  // Ctrl-C drains rather than stops dead: a killed worker abandons two
+  // containers mid-trajectory, and finding them afterwards is the reader's
+  // problem. Everything already finished is on disk either way.
+  process.on("SIGINT", () => {
+    if (draining) {
+      const stranded = [...workers].filter((w) => w.busy).length;
+      console.log(`\nabandoning ${stranded} trajectories in flight, so their containers are left behind:`);
+      console.log("  docker ps -aq --filter name=seqrep | xargs docker rm -f");
+      for (const w of workers) w.child.kill();
+      flush();
+      process.exit(130);
+    }
+    draining = true;
+    const busy = [...workers].filter((w) => w.busy).length;
+    console.log(`\ndraining: ${busy} trajectories still running, each removes its own containers as it finishes`);
+    console.log(`${queue.length} never started, kept for --resume. Ctrl-C again to abandon the ${busy} instead.`);
+    pump();
+  });
+
   const timer = setInterval(() => {
-    const next = readWorkerDial(want, ceiling);
-    if (next !== want) {
-      console.log(`workers: ${want} -> ${next}${next === 0 ? " (paused, progress kept)" : ""}`);
-      want = next;
+    if (!draining) {
+      const next = readWorkerDial(want, ceiling);
+      if (next !== want) {
+        console.log(`workers: ${want} -> ${next}${next === 0 ? " (paused, progress kept)" : ""}`);
+        want = next;
+      }
     }
     pump();
   }, 2000);
@@ -490,6 +518,9 @@ async function run(argv) {
   clearInterval(timer);
   flush();
   summarize(results, resultsPath);
+  if (queue.length > 0) {
+    console.log(`stopped early: ${queue.length} trajectories not replayed. Add --resume to the same command to continue.`);
+  }
 }
 
 // A worker holds no share of the work: it replays whatever single trajectory
@@ -497,6 +528,10 @@ async function run(argv) {
 // which is what lets the pool grow and shrink mid-run. Progress goes to
 // stderr so stdout carries results and nothing else.
 async function worker() {
+  // Ctrl-C reaches every process in the terminal's group, so a worker that
+  // took the default action would die holding two containers. The parent
+  // stops us by closing stdin instead, after the trajectory in hand is done.
+  process.on("SIGINT", () => {});
   let n = 0;
   for await (const line of createInterface({ input: process.stdin })) {
     if (!line.trim()) continue;
