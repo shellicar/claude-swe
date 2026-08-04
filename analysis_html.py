@@ -18,6 +18,8 @@ prose but keeps it in a standalone file, and every local preview honours it.
 
 The SVG/PNG path is unaffected: it builds its own markdown inside d2.
 """
+import os
+
 LEVELS = ("low", "medium", "high", "xhigh", "max")
 
 # `g` marks the first column of a model family and carries the vertical rule;
@@ -84,6 +86,20 @@ def _grouped(body):
     if current:
         groups.append((name, current))
     return groups
+
+
+def write(outdir, html):
+    """Write a card's table.html, clearing the table.md this file used to be.
+
+    Every card writer needs this, and each one that hand-rolled its own output
+    kept a stale markdown copy beside the HTML until someone noticed.
+    """
+    os.makedirs(outdir, exist_ok=True)
+    with open(f"{outdir}/table.html", "w") as f:
+        f.write(html + "\n")
+    stale = f"{outdir}/table.md"
+    if os.path.exists(stale):
+        os.remove(stale)
 
 
 def table(heading, columns, sections, note):

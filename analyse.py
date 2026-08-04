@@ -622,9 +622,8 @@ _t3, _p3 = experiment_table("Plain-text encoding division — SWE-bench Verified
 
 # One file, three separate tables — not three directories. Each keeps its own
 # header/columns; they're stacked, not merged into one wide sheet.
-os.makedirs(f"{ROOT}/analysis/tools", exist_ok=True)
-with open(f"{ROOT}/analysis/tools/table.html", "w") as f:
-    f.write(_t1 + "\n\n" + NOTE + "\n\n" + _t2 + "\n\n" + NOTE + "\n\n" + _t3 + "\n\n" + NOTE + "\n")
+# Each table already carries the note, so it is not appended again here.
+analysis_html.write(f"{ROOT}/analysis/tools", "\n\n".join([_t1, _t2, _t3]))
 with open(f"{ROOT}/analysis/tools/data.json", "w") as f:
     json.dump({"exec-grammar": _p1, "tool-alternatives": _p2, "plain-text-encoding": _p3}, f, indent=2)
 print("wrote analysis/tools/: data.json, table.html")

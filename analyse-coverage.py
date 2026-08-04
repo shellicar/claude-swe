@@ -147,9 +147,7 @@ NOTE = ("Effort slots read low medium high xhigh max. "
         "What has been run, from the record — never hand-maintained.")
 
 outdir = f"{ROOT}/analysis/coverage"
-os.makedirs(outdir, exist_ok=True)
-with open(f"{outdir}/table.html", "w") as f:
-    f.write(analysis_html.table(heading, columns, sections, NOTE) + "\n")
+analysis_html.write(outdir, analysis_html.table(heading, columns, sections, NOTE))
 # The same strips the table renders, so the machine layer cannot disagree with
 # it — it previously recorded "." (not run) for levels a model does not have,
 # showing gaps that were not gaps.
