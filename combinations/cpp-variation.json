@@ -1,18 +1,32 @@
 {
   "name": "cpp-variation",
   "dataset": "multi",
-  "selections": ["cpp"],
+  "selections": [
+    "cpp"
+  ],
   "experiment": {
-    "control": "multi",
-    "question": "Were the C++ failures the models' or the harness's? The control gave 60s and never asked for a build, so patches that did not compile reached the marker uninspected.",
-    "varies": "builds required, action timeout 60s → 900s"
+    "control": "multi"
   },
   "parallel": true,
   "basePort": 19160,
-  "configs": ["swebench-local.yaml", "swebench-multi.yaml", "swebench-cpp-variation.yaml", "thinking-adaptive.yaml"],
+  "configs": [
+    "swebench-local.yaml",
+    "swebench-multi.yaml",
+    "swebench-cpp-variation.yaml",
+    "thinking-adaptive.yaml"
+  ],
   "legs": [
-    { "model": "anthropic/claude-opus-4-8", "out": "runs/cpp-variation/opus-4-8" },
-    { "model": "anthropic/claude-sonnet-5", "out": "runs/cpp-variation/sonnet-5" },
-    { "model": "anthropic/claude-fable-5", "out": "runs/cpp-variation/fable-5" }
+    {
+      "model": "anthropic/claude-opus-4-8",
+      "out": "runs/cpp-variation/opus-4-8"
+    },
+    {
+      "model": "anthropic/claude-sonnet-5",
+      "out": "runs/cpp-variation/sonnet-5"
+    },
+    {
+      "model": "anthropic/claude-fable-5",
+      "out": "runs/cpp-variation/fable-5"
+    }
   ]
 }

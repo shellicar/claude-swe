@@ -14,7 +14,7 @@ with anything.
 
 An experiment declares itself in its combination file:
 
-    "experiment": { "control": "multi", "question": "...", "varies": "..." }
+    "experiment": { "control": "multi" }
 """
 import glob
 import importlib.util
@@ -137,7 +137,7 @@ def card(exp):
         f"experiment-{exp['name']}",
         f"{exp['name']} — control against variation",
         ["control", "variation"], sections,
-        f"{spec['question']} Varies: {spec['varies']}. Control: {control}.",
+        f"Control: {control}.",
         {"covers": exp["selections"], "experiment": spec,
          "control": control, "contenders": figures},
         medals_by_section=tallies,

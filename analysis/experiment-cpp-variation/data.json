@@ -3,9 +3,7 @@
     "cpp"
   ],
   "experiment": {
-    "control": "multi",
-    "question": "Were the C++ failures the models' or the harness's? The control gave 60s and never asked for a build, so patches that did not compile reached the marker uninspected.",
-    "varies": "builds required, action timeout 60s \u2192 900s"
+    "control": "multi"
   },
   "control": "multi",
   "contenders": {
