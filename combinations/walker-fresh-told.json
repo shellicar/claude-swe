@@ -14,8 +14,8 @@
   ],
   "legs": [
     {
-      "model": "anthropic/claude-sonnet-5",
-      "out": "runs/walker-fresh-told/sonnet-5"
+      "model": "anthropic/claude-opus-5",
+      "out": "runs/walker-fresh-told/opus-5"
     }
   ]
 }

@@ -118,7 +118,10 @@ agent:
 
 environment:
   interpreter: ["/opt/bash-walker", "-c"]
-  run_args: ["--rm", "-v", "/Users/stephen/repos/shellicar/claude-swe/rust/target-linux/release/bash-walker:/opt/bash-walker:ro"]
+  # Relative so the arm mounts the binary of whatever tree it is run from.
+  # Naming one absolute path meant a worktree could silently run another's
+  # build, and the two are the same size to the byte.
+  run_args: ["--rm", "-v", "./rust/target-linux/release/bash-walker:/opt/bash-walker:ro"]
   env:
     PATH: "/opt/miniconda3/envs/testbed/bin:/opt/miniconda3/condabin:/opt/miniconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     CONDA_DEFAULT_ENV: "testbed"
