@@ -2,7 +2,12 @@
 // Runs GNU Bash's own test suite against bash-walker and reports where they
 // differ.
 //
-//   node analysis/tools/bash_conformance.mjs [name...]
+//   node analysis/tools/bash_conformance.mjs [name...] [--accept]
+//
+// A ratchet, not a report. `.bash-conformance-baseline.json` records which
+// tests are known to fail; a test outside it that fails is a regression and
+// exits 1. Closing a gap makes the run say so and `--accept` records it, which
+// is the only way the baseline shrinks.
 //
 // Bash itself is the oracle, run here, rather than the shipped .right files:
 // those were captured with `> file 2>&1`, so they have bash's stdio buffering
@@ -13,7 +18,7 @@
 //
 // Exit 0 when every test matched, 1 otherwise, 64 on a bad call.
 
-import { readdirSync, readFileSync, mkdtempSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, mkdtempSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -26,6 +31,14 @@ const TIMEOUT = 20_000;
 
 const only = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 const verbose = process.argv.includes("--verbose");
+const accept = process.argv.includes("--accept");
+const BASELINE = `${ROOT}/.bash-conformance-baseline.json`;
+
+if (!existsSync(BASH)) {
+  console.error(`no bash to compare against at ${BASH}`);
+  console.error("clone and build GNU Bash there, or this measures nothing");
+  process.exit(64);
+}
 
 const names = readdirSync(TESTS)
   .filter((f) => f.endsWith(".tests"))
@@ -113,4 +126,33 @@ if (verbose) {
   }
 }
 
-process.exit(results.every((r) => r.verdict === "match") ? 0 : 1);
+const failing = Object.fromEntries(
+  results.filter((r) => r.verdict !== "match").map((r) => [r.name, r.verdict]),
+);
+
+if (accept) {
+  writeFileSync(BASELINE, `${JSON.stringify(failing, null, 1)}\n`);
+  console.log(`\nbaseline recorded: ${Object.keys(failing).length} known failures`);
+  process.exit(0);
+}
+
+if (!existsSync(BASELINE)) {
+  console.error("\nno baseline; record one with --accept");
+  process.exit(64);
+}
+
+// A partial run says nothing about tests it did not run, so the comparison is
+// scoped to what was actually run.
+const baseline = JSON.parse(readFileSync(BASELINE, "utf8"));
+const ran = new Set(names);
+const regressed = Object.keys(failing).filter((n) => !(n in baseline));
+const fixed = Object.keys(baseline).filter((n) => ran.has(n) && !(n in failing));
+
+for (const n of fixed) console.log(`\nnow passing: ${n}`);
+for (const n of regressed) console.log(`\nREGRESSED: ${n} (${failing[n]})`);
+
+if (fixed.length > 0 && regressed.length === 0) {
+  console.log(`\n${fixed.length} newly passing; record with --accept`);
+}
+
+process.exit(regressed.length > 0 ? 1 : 0);
