@@ -2,6 +2,7 @@
 // Sets a machine up and starts the replay. One command, everything.
 //
 //   node analysis/tools/replay_setup.mjs [--parallel N] [--from user@host]
+//   node analysis/tools/replay_setup.mjs --to user@host
 //
 // Builds the corpus, fetches every image the corpus needs and does not have,
 // rebuilds the corpus so it sees them, and starts the run. Safe to re-run: it
@@ -11,6 +12,9 @@
 // pulling from the registry, for when the LAN is faster than the internet.
 // Nothing is written to disk in between. It moves more bytes than a registry
 // pull, because `docker save` streams layers uncompressed.
+//
+// `--to` is the same transfer initiated from the sending side, for when only
+// that direction has the fast link. It sends and stops; it starts no replay.
 
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -26,6 +30,28 @@ const at = argv.indexOf("--parallel");
 const parallel = at >= 0 ? argv[at + 1] : String(RIG.replayParallel);
 const fromAt = argv.indexOf("--from");
 const from = fromAt >= 0 ? argv[fromAt + 1] : null;
+const toAt = argv.indexOf("--to");
+const to = toAt >= 0 ? argv[toAt + 1] : null;
+
+// ssh joins its arguments into one string and the remote shell splits them
+// again, so anything with spaces has to arrive already quoted.
+const onRemote = (host, command) => spawnSync("ssh", [host, command], { encoding: "utf8" });
+
+function remoteDocker(host) {
+  const which = onRemote(host, "sh -lc 'command -v docker'");
+  // A login shell runs the profile, which can print escape sequences before
+  // the answer, so take the last line that actually looks like a path.
+  const path = (which.stdout ?? "")
+    .replace(/\u001b[^\u0007]*(?:\u0007|\u001b\\)/g, "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.startsWith("/"))
+    .pop();
+  if (which.status !== 0 || !path) {
+    die(`cannot find docker on ${host}`, (which.stderr ?? "").trim().split("\n")[0] || "is ssh reachable and docker installed there?");
+  }
+  return path;
+}
 
 const die = (msg, fix) => {
   console.error(`stopped: ${msg}`);
@@ -70,6 +96,41 @@ const extract = () => {
 
 let corpus = extract();
 
+if (to) {
+  const theirDocker = remoteDocker(to);
+  // Compare image IDs, not names. Names are formatted differently by different
+  // image stores; an ID is an ID.
+  const theirs = new Set(
+    (onRemote(to, `${theirDocker} image ls -q --no-trunc`).stdout ?? "")
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean),
+  );
+  const wanted = [...new Set(corpus.map((e) => e.image))];
+  const send = wanted.filter((ref) => {
+    const id = spawnSync("docker", ["image", "inspect", "--format", "{{.Id}}", ref], { encoding: "utf8" });
+    return id.status === 0 && !theirs.has(id.stdout.trim());
+  });
+  console.log(`\n${to} has ${theirs.size} images; sending ${send.length} of the ${wanted.length} this corpus needs`);
+  if (send.length === 0) process.exit(0);
+
+  const BATCH = 5;
+  for (let i = 0; i < send.length; i += BATCH) {
+    const batch = send.slice(i, i + BATCH);
+    const status = await new Promise((res) => {
+      let saveCode = 0;
+      const save = spawn("docker", ["save", ...batch], { stdio: ["ignore", "pipe", "inherit"] });
+      const ssh = spawn("ssh", [to, `${theirDocker} load`], { stdio: ["pipe", "inherit", "inherit"] });
+      save.stdout.pipe(ssh.stdin);
+      save.on("exit", (code) => (saveCode = code ?? 1));
+      ssh.on("exit", (code) => res(saveCode !== 0 ? saveCode : (code ?? 1)));
+    });
+    console.log(`[${Math.min(i + BATCH, send.length)}/${send.length}] ${status === 0 ? "ok" : "FAILED"}`);
+  }
+  console.log(`\nsent. on ${to}: node analysis/tools/replay_setup.mjs`);
+  process.exit(0);
+}
+
 // Every image the corpus needs, heaviest coverage first so an interrupted or
 // disk-limited pull still leaves the most replayable.
 const byImage = new Map();
@@ -88,25 +149,8 @@ if (missing.length > 0) {
   const queue = missing.map(([image]) => image);
 
   if (from) {
-    // A non-interactive ssh gets a minimal PATH, so `docker` is not on it.
-    // Ask a login shell where it lives once, then use that path directly.
-    //
-    // Sent as one already-quoted string: ssh joins its arguments and the
-    // remote shell splits them again, so separate arguments do not survive.
-    const which = spawnSync("ssh", [from, "sh -lc 'command -v docker'"], { encoding: "utf8" });
-    // A login shell runs the profile, which can print escape sequences before
-    // the answer, so take the last line that actually looks like a path.
-    const remoteDocker = (which.stdout ?? "")
-      // eslint-disable-next-line no-control-regex
-      .replace(/\u001b[^\u0007]*(?:\u0007|\u001b\\)/g, "")
-      .split("\n")
-      .map((l) => l.trim())
-      .filter((l) => l.startsWith("/"))
-      .pop();
-    if (which.status !== 0 || !remoteDocker) {
-      die(`cannot find docker on ${from}`, (which.stderr ?? "").trim().split("\n")[0] || "is Remote Login enabled?");
-    }
-    console.log(`\nstreaming ${queue.length} images from ${from} (${remoteDocker})`);
+    const theirDocker = remoteDocker(from);
+    console.log(`\nstreaming ${queue.length} images from ${from} (${theirDocker})`);
 
     // One ssh per batch: a failure costs that batch, not the whole transfer,
     // and each batch reports rather than the stream going quiet for hours.
@@ -115,7 +159,7 @@ if (missing.length > 0) {
       const batch = queue.slice(i, i + BATCH);
       const status = await new Promise((res) => {
         let sshCode = 0;
-        const ssh = spawn("ssh", [from, remoteDocker, "save", ...batch], { stdio: ["ignore", "pipe", "inherit"] });
+        const ssh = spawn("ssh", [from, `${theirDocker} save ${batch.join(" ")}`], { stdio: ["ignore", "pipe", "inherit"] });
         const load = spawn("docker", ["load"], { stdio: ["pipe", "inherit", "inherit"] });
         ssh.stdout.pipe(load.stdin);
         ssh.on("exit", (code) => (sshCode = code ?? 1));
