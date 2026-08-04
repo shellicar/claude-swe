@@ -88,17 +88,35 @@ if (missing.length > 0) {
   const queue = missing.map(([image]) => image);
 
   if (from) {
+    // A non-interactive ssh gets a minimal PATH, so `docker` is not on it.
+    // Ask a login shell where it lives once, then use that path directly.
+    const which = spawnSync("ssh", [from, "sh", "-lc", "command -v docker"], { encoding: "utf8" });
+    // A login shell runs the profile, which can print escape sequences before
+    // the answer, so take the last line that actually looks like a path.
+    const remoteDocker = (which.stdout ?? "")
+      // eslint-disable-next-line no-control-regex
+      .replace(/\u001b[^\u0007]*(?:\u0007|\u001b\\)/g, "")
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith("/"))
+      .pop();
+    if (which.status !== 0 || !remoteDocker) {
+      die(`cannot find docker on ${from}`, (which.stderr ?? "").trim().split("\n")[0] || "is Remote Login enabled?");
+    }
+    console.log(`\nstreaming ${queue.length} images from ${from} (${remoteDocker})`);
+
     // One ssh per batch: a failure costs that batch, not the whole transfer,
     // and each batch reports rather than the stream going quiet for hours.
     const BATCH = 5;
-    console.log(`\nstreaming ${queue.length} images from ${from}`);
     for (let i = 0; i < queue.length; i += BATCH) {
       const batch = queue.slice(i, i + BATCH);
       const status = await new Promise((res) => {
-        const ssh = spawn("ssh", [from, "docker", "save", ...batch], { stdio: ["ignore", "pipe", "inherit"] });
+        let sshCode = 0;
+        const ssh = spawn("ssh", [from, remoteDocker, "save", ...batch], { stdio: ["ignore", "pipe", "inherit"] });
         const load = spawn("docker", ["load"], { stdio: ["pipe", "inherit", "inherit"] });
         ssh.stdout.pipe(load.stdin);
-        load.on("exit", (code) => res(code));
+        ssh.on("exit", (code) => (sshCode = code ?? 1));
+        load.on("exit", (code) => res(sshCode !== 0 ? sshCode : (code ?? 1)));
       });
       console.log(`[${Math.min(i + BATCH, queue.length)}/${queue.length}] ${status === 0 ? "ok" : "FAILED"}`);
     }
