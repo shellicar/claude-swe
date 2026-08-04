@@ -134,13 +134,11 @@ function extract() {
       .split("\n")
       .map((l) => l.split(" ")),
   );
-  // Locality is a digest question, not a name one: every Pro image shares a
-  // single repository and differs only by digest.
-  const local = new Set(
-    execFileSync("docker", ["images", "--digests", "--format", "{{.Repository}}@{{.Digest}}"], { encoding: "utf8" })
-      .trim()
-      .split("\n"),
-  );
+  // Ask docker about each reference rather than parsing its listing. The
+  // listing's format differs between image stores, and getting it wrong looks
+  // exactly like having pulled nothing.
+  const isLocal = (ref) =>
+    spawnSync("docker", ["image", "inspect", "--format", "{{.Id}}", ref], { stdio: "ignore" }).status === 0;
   const entries = [];
   for (const f of trajFiles(`${ROOT}/runs`)) {
     if (f.includes("/walker-")) continue; // walker runs are not ground truth
@@ -159,14 +157,25 @@ function extract() {
       id: f.slice(ROOT.length + 1).replace(/\/[^/]*$/, ""),
       instance: inst,
       image,
-      imageLocal: local.has(image.replace(/^docker\.io\//, "")),
+      imageLocal: false,
       commands,
     });
+  }
+
+  // One inspect per distinct image, not per trajectory.
+  const present = new Map();
+  for (const e of entries) {
+    if (!present.has(e.image)) present.set(e.image, isLocal(e.image));
+    e.imageLocal = present.get(e.image);
   }
   writeFileSync(CORPUS, JSON.stringify(entries));
   const localN = entries.filter((e) => e.imageLocal).length;
   const cmds = entries.reduce((a, e) => a + e.commands.length, 0);
   console.log(`${entries.length} trajectories (${localN} with local images), ${cmds} commands -> ${CORPUS}`);
+  if (localN === 0 && entries.length > 0) {
+    console.log(`none of the ${present.size} images are present. one of them, to check by hand:`);
+    console.log(`  docker image inspect ${entries[0].image}`);
+  }
 }
 
 function sh(args, input) {

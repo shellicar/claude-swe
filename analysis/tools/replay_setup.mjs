@@ -71,15 +71,16 @@ if (!existsSync(CORPUS)) {
 }
 const corpus = JSON.parse(readFileSync(CORPUS, "utf8"));
 
-// Locality is asked of docker now, not read from the corpus, because the
-// corpus records what was true when it was extracted and this script exists to
-// change that.
-const present = new Set(
-  spawnSync("docker", ["images", "--digests", "--format", "{{.Repository}}@{{.Digest}}"], { encoding: "utf8" })
-    .stdout.trim()
-    .split("\n"),
-);
-const isLocal = (image) => present.has(image.replace(/^docker\.io\//, ""));
+// Asked of docker per reference, not read from the corpus and not parsed out
+// of its listing. The corpus records what was true when it was extracted, and
+// the listing's format differs between image stores.
+const cache = new Map();
+const isLocal = (ref) => {
+  if (!cache.has(ref)) {
+    cache.set(ref, spawnSync("docker", ["image", "inspect", "--format", "{{.Id}}", ref], { stdio: "ignore" }).status === 0);
+  }
+  return cache.get(ref);
+};
 
 const byImage = new Map();
 for (const e of corpus) {
