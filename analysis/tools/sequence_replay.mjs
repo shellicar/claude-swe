@@ -402,6 +402,10 @@ async function run(argv) {
 
   const workers = new Set();
   const retried = new Set();
+  // Every worker pid this run has spawned. Container names carry the pid that
+  // made them, so abandoning a run can remove exactly its own containers and
+  // nothing else on the machine.
+  const spawnedPids = new Set();
   let draining = false;
   let settle;
   const allDone = new Promise((res) => (settle = res));
@@ -411,6 +415,7 @@ async function run(argv) {
     const child = spawn(process.execPath, [process.argv[1], "worker"], { stdio: ["pipe", "pipe", "inherit"] });
     const w = { child, busy: null, retiring: false };
     workers.add(w);
+    spawnedPids.add(child.pid);
     let buf = "";
     child.stdout.setEncoding("utf8");
     child.stdout.on("data", (chunk) => {
@@ -489,9 +494,17 @@ async function run(argv) {
   process.on("SIGINT", () => {
     if (draining) {
       const stranded = [...workers].filter((w) => w.busy).length;
-      console.log(`\nabandoning ${stranded} trajectories in flight, so their containers are left behind:`);
-      console.log("  docker ps -aq --filter name=seqrep | xargs docker rm -f");
+      console.log(`\nabandoning ${stranded} trajectories in flight`);
       for (const w of workers) w.child.kill();
+      const filters = [...spawnedPids].flatMap((pid) => [
+        "--filter", `name=seqrep-bash-${pid}-`,
+        "--filter", `name=seqrep-walk-${pid}-`,
+      ]);
+      const ids = sh(["docker", "ps", "-aq", ...filters]).out.trim().split("\n").filter(Boolean);
+      if (ids.length > 0) {
+        sh(["docker", "rm", "-f", ...ids]);
+      }
+      console.log(`removed ${ids.length} containers this run created`);
       flush();
       process.exit(130);
     }
