@@ -23,6 +23,8 @@ import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSy
 import { join } from "node:path";
 import { createInterface } from "node:readline";
 
+import { compareTraces } from "./trace_compare.mjs";
+
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 // Machine capacity comes from the one place that declares it.
 const RIG = JSON.parse(readFileSync(`${ROOT}/rig.json`, "utf8"));
@@ -34,67 +36,6 @@ const CORPUS = `${STATE_DIR}/sequence_corpus.json`;
 const WALKER = `${ROOT}/rust/target-linux/release/bash-walker`;
 const STEP_TIMEOUT_S = RIG.replayStepTimeoutS;
 
-// Commands that run on both sides but whose output is inherently
-// nondeterministic — executed (state must advance) but not compared.
-const NONDET_CMD = /\$RANDOM|\$\$|\$!|\bdate\b|\bmktemp\b|\btime\s|SECONDS|EPOCH|BASHPID|&\s*$|\bcurl\b|\bwget\b|\bpip3? (install|download)\b|\bsleep\s+\d+\s*(&&|;)|\bpgrep\b|\bpkill\b|\bps\s+(aux|ax|-)/m;
-
-// A heredoc body is data, not command. `cat > f <<'EOF'` writing a file whose
-// text mentions time, date or curl is perfectly deterministic, and testing the
-// body excluded exactly the file-writing and `python - <<EOF` steps whose
-// output matters most. Bodies are stripped before the test only; what runs is
-// always the untouched command.
-function withoutHeredocBodies(cmd) {
-  const lines = cmd.split("\n");
-  const kept = [];
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    kept.push(line);
-    const opens = [...line.matchAll(/<<(-?)\s*(?:'([^']*)'|"([^"]*)"|([A-Za-z_]\w*))/g)]
-      // `<<<` is a here-string with no body, and its 2nd and 3rd `<` match here.
-      .filter((m) => line[m.index - 1] !== "<")
-      .map((m) => ({ dash: m[1] === "-", delim: m[2] ?? m[3] ?? m[4] }));
-    for (const { dash, delim } of opens) {
-      i++;
-      while (i < lines.length && (dash ? lines[i].replace(/^\t+/, "") : lines[i]) !== delim) i++;
-    }
-  }
-  return kept.join("\n");
-}
-
-const isNondet = (cmd) => NONDET_CMD.test(withoutHeredocBodies(cmd));
-
-// Output noise both shells legitimately produce differently run-to-run.
-function normalize(s) {
-  return s
-    .split("\n")
-    .map((l) => {
-      let t = l.trimStart();
-      t = t.replace(/^bash-walker: /, "");
-      const b = t.indexOf("bash: ");
-      if (b >= 0 && b < 80) t = t.slice(b + 6);
-      t = t.replace(/^line \d+: /, "");
-      return t
-        .replace(/\b\d+\.\d+ ?s(ec(onds)?)?\b/g, "TIME")
-        .replace(/\b\d+(\.\d+)? ?ms\b/g, "TIME")
-        .replace(/0x[0-9a-f]{4,}/gi, "ADDR")
-        .replace(/\/tmp\/bash-walker[^\s'"]*/g, "TMPFILE")
-        .replace(/\/tmp\/tmp[^\s'"]*/g, "TMPFILE")
-        .replace(/\bpid \d+\b/g, "pid PID")
-        .replace(/PYTHONHASHSEED=\d+/g, "PYTHONHASHSEED=SEED")
-        .replace(/\brandom seed:\s*\d+/g, "random seed: SEED")
-        .replace(/\b[0-9a-f]{40}\b/g, "SHA")
-        .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, "UUID")
-        .replace(/\b[0-9a-f]{16,}\b/g, "HEX")
-        .replace(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?( [+-]\d{4})?/g, "TIMESTAMP")
-        // Python's id(): a decimal memory address, e.g. Django/sympy repr
-        // output like "GreaterThan(id=140737446409072)" — our hex-only
-        // normalization above missed this decimal form entirely.
-        .replace(/\bid=\d{8,}\b/g, "id=ID")
-        .replace(/\bat 0x[0-9a-f]+\b/gi, "at ADDR");
-    })
-    .join("\n")
-    .replace(/\n+$/, "");
-}
 
 function* trajFiles(dir) {
   for (const e of readdirSync(dir)) {
@@ -199,8 +140,28 @@ function sh(args, input) {
 const STEP_WRAP = (interp) =>
   `timeout ${STEP_TIMEOUT_S} ${interp} "$0" > /tmp/.seqrep-step.out 2>&1 < /dev/null; ec=$?; cat /tmp/.seqrep-step.out; exit $ec`;
 
+// What the shell decided, rather than what the programs it ran printed. The
+// trace goes into the same combined stream, so it needs a prefix nothing else
+// emits: a bare `+ ` collides with any diff. Both sides get the same PS4 and
+// the same `set -x`, and bash repeats only PS4's first character per
+// substitution level, which the walker reproduces.
+const TRACE_MARK = "@@sqrp@@ ";
+const TRACE_LINE = new RegExp(`^${TRACE_MARK[0]}+${TRACE_MARK.slice(1)}`);
+// Set inside the command, not in the environment: a login shell sources the
+// image's profile and does not end up with an inherited PS4, so `bash -lc`
+// traced with a bare `+ ` and nothing was recognised as trace at all.
+const traced = (cmd) => `PS4='${TRACE_MARK}'\nset -x\n${cmd}`;
+
+/// The trace lines, and everything that is not trace, kept apart.
+function split(out) {
+  const trace = [];
+  const rest = [];
+  for (const line of out.split("\n")) (TRACE_LINE.test(line) ? trace : rest).push(line);
+  return { trace, output: rest.join("\n") };
+}
+
 function stepBash(name, cmd) {
-  return sh(["docker", "exec", name, "sh", "-c", STEP_WRAP("bash -lc"), cmd]);
+  return sh(["docker", "exec", name, "sh", "-c", STEP_WRAP("bash -lc"), traced(cmd)]);
 }
 // Hidden (dotfile) and outside /opt: found live, `ls /opt` in a corpus
 // command surfaced our own mounted binary as a spurious directory entry
@@ -211,8 +172,17 @@ const WALKER_MOUNT = "/root/.bash-walker";
 function stepWalker(name, cmd, env) {
   return sh([
     "docker", "exec", ...env.flatMap((e) => ["-e", e]), name,
-    "sh", "-c", STEP_WRAP(`${WALKER_MOUNT} -c`), cmd,
+    "sh", "-c", STEP_WRAP(`${WALKER_MOUNT} -c`), traced(cmd),
   ]);
+}
+
+/// How many adjacent trace lines may legitimately appear in any order: the
+/// widest pipeline in this command, answered by the parser rather than by
+/// counting bars in a string. Asked only when traces disagree, which is rare.
+function pipelineWidth(walkC, cmd) {
+  const r = sh(["docker", "exec", "-i", walkC, WALKER_MOUNT, "--pipeline-width"], cmd);
+  const n = Number.parseInt(r.out.trim(), 10);
+  return Number.isInteger(n) && n > 0 ? n : 1;
 }
 
 // The walker must see exactly the environment a login bash gets in this
@@ -245,54 +215,54 @@ function replayOne(entry, tag) {
     windowNondet: [],
     runNondet: [],
     divergence: null,
+    // Kept as fields so a results file written before and after the switch to
+    // trace comparison still reads; only orderOnly and windowNondet are
+    // populated now, and both name a cause rather than a threshold.
   };
-  const sortedLines = (s) => normalize(s).split("\n").sort().join("\n");
   try {
     const env = loginEnv(bashC);
     for (let i = 0; i < entry.commands.length; i++) {
       const cmd = entry.commands[i];
       const a = stepBash(bashC, cmd);
       const b = stepWalker(walkC, cmd, env);
-      if (isNondet(cmd)) {
-        result.skippedNondet++;
-        continue;
-      }
+      const at = split(a.out);
+      const bt = split(b.out);
+
+      // The exit status is the shell's own answer and is compared always.
+      // The trace is the decisions. Program output is neither: it belongs to
+      // whatever ran, and comparing it is what made this harness need a
+      // normalizer, a nondeterminism filter, a window rule and a self-test.
       result.compared++;
-      if (a.code === b.code && normalize(a.out) === normalize(b.out)) continue;
-      // Same lines, different order: concurrent writers (parallel test
-      // runners, downloads, stdout/stderr buffering) — counted, not failed.
-      if (a.code === b.code && sortedLines(a.out) === sortedLines(b.out)) {
-        result.orderOnly.push({ step: i, cmd: cmd.slice(0, 160) });
-        continue;
+      if (a.code === b.code) {
+        const verdict = compareTraces(at.trace, bt.trace, 1);
+        if (verdict.equal) continue;
+        // Disagreed, so ask the parser how many adjacent lines this command
+        // is allowed to permute. Only a pipeline starts things concurrently,
+        // and bash disagrees with itself there about once in thirty runs.
+        const scoped = compareTraces(at.trace, bt.trace, pipelineWidth(walkC, cmd));
+        if (scoped.equal) {
+          result.orderOnly.push({ step: i, cmd: cmd.slice(0, 160) });
+          continue;
+        }
+        result.divergence = {
+          step: i,
+          cmd,
+          bash: { code: a.code, out: at.trace.slice(Math.max(0, scoped.at - 3), scoped.at + 4).join("\n") },
+          walker: { code: b.code, out: bt.trace.slice(Math.max(0, scoped.at - 3), scoped.at + 4).join("\n") },
+        };
+        break;
       }
-      // Parallel-runner output sliced by a tail/head window: the window
-      // lands differently per run even under bash-vs-bash. Status still
-      // must match; content is uncomparable — counted and listed.
-      if (a.code === b.code && /\|\s*(tail|head)\b/.test(cmd)) {
-        result.windowNondet.push({ step: i, cmd: cmd.slice(0, 160) });
-        continue;
-      }
-      // Both sides hit the step timeout: output truncated at an arbitrary
-      // point on each side; only the status is comparable.
+      // Statuses differ. A step both sides cut off at the timeout says
+      // nothing either way.
       if (a.code === 124 && b.code === 124) {
         result.windowNondet.push({ step: i, cmd: cmd.slice(0, 160) });
         continue;
       }
-      // The self-test: rerun the step on the BASH side. If bash disagrees
-      // with itself, this is run-to-run nondeterminism (unseeded random,
-      // set ordering, live logs), not a walker divergence. The rerun may
-      // mutate state, so the instance still stops here — classified, not
-      // failed.
-      const a2 = stepBash(bashC, cmd);
-      if (a2.code !== a.code || normalize(a2.out) !== normalize(a.out)) {
-        result.runNondet.push({ step: i, cmd: cmd.slice(0, 160) });
-        break;
-      }
       result.divergence = {
         step: i,
         cmd,
-        bash: { code: a.code, out: a.out.slice(0, 2000) },
-        walker: { code: b.code, out: b.out.slice(0, 2000) },
+        bash: { code: a.code, out: at.output.slice(0, 2000) },
+        walker: { code: b.code, out: bt.output.slice(0, 2000) },
       };
       break;
     }
