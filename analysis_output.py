@@ -4,7 +4,7 @@ One call writes one dataset's folder — three files, no more:
 
     analysis/<name>/
         data.json     the raw figures (the overview joins these)
-        table.md      the table as text
+        table.html      the table as text
         <name>.svg    the rendered card
         <name>.png    the same card for pasting into chat (SVG pastes as text)
 
@@ -152,7 +152,7 @@ def emit(name, heading, columns, sections, note, payload, medals=None,
              medals_mod.rows(counts, keys))]
 
     # HTML, not a markdown table — see analysis_html for why.
-    with open(f"{outdir}/table.md", "w") as f:
+    with open(f"{outdir}/table.html", "w") as f:
         f.write(analysis_html.table(heading, columns, sections, note) + "\n")
 
     # d2 (intermediate) -> <name>.svg. One md table per section: a single long
@@ -178,13 +178,14 @@ def emit(name, heading, columns, sections, note, payload, medals=None,
     with open(f"{outdir}/{name}.d2", "w") as f:
         f.write("\n".join(d2) + "\n")
 
-    # tidy the superseded forms so each folder holds exactly the three files
-    for stale in ("table.html", "table.png", "table.d2", "table.svg"):
+    # tidy superseded forms: the generic table.* names an older layout wrote,
+    # and table.md from when this file held markdown rather than HTML.
+    for stale in ("table.md", "table.png", "table.d2", "table.svg"):
         p = f"{outdir}/{stale}"
         if os.path.exists(p):
             os.remove(p)
 
-    written = "data.json, table.md"
+    written = "data.json, table.html"
     if shutil.which("d2"):
         for ext in ("svg", "png"):
             subprocess.run(["d2", f"{outdir}/{name}.d2", f"{outdir}/{name}.{ext}"],

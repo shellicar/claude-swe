@@ -539,7 +539,7 @@ VARIABLE_DIMS = [
 
 def experiment_table(heading, entries):
     """Build one markdown table (own header, own columns) for one experiment.
-    Multiple of these get concatenated into ONE table.md — separate experiments,
+    Multiple of these get concatenated into ONE table.html — separate experiments,
     not separate files: control repeats across tables on purpose, but nobody
     reading exec-grammar results needs plain-text-encoding's columns in view."""
     data_ = {base: safe_leg(base, "hard") for _, base, _ in entries}
@@ -631,8 +631,8 @@ _t3, _p3 = experiment_table("Plain-text encoding division — SWE-bench Verified
 # One file, three separate tables — not three directories. Each keeps its own
 # header/columns; they're stacked, not merged into one wide sheet.
 os.makedirs(f"{ROOT}/analysis/tools", exist_ok=True)
-with open(f"{ROOT}/analysis/tools/table.md", "w") as f:
+with open(f"{ROOT}/analysis/tools/table.html", "w") as f:
     f.write(_t1 + "\n\n" + NOTE + "\n\n" + _t2 + "\n\n" + NOTE + "\n\n" + _t3 + "\n\n" + NOTE + "\n")
 with open(f"{ROOT}/analysis/tools/data.json", "w") as f:
     json.dump({"exec-grammar": _p1, "tool-alternatives": _p2, "plain-text-encoding": _p3}, f, indent=2)
-print("wrote analysis/tools/: data.json, table.md")
+print("wrote analysis/tools/: data.json, table.html")

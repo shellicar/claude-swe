@@ -59,7 +59,7 @@ files:
 | file         | for                                            |
 |--------------|------------------------------------------------|
 | `data.json`  | machines (the overview reads these)            |
-| `table.md`   | reading as text, reconciling into `report.md`  |
+| `table.html`   | reading as text, reconciling into `report.md`  |
 | `<name>.svg` | the rendered card                              |
 | `<name>.png` | the card for pasting into chat (SVG pastes as text) |
 

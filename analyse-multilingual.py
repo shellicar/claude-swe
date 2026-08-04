@@ -12,7 +12,7 @@ Sources, per section x model:
 - test outcomes  : the marker's per-instance reports (evals/logs/, regenerable)
 - thinking       : the leg's wire capture, attributed by fingerprint
 
-Outputs: analysis/multilingual/ (data.json, table.md, table.html, table.png)
+Outputs: analysis/multilingual/ (data.json, table.html, table.html, table.png)
 via the shared emitter. analysis/ is derived figures; evals/ is raw verdicts.
 """
 

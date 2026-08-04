@@ -208,8 +208,8 @@ if sections:
 
     outdir = f"{ROOT}/analysis/adhoc"
     os.makedirs(outdir, exist_ok=True)
-    with open(f"{outdir}/table.md", "w") as f:
+    with open(f"{outdir}/table.html", "w") as f:
         f.write("\n".join(lines) + "\n")
     with open(f"{outdir}/data.json", "w") as f:
         json.dump({t: dict(b) for t, b, _o, _x in sections}, f, indent=2)
-    print("wrote analysis/adhoc/: data.json, table.md")
+    print("wrote analysis/adhoc/: data.json, table.html")

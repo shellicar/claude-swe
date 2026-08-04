@@ -10,11 +10,15 @@ Reads the per-dataset analysis/<name>/data.json files (the machine layer each
 analyser writes), so it can only ever be as stale as they are; swe.mjs
 regenerates it after every analyse.
 
-Outputs: analysis/overview/ (data.json, table.md, table.html, table.png).
+Outputs: analysis/overview/ (data.json, table.html, table.html, table.png).
 """
 
+import glob
 import json
 import os
+
+import medals
+import selections
 
 from analysis_output import emit
 
@@ -136,9 +140,75 @@ keep = [i for i, c in enumerate(COLUMNS) if c in seen]
 cols = [COLUMNS[i] for i in keep]
 sections = [(title, [(l, [cells[i] for i in keep]) for l, cells in body]) for title, body in sections]
 
-NOTE = "Each meet's event programs, the Results block medalled per row. — = did not enter or unjudged. Full results per meet in analysis/<dataset>/table.md."
+NOTE = "Each meet's event programs, the Results block medalled per row. — = did not enter or unjudged. Full results per meet in analysis/<dataset>/table.html."
+
+# The tally spans every meet: one gold per instance, wherever it was run.
+# Each marker names its resolved set differently, so dispatch on the dataset.
+# Variations are excluded — they revisit a control's own instances, and an
+# instance must be one event.
+_MEETS = {
+    "verified": ("main/{m}", ["standard", "hard"]),
+    "multi": ("multi/{m}", ["cpp", "rust", "tokio"]),
+    "multilingual": ("multilingual/{m}", ["rust", "cpp", "go"]),
+    "pro": ("pro/{m}", ["pro", "nodebb", "element", "go"]),
+}
+
+
+def _overview_resolved(base, sel):
+    ds = _DS_OF[base]
+    if ds == "multi":
+        return _multi_resolved(base, sel)
+    if ds == "pro":
+        return _pro_resolved(base, sel)
+    rid = base.replace("/", "_")
+    reps = glob.glob(f"{ROOT}/evals/*.runs_{rid}_{sel}.json")
+    return set(json.load(open(reps[0]))["resolved_ids"]) if reps else None
+
+
+def _multi_resolved(base, sel):
+    m = base.split("/")[1]
+    p = f"{ROOT}/evals/multi/multi-{m}-{sel}/final_report.json"
+    if not os.path.exists(p):
+        return None
+    out = set()
+    for rid in json.load(open(p))["resolved_ids"]:
+        repo, pr = rid.split(":pr-")
+        out.add(repo.replace("/", "__") + "-" + pr)
+    return out
+
+
+_PRO_EVALS = {"pro": "{m}", "nodebb": "{m}-nodebb",
+              "element": "{m}-element", "go": "{m}-go"}
+
+
+def _pro_resolved(base, sel):
+    m = base.split("/")[1]
+    p = f"{ROOT}/evals/pro/{_PRO_EVALS[sel].format(m=m)}/eval_results.json"
+    if not os.path.exists(p):
+        return None
+    return {k for k, v in json.load(open(p)).items() if v}
+
+
+_DS_OF = {}
+_counts = {c: [0, 0, 0] for c in cols}
+_unsolved = _events = 0
+for _ds, (_pat, _sels) in _MEETS.items():
+    _bases = []
+    for _c in cols:
+        b = _pat.format(m=_c)
+        _DS_OF[b] = _ds
+        _bases.append(b)
+    _c2, _u, _e = medals.tally(
+        ROOT, _bases, _sels, _overview_resolved,
+        ids_of=lambda s, d=_ds: selections.ids(d, s))
+    for _c, b in zip(cols, _bases):
+        for i in range(3):
+            _counts[_c][i] += _c2[b][i]
+    _unsolved += _u
+    _events += _e
 
 emit("overview", "claude-swe — all meets", cols, sections, NOTE,
      {"columns": cols, "sections": [
          {"dataset": title, "rows": [{"label": l, "cells": cells} for l, cells in body]}
-         for title, body in sections]})
+         for title, body in sections]},
+     medals=(_counts, _unsolved, _events))

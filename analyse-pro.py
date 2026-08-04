@@ -12,7 +12,7 @@ Sources, per selection x model:
 - thinking       : the leg's own wire capture (one per selection leg dir)
 - empty patches  : submissions with no diff (automatic unresolved)
 
-Outputs: analysis/pro/ (data.json, table.md, table.html, table.png) via the
+Outputs: analysis/pro/ (data.json, table.html, table.html, table.png) via the
 shared emitter. analysis/ is derived figures; evals/ is raw verdicts.
 """
 

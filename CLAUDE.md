@@ -120,7 +120,7 @@ stop.
 > node swe.mjs mark main audit analyse
 > ```
 >
-> Results: `analysis/verified/table.md`, `analysis/coverage/table.md`
+> Results: `analysis/verified/table.html`, `analysis/coverage/table.html`
 
 The reading verbs — `status`, `audit`, `analyse` — and the analysers are always
 yours to run. Scratch scripts go in `/tmp`, never the repo, and only read: never

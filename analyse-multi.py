@@ -12,7 +12,7 @@ Sources, per section x model:
 - thinking       : the leg's own wire capture, attributed by fingerprint
 - empty patches  : submissions with no diff (automatic unresolved)
 
-Outputs: analysis/multi/ (data.json, table.md, table.html, table.png) via the
+Outputs: analysis/multi/ (data.json, table.html, table.html, table.png) via the
 shared emitter. analysis/ is derived figures; evals/ is raw verdicts.
 """
 

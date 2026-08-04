@@ -1,6 +1,6 @@
 """HTML rendering for the cards.
 
-`table.md` holds an HTML table rather than a markdown one. Markdown has no
+`table.html` holds an HTML table rather than a markdown one. Markdown has no
 colspan, and a card runs to nineteen columns: without merged headers every
 column has to repeat its model name, so a row reads "Claude Opus 5 low |
 Claude Opus 5 medium | Claude Opus 5 high | ..." and the families are

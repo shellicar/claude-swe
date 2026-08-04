@@ -153,7 +153,7 @@ lines.append(f"| effort slots: low medium high xhigh max | "
 
 outdir = f"{ROOT}/analysis/coverage"
 os.makedirs(outdir, exist_ok=True)
-with open(f"{outdir}/table.md", "w") as f:
+with open(f"{outdir}/table.html", "w") as f:
     f.write("\n".join(lines) + "\n")
 # The same strips the table renders, so the machine layer cannot disagree with
 # it — it previously recorded "." (not run) for levels a model does not have,
@@ -166,4 +166,4 @@ payload = {"levels": LEVELS, "columns": columns,
                     for (_k, label, dataset), legs in rows.items()}}
 with open(f"{outdir}/data.json", "w") as f:
     json.dump(payload, f, indent=2)
-print("wrote analysis/coverage/: data.json, table.md")
+print("wrote analysis/coverage/: data.json, table.html")
