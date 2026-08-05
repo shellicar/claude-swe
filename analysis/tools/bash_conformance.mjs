@@ -81,7 +81,10 @@ function run(shell, name) {
 function classify(w) {
   const text = w.err + w.out;
   if (w.timedOut) return "timeout";
-  if (/not yet supported by this parser|is not supported by bash-walker|unsupported/i.test(text)) return "unimplemented";
+  // Match the refusal by its stable half. Keying on "is not supported" filed
+  // every `arrays are not supported` as a divergence, which made loud refusals
+  // look like silent wrong answers and put them at the top of the queue.
+  if (/not yet supported by this parser|not supported by bash-walker|unsupported/i.test(text)) return "unimplemented";
   if (/bash-walker: syntax error/.test(text)) return "parse error";
   return "divergence";
 }
