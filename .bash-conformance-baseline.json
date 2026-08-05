@@ -61,7 +61,6 @@
  "posixexp2": "parse error",
  "posixpat": "divergence",
  "posixpipe": "parse error",
- "precedence": "divergence",
  "printf": "parse error",
  "procsub": "unimplemented",
  "quote": "parse error",
