@@ -1,5 +1,6 @@
 {
   "name": "walker-ccdesc",
+  "disabled": true,
   "dataset": "verified",
   "selections": [
     "hard"

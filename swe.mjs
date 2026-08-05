@@ -7,8 +7,9 @@
 //            chained in the given order per target, stopping at the first
 //            failure. Every verb is idempotent/resumable. No verbs = status.
 //   targets  combination names (combinations/*.json) or dataset[/selection].
-//            No targets = every combination: bare `./swe.mjs` is the whole
-//            dashboard; `./swe.mjs analyse` analyses everything.
+//            No targets = every combination that is not "disabled": true, so
+//            bare `./swe.mjs` is everything meant to be kept current. A
+//            disabled combination still runs when named explicitly.
 //   flags    --model <m> [--effort <e>] for an ad-hoc run without a combination
 //
 // Declarations (the authority; see docs/diagrams/operations.d2):
@@ -1128,7 +1129,13 @@ while (args.length > 0) {
 
 // verbs × targets: either axis omitted means all of it
 if (verbs.length === 0) verbs.push('status');
-if (targetNames.length === 0) targetNames.push(...listJson('combinations').sort());
+// A combination with "disabled": true stays declared — its legs, configs and
+// results are still the record — but no bare run picks it up. Name it
+// explicitly and it runs, so this parks work without deleting the plan.
+if (targetNames.length === 0) {
+  targetNames.push(...listJson('combinations').sort()
+    .filter((n) => !loadTarget(n).combo?.disabled));
+}
 
 // validate every target up front — a typo should name the choices, not half-run
 const targets = [];

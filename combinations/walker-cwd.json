@@ -1,5 +1,6 @@
 {
   "name": "walker-cwd",
+  "disabled": true,
   "dataset": "verified",
   "selections": [
     "hard"

@@ -1,5 +1,6 @@
 {
   "name": "walker-cwd-told",
+  "disabled": true,
   "dataset": "verified",
   "selections": [
     "hard"

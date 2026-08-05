@@ -1,5 +1,6 @@
 {
   "name": "walker-fresh-told",
+  "disabled": true,
   "dataset": "verified",
   "selections": [
     "hard"
