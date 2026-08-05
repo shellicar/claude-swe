@@ -32,6 +32,13 @@ const fromAt = argv.indexOf("--from");
 const from = fromAt >= 0 ? argv[fromAt + 1] : null;
 const toAt = argv.indexOf("--to");
 const to = toAt >= 0 ? argv[toAt + 1] : null;
+const pullsAt = argv.indexOf("--pulls");
+const pulls = pullsAt >= 0 ? Number(argv[pullsAt + 1]) : 1;
+if (!Number.isInteger(pulls) || pulls < 1) {
+  console.error("--pulls wants a whole number of concurrent pulls, 1 or more");
+  process.exit(64);
+}
+const PULL_TIMEOUT_MIN = 30;
 
 // ssh joins its arguments into one string and the remote shell splits them
 // again, so anything with spaces has to arrive already quoted.
@@ -147,10 +154,13 @@ for (const e of corpus) {
 const missing = [...byImage].filter(([, r]) => !r.local).sort((a, b) => b[1].commands - a[1].commands);
 
 if (missing.length > 0) {
-  // `docker pull` takes one reference and has no batch form, so several run at
-  // once. Beyond a handful the daemon's own max-concurrent-downloads (3 by
-  // default) is the real limit; raise it in daemon.json to go faster.
-  const CONCURRENCY = 4;
+  // `docker pull` takes one reference and has no batch form, so pulls run
+  // one at a time by default. Four at once wedged Docker under WSL2 with its
+  // image store on an external disk: the download is network-bound but the
+  // extraction is not, and several extractions at once is what hangs it.
+  // Raise it with --pulls N where the daemon can take it; beyond a handful
+  // its own max-concurrent-downloads (3 by default) is the real limit.
+  const CONCURRENCY = pulls;
   const queue = missing.map(([image]) => image);
 
   if (from) {
@@ -183,11 +193,19 @@ if (missing.length > 0) {
     for (;;) {
       const image = queue.shift();
       if (!image) return;
+      // A wedged daemon leaves `docker pull` hanging with no output rather
+      // than failing, which stalls the whole run silently. Give up on one and
+      // carry on: the image is simply still missing, and re-running fetches it.
       const status = await new Promise((res) => {
         const c = spawn("docker", ["pull", image], { stdio: ["ignore", "ignore", "pipe"] });
         let err = "";
+        const stall = setTimeout(() => {
+          err += `no progress for ${PULL_TIMEOUT_MIN} minutes`;
+          c.kill();
+        }, PULL_TIMEOUT_MIN * 60_000);
         c.stderr.on("data", (d) => (err += d));
         c.on("exit", (code) => {
+          clearTimeout(stall);
           if (code !== 0) console.error(`  failed ${image}: ${err.trim().split("\n").pop()}`);
           res(code);
         });
