@@ -81,6 +81,11 @@ if (readFileSync(sample, "utf8").startsWith("version https://git-lfs")) {
 if (spawnSync("docker", ["version", "--format", "{{.Server.Version}}"], { stdio: "ignore" }).status !== 0) {
   die("docker is not reachable");
 }
+// rust/ is a submodule, so a fresh clone or a plain pull leaves it empty and
+// the build below fails on a missing Cargo.toml rather than on the real cause.
+if (!existsSync(`${ROOT}/rust/Cargo.toml`)) {
+  die("rust/ is an empty submodule", "git submodule update --init rust");
+}
 if (!existsSync(`${ROOT}/rust/target-linux/release/bash-walker`)) {
   die(
     "the walker binary is not built",
