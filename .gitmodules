@@ -15,3 +15,7 @@
 	path = vendor/claude-cli
 	url = https://github.com/Hellicar-Solutions/claude-cli-tool-sea.git
 	branch = feature/tool-sea-harness
+[submodule "rust"]
+	path = rust
+	url = https://github.com/shellicar/bash-tool.git
+	branch = main

@@ -54,3 +54,7 @@ runs/main/opus46-47-requests.jsonl
 # regenerable from runs/**/*.traj.json, but must survive a crash/reboot
 # mid-run (a multi-hour job), which /tmp does NOT on macOS.
 .sequence-replay-state/
+
+# The conformance run's own report, rewritten on every run. The baseline it is
+# judged against, .bash-conformance-baseline.json, is committed.
+.bash-conformance.json
