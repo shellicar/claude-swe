@@ -18,6 +18,7 @@
 
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { spawn, spawnSync } from "node:child_process";
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
@@ -40,9 +41,23 @@ if (!Number.isInteger(pulls) || pulls < 1) {
 }
 const PULL_TIMEOUT_MIN = 30;
 
+// One shared connection for the whole transfer. Without it every batch is a
+// fresh ssh, which means a fresh password prompt: 369 images in batches of
+// five is 74 of them, and the link sits idle waiting for each one.
+const SOCKET = `${tmpdir()}/replay-setup-${process.pid}.sock`;
+const SSH = [
+  "-o", "ControlMaster=auto",
+  "-o", `ControlPath=${SOCKET}`,
+  "-o", "ControlPersist=600",
+];
+
 // ssh joins its arguments into one string and the remote shell splits them
 // again, so anything with spaces has to arrive already quoted.
-const onRemote = (host, command) => spawnSync("ssh", [host, command], { encoding: "utf8" });
+const onRemote = (host, command) => spawnSync("ssh", [...SSH, host, command], { encoding: "utf8" });
+
+const closeSsh = (host) => {
+  if (existsSync(SOCKET)) spawnSync("ssh", [...SSH, "-O", "exit", host], { stdio: "ignore" });
+};
 
 function remoteDocker(host) {
   const which = onRemote(host, "sh -lc 'command -v docker'");
@@ -132,13 +147,14 @@ if (to) {
     const status = await new Promise((res) => {
       let saveCode = 0;
       const save = spawn("docker", ["save", ...batch], { stdio: ["ignore", "pipe", "inherit"] });
-      const ssh = spawn("ssh", [to, `${theirDocker} load`], { stdio: ["pipe", "inherit", "inherit"] });
+      const ssh = spawn("ssh", [...SSH, to, `${theirDocker} load`], { stdio: ["pipe", "inherit", "inherit"] });
       save.stdout.pipe(ssh.stdin);
       save.on("exit", (code) => (saveCode = code ?? 1));
       ssh.on("exit", (code) => res(saveCode !== 0 ? saveCode : (code ?? 1)));
     });
     console.log(`[${Math.min(i + BATCH, send.length)}/${send.length}] ${status === 0 ? "ok" : "FAILED"}`);
   }
+  closeSsh(to);
   console.log(`\nsent. on ${to}: node analysis/tools/replay_setup.mjs`);
   process.exit(0);
 }
@@ -174,7 +190,7 @@ if (missing.length > 0) {
       const batch = queue.slice(i, i + BATCH);
       const status = await new Promise((res) => {
         let sshCode = 0;
-        const ssh = spawn("ssh", [from, `${theirDocker} save ${batch.join(" ")}`], { stdio: ["ignore", "pipe", "inherit"] });
+        const ssh = spawn("ssh", [...SSH, from, `${theirDocker} save ${batch.join(" ")}`], { stdio: ["ignore", "pipe", "inherit"] });
         const load = spawn("docker", ["load"], { stdio: ["pipe", "inherit", "inherit"] });
         ssh.stdout.pipe(load.stdin);
         ssh.on("exit", (code) => (sshCode = code ?? 1));
@@ -182,6 +198,7 @@ if (missing.length > 0) {
       });
       console.log(`[${Math.min(i + BATCH, queue.length)}/${queue.length}] ${status === 0 ? "ok" : "FAILED"}`);
     }
+    closeSsh(from);
     corpus = extract();
     if (corpus.filter((e) => e.imageLocal).length === 0) die("nothing arrived over ssh");
   } else {
