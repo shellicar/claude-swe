@@ -69,7 +69,7 @@
  "redir": "parse error",
  "rhs-exp": "unimplemented",
  "rsh": "unimplemented",
- "set-e": "divergence",
+ "set-e": "unimplemented",
  "set-x": "unimplemented",
  "shopt": "unimplemented",
  "test": "divergence",
